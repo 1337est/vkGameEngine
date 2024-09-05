@@ -6,10 +6,12 @@
 #include "vge_game_object.hpp"
 #include "vge_pipeline.hpp"
 
+// libs
+#include <vulkan/vulkan_core.h>
+
 // std
 #include <memory>
 #include <vector>
-#include <vulkan/vulkan_core.h>
 
 namespace vge
 {

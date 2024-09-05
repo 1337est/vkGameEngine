@@ -3,7 +3,7 @@
 // headers
 #include "vge_model.hpp"
 
-// libraries
+// libs
 #include <glm/gtc/matrix_transform.hpp>
 
 // std

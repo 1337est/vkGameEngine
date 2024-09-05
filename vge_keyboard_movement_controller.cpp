@@ -1,5 +1,10 @@
+// headers
 #include "vge_keyboard_movement_controller.hpp"
+
+// libs
 #include <GLFW/glfw3.h>
+
+// std
 #include <limits>
 
 namespace vge

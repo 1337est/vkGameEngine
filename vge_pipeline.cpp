@@ -2,7 +2,7 @@
 #include "vge_pipeline.hpp"
 #include "vge_model.hpp"
 
-// libraries
+// libs
 #include <vulkan/vulkan_core.h>
 
 // std

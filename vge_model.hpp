@@ -3,9 +3,8 @@
 // headers
 #include "vge_device.hpp"
 
-// libraries
+// libs
 #include <vulkan/vulkan_core.h>
-
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
@@ -31,6 +30,12 @@ public:
         getBindingDescriptions();
         static std::vector<VkVertexInputAttributeDescription>
         getAttributeDescriptions();
+
+        bool operator==(const Vertex& other) const
+        {
+            return position == other.position && color == other.color &&
+                   normal == other.normal && uv == other.uv;
+        }
     };
 
     struct Builder

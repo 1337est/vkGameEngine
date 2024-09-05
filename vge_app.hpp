@@ -6,7 +6,7 @@
 #include "vge_renderer.hpp"
 #include "vge_window.hpp"
 
-// libraries
+// libs
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
