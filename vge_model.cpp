@@ -252,20 +252,13 @@ void VgeModel::Builder::loadModel(const std::string& filepath)
                     attrib.vertices[3 * index.vertex_index + 1], // y-pos
                     attrib.vertices[3 * index.vertex_index + 2], // z-pos
                 };
+
                 // if RGB values are present in .obj file
-                auto colorIndex = 3 * index.vertex_index + 2;
-                if (colorIndex < attrib.colors.size())
-                {
-                    vertex.color = {
-                        attrib.vertices[colorIndex - 2],
-                        attrib.vertices[colorIndex - 1],
-                        attrib.vertices[colorIndex - 0],
-                    };
-                }
-                else
-                {
-                    vertex.color = { 1.f, 1.f, 1.f }; // set default color
-                }
+                vertex.color = {
+                    attrib.colors[3 * index.vertex_index + 0],
+                    attrib.colors[3 * index.vertex_index + 1],
+                    attrib.colors[3 * index.vertex_index + 2],
+                };
             }
             if (index.normal_index >= 0)
             {

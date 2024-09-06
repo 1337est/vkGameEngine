@@ -83,12 +83,12 @@ void VgeApp::run()
 void VgeApp::loadGameObjects()
 {
     std::shared_ptr<VgeModel> vgeModel =
-        VgeModel::createModelFromFile(m_vgeDevice, "models/smooth_vase.obj");
+        VgeModel::createModelFromFile(m_vgeDevice, "models/colored_cube.obj");
 
     auto gameObj = VgeGameObject::createGameObject();
     gameObj.m_model = vgeModel;
     gameObj.m_transform.translation = { .0f, .0f, 2.5f };
-    gameObj.m_transform.scale = glm::vec3(5.f);
+    gameObj.m_transform.scale = glm::vec3(3.f);
     m_gameObjects.push_back(std::move(gameObj));
 }
 
