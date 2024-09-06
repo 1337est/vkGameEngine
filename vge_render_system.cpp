@@ -78,13 +78,13 @@ void VgeRenderSystem::createPipeline(VkRenderPass renderPass)
 }
 
 void VgeRenderSystem::renderGameObjects(
-    VkCommandBuffer commandBuffer,
-    std::vector<VgeGameObject>& gameObjects,
-    const VgeCamera& camera)
+    FrameInfo& frameInfo,
+    std::vector<VgeGameObject>& gameObjects)
 {
-    m_vgePipeline->bind(commandBuffer);
+    m_vgePipeline->bind(frameInfo.commandBuffer);
 
-    auto projectionView = camera.getProjection() * camera.getView();
+    auto projectionView =
+        frameInfo.camera.getProjection() * frameInfo.camera.getView();
 
     for (auto& obj : gameObjects)
     {
@@ -94,14 +94,14 @@ void VgeRenderSystem::renderGameObjects(
         pushData.normalMatrix = obj.m_transform.normalMatrix();
 
         vkCmdPushConstants(
-            commandBuffer,
+            frameInfo.commandBuffer,
             m_pipelineLayout,
             VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
             0,
             sizeof(SimplePushConstantData),
             &pushData);
-        obj.m_model->bind(commandBuffer);
-        obj.m_model->draw(commandBuffer);
+        obj.m_model->bind(frameInfo.commandBuffer);
+        obj.m_model->draw(frameInfo.commandBuffer);
     }
 }
 

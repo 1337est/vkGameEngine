@@ -39,10 +39,8 @@ namespace vge
 VgeModel::VgeModel(VgeDevice& device, const VgeModel::Builder& builder)
     : m_vgeDevice{ device }
     , m_vertexBuffer{}
-    , m_vertexBufferMemory{}
     , m_vertexCount{}
     , m_indexBuffer{}
-    , m_indexBufferMemory{}
     , m_indexCount{}
 {
     createVertexBuffers(builder.vertices);
@@ -51,14 +49,6 @@ VgeModel::VgeModel(VgeDevice& device, const VgeModel::Builder& builder)
 
 VgeModel::~VgeModel()
 {
-    vkDestroyBuffer(m_vgeDevice.device(), m_vertexBuffer, nullptr);
-    vkFreeMemory(m_vgeDevice.device(), m_vertexBufferMemory, nullptr);
-
-    if (m_hasIndexBuffer)
-    {
-        vkDestroyBuffer(m_vgeDevice.device(), m_indexBuffer, nullptr);
-        vkFreeMemory(m_vgeDevice.device(), m_indexBufferMemory, nullptr);
-    }
 }
 
 std::unique_ptr<VgeModel> VgeModel::createModelFromFile(
@@ -76,39 +66,33 @@ void VgeModel::createVertexBuffers(const std::vector<Vertex>& vertices)
     m_vertexCount = static_cast<uint32_t>(vertices.size());
     assert(m_vertexCount >= 3 && "Vertex count must be at least 3");
     VkDeviceSize bufferSize = sizeof(vertices[0]) * m_vertexCount;
+    uint32_t vertexSize = sizeof(vertices[0]);
 
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    m_vgeDevice.createBuffer(
-        bufferSize,
+    VgeBuffer stagingBuffer{
+        m_vgeDevice,
+        vertexSize,
+        m_vertexCount,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
             VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        stagingBuffer,
-        stagingBufferMemory);
+    };
 
-    void* data;
-    vkMapMemory(
-        m_vgeDevice.device(),
-        stagingBufferMemory,
-        0,
-        bufferSize,
-        0,
-        &data);
-    memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-    vkUnmapMemory(m_vgeDevice.device(), stagingBufferMemory);
+    stagingBuffer.map();
+    stagingBuffer.writeToBuffer((void*)vertices.data());
 
-    m_vgeDevice.createBuffer(
-        bufferSize,
+    m_vertexBuffer = std::make_unique<VgeBuffer>(
+        m_vgeDevice,
+        vertexSize,
+        m_vertexCount,
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        m_vertexBuffer,
-        m_vertexBufferMemory);
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 
-    m_vgeDevice.copyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
+    );
 
-    vkDestroyBuffer(m_vgeDevice.device(), stagingBuffer, nullptr);
-    vkFreeMemory(m_vgeDevice.device(), stagingBufferMemory, nullptr);
+    m_vgeDevice.copyBuffer(
+        stagingBuffer.getBuffer(),
+        m_vertexBuffer->getBuffer(),
+        bufferSize);
 }
 
 void VgeModel::createIndexBuffers(const std::vector<uint32_t>& indices)
@@ -122,39 +106,31 @@ void VgeModel::createIndexBuffers(const std::vector<uint32_t>& indices)
     }
 
     VkDeviceSize bufferSize = sizeof(indices[0]) * m_indexCount;
+    uint32_t indexSize = sizeof(indices[0]);
 
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    m_vgeDevice.createBuffer(
-        bufferSize,
+    VgeBuffer stagingBuffer{
+        m_vgeDevice,
+        indexSize,
+        m_indexCount,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
             VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        stagingBuffer,
-        stagingBufferMemory);
+    };
 
-    void* data;
-    vkMapMemory(
-        m_vgeDevice.device(),
-        stagingBufferMemory,
-        0,
-        bufferSize,
-        0,
-        &data);
-    memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
-    vkUnmapMemory(m_vgeDevice.device(), stagingBufferMemory);
+    stagingBuffer.map();
+    stagingBuffer.writeToBuffer((void*)indices.data());
 
-    m_vgeDevice.createBuffer(
-        bufferSize,
+    m_indexBuffer = std::make_unique<VgeBuffer>(
+        m_vgeDevice,
+        indexSize,
+        m_indexCount,
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        m_indexBuffer,
-        m_indexBufferMemory);
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-    m_vgeDevice.copyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
-
-    vkDestroyBuffer(m_vgeDevice.device(), stagingBuffer, nullptr);
-    vkFreeMemory(m_vgeDevice.device(), stagingBufferMemory, nullptr);
+    m_vgeDevice.copyBuffer(
+        stagingBuffer.getBuffer(),
+        m_indexBuffer->getBuffer(),
+        bufferSize);
 }
 
 void VgeModel::draw(VkCommandBuffer commandBuffer)
@@ -171,7 +147,7 @@ void VgeModel::draw(VkCommandBuffer commandBuffer)
 
 void VgeModel::bind(VkCommandBuffer commandBuffer)
 {
-    VkBuffer buffers[] = { m_vertexBuffer };
+    VkBuffer buffers[] = { m_vertexBuffer->getBuffer() };
     VkDeviceSize offsets[] = { 0 };
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 
@@ -179,7 +155,7 @@ void VgeModel::bind(VkCommandBuffer commandBuffer)
     {
         vkCmdBindIndexBuffer(
             commandBuffer,
-            m_indexBuffer,
+            m_indexBuffer->getBuffer(),
             0,
             VK_INDEX_TYPE_UINT32);
     }

@@ -1,8 +1,10 @@
 // headers
 #include "vge_app.hpp"
+#include "vge_buffer.hpp"
 #include "vge_camera.hpp"
 #include "vge_keyboard_movement_controller.hpp"
 #include "vge_render_system.hpp"
+#include <vulkan/vulkan_core.h>
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -19,6 +21,12 @@
 namespace vge
 {
 
+struct GlobalUbo // Uniform buffer object
+{
+    glm::mat4 projectionView{ 1.f };
+    glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+};
+
 VgeApp::VgeApp()
     : m_gameObjects{}
 {
@@ -31,6 +39,16 @@ VgeApp::~VgeApp()
 
 void VgeApp::run()
 {
+    VgeBuffer globalUboBuffer{
+        m_vgeDevice,
+        sizeof(GlobalUbo),
+        VgeSwapChain::MAX_FRAMES_IN_FLIGHT,
+        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+        m_vgeDevice.m_properties.limits.minUniformBufferOffsetAlignment,
+    };
+    globalUboBuffer.map();
+
     VgeRenderSystem renderSystem{ m_vgeDevice,
                                   m_vgeRenderer.getSwapChainRenderPass() };
     VgeCamera camera{};
@@ -67,11 +85,23 @@ void VgeApp::run()
         // beginFrame returns nullptr if swapchain needs to be recreated
         if (auto commandBuffer = m_vgeRenderer.beginFrame())
         {
-            m_vgeRenderer.beginSwapChainRenderPass(commandBuffer);
-            renderSystem.renderGameObjects(
+            int frameIndex = m_vgeRenderer.getFrameIndex();
+            FrameInfo frameInfo{
+                frameIndex,
+                frameTime,
                 commandBuffer,
-                m_gameObjects,
-                camera);
+                camera,
+            };
+
+            // update
+            GlobalUbo ubo{};
+            ubo.projectionView = camera.getProjection() * camera.getView();
+            globalUboBuffer.writeToIndex(&ubo, frameIndex);
+            globalUboBuffer.flushIndex(frameIndex);
+
+            // render
+            m_vgeRenderer.beginSwapChainRenderPass(commandBuffer);
+            renderSystem.renderGameObjects(frameInfo, m_gameObjects);
             m_vgeRenderer.endSwapChainRenderPass(commandBuffer);
             m_vgeRenderer.endFrame();
         }

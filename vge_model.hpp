@@ -1,6 +1,7 @@
 #pragma once
 
 // headers
+#include "vge_buffer.hpp"
 #include "vge_device.hpp"
 
 // libs
@@ -65,13 +66,11 @@ private:
 
     VgeDevice& m_vgeDevice;
 
-    VkBuffer m_vertexBuffer;
-    VkDeviceMemory m_vertexBufferMemory;
+    std::unique_ptr<VgeBuffer> m_vertexBuffer;
     uint32_t m_vertexCount;
 
     bool m_hasIndexBuffer = false;
-    VkBuffer m_indexBuffer;
-    VkDeviceMemory m_indexBufferMemory;
+    std::unique_ptr<VgeBuffer> m_indexBuffer;
     uint32_t m_indexCount;
 };
 

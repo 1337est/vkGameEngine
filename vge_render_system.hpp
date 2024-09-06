@@ -3,6 +3,7 @@
 // headers
 #include "vge_camera.hpp"
 #include "vge_device.hpp"
+#include "vge_frame_info.hpp"
 #include "vge_game_object.hpp"
 #include "vge_pipeline.hpp"
 
@@ -26,9 +27,8 @@ public:
     VgeRenderSystem& operator=(const VgeRenderSystem&) = delete;
 
     void renderGameObjects(
-        VkCommandBuffer commandBuffer,
-        std::vector<VgeGameObject>& gameObjects,
-        const VgeCamera& camera);
+        FrameInfo& frameInfo,
+        std::vector<VgeGameObject>& gameObjects);
 
 private:
     void createPipelineLayout();
