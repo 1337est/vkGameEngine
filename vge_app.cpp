@@ -83,13 +83,20 @@ void VgeApp::run()
 void VgeApp::loadGameObjects()
 {
     std::shared_ptr<VgeModel> vgeModel =
-        VgeModel::createModelFromFile(m_vgeDevice, "models/colored_cube.obj");
+        VgeModel::createModelFromFile(m_vgeDevice, "models/flat_vase.obj");
+    auto flatVase = VgeGameObject::createGameObject();
+    flatVase.m_model = vgeModel;
+    flatVase.m_transform.translation = { -.5f, .5f, 2.5f };
+    flatVase.m_transform.scale = { 3.f, 1.5f, 3.f };
+    m_gameObjects.push_back(std::move(flatVase));
 
-    auto gameObj = VgeGameObject::createGameObject();
-    gameObj.m_model = vgeModel;
-    gameObj.m_transform.translation = { .0f, .0f, 2.5f };
-    gameObj.m_transform.scale = glm::vec3(3.f);
-    m_gameObjects.push_back(std::move(gameObj));
+    vgeModel =
+        VgeModel::createModelFromFile(m_vgeDevice, "models/smooth_vase.obj");
+    auto smoothVase = VgeGameObject::createGameObject();
+    smoothVase.m_model = vgeModel;
+    smoothVase.m_transform.translation = { .5f, .5f, 2.5f };
+    smoothVase.m_transform.scale = { 3.f, 1.5f, 3.f };
+    m_gameObjects.push_back(std::move(smoothVase));
 }
 
 } // namespace vge

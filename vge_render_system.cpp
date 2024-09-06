@@ -18,8 +18,8 @@ namespace vge
 
 struct SimplePushConstantData
 {
-    glm::mat4 m_transform{ 1.f }; // identity matrix
-    alignas(16) glm::vec3 color;
+    glm::mat4 m_transform{ 1.f };  // identity matrix
+    glm::mat4 normalMatrix{ 1.f }; // identity matrix
 };
 
 VgeRenderSystem::VgeRenderSystem(VgeDevice& device, VkRenderPass renderPass)
@@ -89,8 +89,9 @@ void VgeRenderSystem::renderGameObjects(
     for (auto& obj : gameObjects)
     {
         SimplePushConstantData pushData{};
-        pushData.color = obj.m_color;
-        pushData.m_transform = projectionView * obj.m_transform.mat4();
+        auto modelMatrix = obj.m_transform.mat4();
+        pushData.m_transform = projectionView * modelMatrix;
+        pushData.normalMatrix = obj.m_transform.normalMatrix();
 
         vkCmdPushConstants(
             commandBuffer,
