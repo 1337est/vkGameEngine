@@ -1,6 +1,7 @@
 #pragma once
 
 // headers
+#include "vge_descriptors.hpp"
 #include "vge_device.hpp"
 #include "vge_game_object.hpp"
 #include "vge_renderer.hpp"
@@ -37,6 +38,9 @@ private:
     VgeWindow m_vgeWindow{ WIDTH, HEIGHT, "Hello Vulkan!" }; //  window
     VgeDevice m_vgeDevice{ m_vgeWindow }; // use device for window
     VgeRenderer m_vgeRenderer{ m_vgeWindow, m_vgeDevice };
+
+    // note: order of declarations matters
+    std::unique_ptr<VgeDescriptorPool> m_globalPool{};
     std::vector<VgeGameObject> m_gameObjects;
 };
 

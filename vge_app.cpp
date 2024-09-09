@@ -2,6 +2,7 @@
 #include "vge_app.hpp"
 #include "vge_buffer.hpp"
 #include "vge_camera.hpp"
+#include "vge_descriptors.hpp"
 #include "vge_keyboard_movement_controller.hpp"
 #include "vge_render_system.hpp"
 #include <vulkan/vulkan_core.h>
@@ -30,6 +31,12 @@ struct GlobalUbo // Uniform buffer object
 VgeApp::VgeApp()
     : m_gameObjects{}
 {
+    m_globalPool = VgeDescriptorPool::Builder(m_vgeDevice)
+                       .setMaxSets(VgeSwapChain::MAX_FRAMES_IN_FLIGHT)
+                       .addPoolSize(
+                           VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                           VgeSwapChain::MAX_FRAMES_IN_FLIGHT)
+                       .build();
     loadGameObjects();
 }
 
@@ -52,8 +59,29 @@ void VgeApp::run()
         uboBuffers[i]->map();
     }
 
-    VgeRenderSystem renderSystem{ m_vgeDevice,
-                                  m_vgeRenderer.getSwapChainRenderPass() };
+    auto globalSetLayout = VgeDescriptorSetLayout::Builder(m_vgeDevice)
+                               .addBinding(
+                                   0,
+                                   VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                                   VK_SHADER_STAGE_VERTEX_BIT)
+                               .build();
+
+    std::vector<VkDescriptorSet> globalDescriptorSets(
+        VgeSwapChain::MAX_FRAMES_IN_FLIGHT);
+    for (int i = 0; i < globalDescriptorSets.size(); i++)
+    {
+        auto bufferInfo = uboBuffers[i]->descriptorInfo();
+        VgeDescriptorWriter(*globalSetLayout, *m_globalPool)
+            .writeBuffer(0, &bufferInfo)
+            .build(globalDescriptorSets[i]);
+    }
+
+    VgeRenderSystem renderSystem{
+        m_vgeDevice,
+        m_vgeRenderer.getSwapChainRenderPass(),
+        globalSetLayout->getDescriptorSetLayout(),
+    };
+
     VgeCamera camera{};
     camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
 
@@ -94,6 +122,7 @@ void VgeApp::run()
                 frameTime,
                 commandBuffer,
                 camera,
+                globalDescriptorSets[frameIndex],
             };
 
             // update

@@ -20,7 +20,10 @@ namespace vge
 class VgeRenderSystem
 {
 public:
-    VgeRenderSystem(VgeDevice& device, VkRenderPass renderPass);
+    VgeRenderSystem(
+        VgeDevice& device,
+        VkRenderPass renderPass,
+        VkDescriptorSetLayout globalSetLayout);
     ~VgeRenderSystem();
 
     VgeRenderSystem(const VgeRenderSystem&) = delete;
@@ -31,7 +34,7 @@ public:
         std::vector<VgeGameObject>& gameObjects);
 
 private:
-    void createPipelineLayout();
+    void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
     void createPipeline(VkRenderPass renderPass);
 
     VgeDevice& m_vgeDevice; // use device for window
