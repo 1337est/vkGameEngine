@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vge_camera.hpp"
+#include "vge_game_object.hpp"
 
 // libs
 #include <vulkan/vulkan.h>
@@ -14,5 +15,6 @@ struct FrameInfo
     VkCommandBuffer commandBuffer{};
     VgeCamera& camera;
     VkDescriptorSet globalDescriptorSet;
+    VgeGameObject::Map& gameObjects;
 };
 } // namespace vge

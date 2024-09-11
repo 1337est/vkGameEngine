@@ -66,7 +66,7 @@ void VgeApp::run()
                                .addBinding(
                                    0,
                                    VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                                   VK_SHADER_STAGE_VERTEX_BIT)
+                                   VK_SHADER_STAGE_ALL_GRAPHICS)
                                .build();
 
     std::vector<VkDescriptorSet> globalDescriptorSets(
@@ -128,6 +128,7 @@ void VgeApp::run()
                 commandBuffer,
                 camera,
                 globalDescriptorSets[frameIndex],
+                m_gameObjects,
             };
 
             // update
@@ -138,7 +139,7 @@ void VgeApp::run()
 
             // render
             m_vgeRenderer.beginSwapChainRenderPass(commandBuffer);
-            renderSystem.renderGameObjects(frameInfo, m_gameObjects);
+            renderSystem.renderGameObjects(frameInfo);
             m_vgeRenderer.endSwapChainRenderPass(commandBuffer);
             m_vgeRenderer.endFrame();
         }
@@ -155,7 +156,7 @@ void VgeApp::loadGameObjects()
     flatVase.m_model = vgeModel;
     flatVase.m_transform.translation = { -.5f, .5f, 0.f };
     flatVase.m_transform.scale = { 3.f, 1.5f, 3.f };
-    m_gameObjects.push_back(std::move(flatVase));
+    m_gameObjects.emplace(flatVase.getId(), std::move(flatVase));
 
     vgeModel =
         VgeModel::createModelFromFile(m_vgeDevice, "models/smooth_vase.obj");
@@ -163,14 +164,14 @@ void VgeApp::loadGameObjects()
     smoothVase.m_model = vgeModel;
     smoothVase.m_transform.translation = { .5f, .5f, 0.f };
     smoothVase.m_transform.scale = { 3.f, 1.5f, 3.f };
-    m_gameObjects.push_back(std::move(smoothVase));
+    m_gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
 
     vgeModel = VgeModel::createModelFromFile(m_vgeDevice, "models/quad.obj");
     auto floor = VgeGameObject::createGameObject();
     floor.m_model = vgeModel;
     floor.m_transform.translation = { 0.f, .5f, 0.f };
     floor.m_transform.scale = { 3.f, 1.f, 3.f };
-    m_gameObjects.push_back(std::move(floor));
+    m_gameObjects.emplace(floor.getId(), std::move(floor));
 }
 
 } // namespace vge

@@ -29,9 +29,7 @@ public:
     VgeRenderSystem(const VgeRenderSystem&) = delete;
     VgeRenderSystem& operator=(const VgeRenderSystem&) = delete;
 
-    void renderGameObjects(
-        FrameInfo& frameInfo,
-        std::vector<VgeGameObject>& gameObjects);
+    void renderGameObjects(FrameInfo& frameInfo);
 
 private:
     void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);

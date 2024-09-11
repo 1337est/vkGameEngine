@@ -85,9 +85,7 @@ void VgeRenderSystem::createPipeline(VkRenderPass renderPass)
         pipelineConfig);
 }
 
-void VgeRenderSystem::renderGameObjects(
-    FrameInfo& frameInfo,
-    std::vector<VgeGameObject>& gameObjects)
+void VgeRenderSystem::renderGameObjects(FrameInfo& frameInfo)
 {
     m_vgePipeline->bind(frameInfo.commandBuffer);
 
@@ -101,8 +99,12 @@ void VgeRenderSystem::renderGameObjects(
         0,
         nullptr);
 
-    for (auto& obj : gameObjects)
+    for (auto& kv : frameInfo.gameObjects)
     {
+        // kv.second = gameObj kv.first = objId
+        auto& obj = kv.second;
+        if (obj.m_model == nullptr)
+            continue;
         SimplePushConstantData pushData{};
         pushData.modelMatrix = obj.m_transform.mat4();
         pushData.normalMatrix = obj.m_transform.normalMatrix();

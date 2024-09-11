@@ -8,6 +8,7 @@
 
 // std
 #include <memory>
+#include <unordered_map>
 
 namespace vge
 {
@@ -29,6 +30,7 @@ class VgeGameObject
 {
 public:
     using id_t = unsigned int;
+    using Map = std::unordered_map<id_t, VgeGameObject>;
 
     static VgeGameObject createGameObject()
     {

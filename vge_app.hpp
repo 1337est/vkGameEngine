@@ -41,7 +41,7 @@ private:
 
     // note: order of declarations matters
     std::unique_ptr<VgeDescriptorPool> m_globalPool{};
-    std::vector<VgeGameObject> m_gameObjects;
+    VgeGameObject::Map m_gameObjects;
 };
 
 } // namespace vge
