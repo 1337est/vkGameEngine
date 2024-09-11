@@ -3,5 +3,5 @@
 mkdir -p build
 cd build
 cmake -S ../ -B .
-make && make Shaders && ./vGameEngine
+make && make Shaders && ./vkGameEngine
 cd ..

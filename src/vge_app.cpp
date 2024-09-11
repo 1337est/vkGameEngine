@@ -1,10 +1,11 @@
 // headers
 #include "vge_app.hpp"
+#include "systems/vge_point_light_system.hpp"
+#include "systems/vge_render_system.hpp"
 #include "vge_buffer.hpp"
 #include "vge_camera.hpp"
 #include "vge_descriptors.hpp"
 #include "vge_keyboard_movement_controller.hpp"
-#include "vge_render_system.hpp"
 #include <vulkan/vulkan_core.h>
 
 // libs
@@ -24,7 +25,8 @@ namespace vge
 
 struct GlobalUbo // Uniform buffer object
 {
-    glm::mat4 projectionView{ 1.f };
+    glm::mat4 projection{ 1.f };
+    glm::mat4 view{ 1.f };
 
     glm::vec4 ambientLightColor{ 1.f, 1.f, 1.f, .02f }; // w is intensity
     glm::vec3 lightPosition{ -1.f };
@@ -84,6 +86,11 @@ void VgeApp::run()
         m_vgeRenderer.getSwapChainRenderPass(),
         globalSetLayout->getDescriptorSetLayout(),
     };
+    VgePointLightSystem pointLightSystem{
+        m_vgeDevice,
+        m_vgeRenderer.getSwapChainRenderPass(),
+        globalSetLayout->getDescriptorSetLayout(),
+    };
 
     VgeCamera camera{};
     camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
@@ -133,13 +140,15 @@ void VgeApp::run()
 
             // update
             GlobalUbo ubo{};
-            ubo.projectionView = camera.getProjection() * camera.getView();
+            ubo.projection = camera.getProjection();
+            ubo.view = camera.getView();
             uboBuffers[frameIndex]->writeToBuffer(&ubo);
             uboBuffers[frameIndex]->flush();
 
             // render
             m_vgeRenderer.beginSwapChainRenderPass(commandBuffer);
             renderSystem.renderGameObjects(frameInfo);
+            pointLightSystem.render(frameInfo);
             m_vgeRenderer.endSwapChainRenderPass(commandBuffer);
             m_vgeRenderer.endFrame();
         }

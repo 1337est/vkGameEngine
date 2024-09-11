@@ -107,8 +107,8 @@ void VgePipeline::createGraphicsPipeline(
     shaderStages[1].pSpecializationInfo = nullptr;
 
     // Vertex data
-    auto bindingDescriptions = VgeModel::Vertex::getBindingDescriptions();
-    auto attributeDescriptions = VgeModel::Vertex::getAttributeDescriptions();
+    auto& bindingDescriptions = configInfo.bindingDescriptions;
+    auto& attributeDescriptions = configInfo.attributeDescriptions;
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType =
@@ -276,6 +276,10 @@ void VgePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
     configInfo.dynamicStateInfo.dynamicStateCount =
         static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
     configInfo.dynamicStateInfo.flags = 0;
+
+    configInfo.bindingDescriptions = VgeModel::Vertex::getBindingDescriptions();
+    configInfo.attributeDescriptions =
+        VgeModel::Vertex::getAttributeDescriptions();
 }
 
 } // namespace vge
