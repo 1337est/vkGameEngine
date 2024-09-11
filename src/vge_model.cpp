@@ -15,6 +15,10 @@
 #include <stdexcept>
 #include <unordered_map>
 
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
+#endif
+
 namespace std
 {
 template <> struct hash<vge::VgeModel::Vertex>
@@ -56,7 +60,7 @@ std::unique_ptr<VgeModel> VgeModel::createModelFromFile(
     const std::string& filepath)
 {
     Builder builder{};
-    builder.loadModel(filepath);
+    builder.loadModel(ENGINE_DIR + filepath);
 
     return std::make_unique<VgeModel>(device, builder);
 }

@@ -11,6 +11,10 @@
 #include <iostream>
 #include <stdexcept>
 
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
+#endif
+
 namespace vge
 {
 
@@ -40,11 +44,12 @@ std::vector<char> VgePipeline::readFile(const std::string& filepath)
     // ate moves file pointer to the end of the file
     // binary reads binary files
     // bitwise OR operator| combines both modes: open at end and read binary
-    std::ifstream file{ filepath, std::ios::ate | std::ios::binary };
+    std::string enginePath = ENGINE_DIR + filepath;
+    std::ifstream file{ enginePath, std::ios::ate | std::ios::binary };
 
     if (!file.is_open())
     {
-        throw std::runtime_error("failed to open file: " + filepath);
+        throw std::runtime_error("failed to open file: " + enginePath);
     }
 
     // since file was opened at the end, tellg() returns size of the file

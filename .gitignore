@@ -1,3 +1,8 @@
-*.env
-*.out
+**/*.out
+build
+build/**
+.vscode
+**/.env
+**/.obj
 *.spv
+.env.cmake
