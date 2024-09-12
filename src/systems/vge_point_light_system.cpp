@@ -1,5 +1,7 @@
 // headers
 #include "vge_point_light_system.hpp"
+#include <glm/ext/vector_float4.hpp>
+#include <vulkan/vulkan_core.h>
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -14,6 +16,13 @@
 
 namespace vge
 {
+
+struct PointLightPushConstants
+{
+    glm::vec4 position{};
+    glm::vec4 color{};
+    float radius;
+};
 
 VgePointLightSystem::VgePointLightSystem(
     VgeDevice& device,
@@ -35,11 +44,11 @@ VgePointLightSystem::~VgePointLightSystem()
 void VgePointLightSystem::createPipelineLayout(
     VkDescriptorSetLayout globalSetLayout)
 {
-    // VkPushConstantRange pushConstantRange{};
-    // pushConstantRange.stageFlags =
-    // VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-    // pushConstantRange.offset = 0;
-    // pushConstantRange.size = sizeof(SimplePushConstantData);
+    VkPushConstantRange pushConstantRange{};
+    pushConstantRange.stageFlags =
+        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    pushConstantRange.offset = 0;
+    pushConstantRange.size = sizeof(PointLightPushConstants);
 
     // TODO: for having multiple sets (currently only set 0, so not needed yet)
     std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
@@ -49,8 +58,8 @@ void VgePointLightSystem::createPipelineLayout(
     pipelineLayoutInfo.setLayoutCount =
         static_cast<uint32_t>(descriptorSetLayouts.size());
     pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
-    pipelineLayoutInfo.pushConstantRangeCount = 0;
-    pipelineLayoutInfo.pPushConstantRanges = nullptr;
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
     if (vkCreatePipelineLayout(
             m_vgeDevice.device(),
             &pipelineLayoutInfo,
@@ -80,6 +89,26 @@ void VgePointLightSystem::createPipeline(VkRenderPass renderPass)
         pipelineConfig);
 }
 
+void VgePointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo)
+{
+    int lightIndex = 0;
+    for (auto& kv : frameInfo.gameObjects)
+    {
+        auto& obj = kv.second;
+        if (obj.m_pointLight == nullptr)
+            continue;
+
+        // copy light to ubo
+        ubo.pointLights[lightIndex].position =
+            glm::vec4(obj.m_transform.translation, 1.f);
+        ubo.pointLights[lightIndex].color =
+            glm::vec4(obj.m_color, obj.m_pointLight->lightIntensity);
+
+        lightIndex += 1;
+    }
+    ubo.numLights = lightIndex;
+}
+
 void VgePointLightSystem::render(FrameInfo& frameInfo)
 {
     m_vgePipeline->bind(frameInfo.commandBuffer);
@@ -94,7 +123,27 @@ void VgePointLightSystem::render(FrameInfo& frameInfo)
         0,
         nullptr);
 
-    vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+    for (auto& kv : frameInfo.gameObjects)
+    {
+        auto& obj = kv.second;
+        if (obj.m_pointLight == nullptr)
+            continue;
+
+        PointLightPushConstants push{};
+        push.position = glm::vec4(obj.m_transform.translation, 1.f);
+        push.color = glm::vec4(obj.m_color, obj.m_pointLight->lightIntensity);
+        push.radius = obj.m_transform.scale.x;
+
+        vkCmdPushConstants(
+            frameInfo.commandBuffer,
+            m_pipelineLayout,
+            VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+            0,
+            sizeof(PointLightPushConstants),
+            &push);
+
+        vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+    }
 }
 
 } // namespace vge

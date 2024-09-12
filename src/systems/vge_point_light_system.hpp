@@ -29,6 +29,7 @@ public:
     VgePointLightSystem(const VgePointLightSystem&) = delete;
     VgePointLightSystem& operator=(const VgePointLightSystem&) = delete;
 
+    void update(FrameInfo& frameInfo, GlobalUbo& ubo);
     void render(FrameInfo& frameInfo);
 
 private:
