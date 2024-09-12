@@ -91,12 +91,24 @@ void VgePointLightSystem::createPipeline(VkRenderPass renderPass)
 
 void VgePointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo)
 {
+    // rotate lights
+    auto rotateLight =
+        glm::rotate(glm::mat4(1.f), frameInfo.frameTime, { 0.f, -1.f, 0.f });
+
     int lightIndex = 0;
     for (auto& kv : frameInfo.gameObjects)
     {
         auto& obj = kv.second;
         if (obj.m_pointLight == nullptr)
             continue;
+
+        assert(
+            lightIndex < MAX_LIGHTS &&
+            "Point lights exceed maximum specified!");
+
+        // update light postion
+        obj.m_transform.translation = glm::vec3(
+            rotateLight * glm::vec4(obj.m_transform.translation, 1.f));
 
         // copy light to ubo
         ubo.pointLights[lightIndex].position =
