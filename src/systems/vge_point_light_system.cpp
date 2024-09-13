@@ -1,16 +1,16 @@
 // headers
 #include "vge_point_light_system.hpp"
-#include <glm/ext/vector_float4.hpp>
-#include <vulkan/vulkan_core.h>
 
 // libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/ext/vector_float4.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include <vulkan/vulkan_core.h>
+
 // std
-#include <array>
 #include <cassert>
 #include <stdexcept>
 

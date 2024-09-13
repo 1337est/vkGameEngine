@@ -3,12 +3,11 @@
 // headers
 #include "vge_device.hpp"
 
-// libraries
+// libs
 #include <vulkan/vulkan.h>
 
 // std
 #include <memory>
-#include <string>
 #include <vector>
 
 namespace vge

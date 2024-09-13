@@ -13,7 +13,6 @@
 
 // std
 #include <memory>
-#include <vector>
 
 namespace vge
 {

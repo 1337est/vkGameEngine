@@ -1,6 +1,6 @@
 // headers
 #include "vge_render_system.hpp"
-#include "../vge_game_object.hpp"
+#include "vge_game_object.hpp"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -9,7 +9,6 @@
 #include <glm/gtc/constants.hpp>
 
 // std
-#include <array>
 #include <cassert>
 #include <stdexcept>
 

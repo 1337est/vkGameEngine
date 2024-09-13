@@ -1,18 +1,15 @@
 #pragma once
 
 // headers
-#include "../vge_camera.hpp"
-#include "../vge_device.hpp"
-#include "../vge_frame_info.hpp"
-#include "../vge_game_object.hpp"
-#include "../vge_pipeline.hpp"
+#include "vge_device.hpp"
+#include "vge_frame_info.hpp"
+#include "vge_pipeline.hpp"
 
 // libs
 #include <vulkan/vulkan_core.h>
 
 // std
 #include <memory>
-#include <vector>
 
 namespace vge
 {

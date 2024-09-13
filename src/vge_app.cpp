@@ -6,20 +6,19 @@
 #include "vge_camera.hpp"
 #include "vge_descriptors.hpp"
 #include "vge_keyboard_movement_controller.hpp"
-#include <glm/ext/matrix_transform.hpp>
-#include <vulkan/vulkan_core.h>
 
 // libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include <vulkan/vulkan_core.h>
+
 // std
-#include <array>
 #include <cassert>
 #include <chrono>
-#include <stdexcept>
 
 namespace vge
 {

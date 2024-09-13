@@ -5,9 +5,11 @@
 // libs
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tinyobjloader/tiny_obj_loader.h>
-#include <vulkan/vulkan_core.h>
+
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
+
+#include <vulkan/vulkan_core.h>
 
 // std
 #include <cassert>

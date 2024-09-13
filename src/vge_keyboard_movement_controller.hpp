@@ -2,7 +2,6 @@
 
 // headers
 #include "vge_game_object.hpp"
-#include "vge_window.hpp"
 
 namespace vge
 {

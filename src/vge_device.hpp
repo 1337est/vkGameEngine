@@ -4,7 +4,6 @@
 #include "vge_window.hpp"
 
 // std
-#include <string>
 #include <vector>
 
 namespace vge
