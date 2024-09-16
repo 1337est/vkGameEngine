@@ -41,7 +41,8 @@ VgeDescriptorSetLayout::VgeDescriptorSetLayout(
     , m_bindings{ bindings }
 {
     std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{};
-    for (auto kv : bindings)
+    for (std::pair<const unsigned int, VkDescriptorSetLayoutBinding> kv :
+         bindings)
     {
         setLayoutBindings.push_back(kv.second);
     }
@@ -191,7 +192,8 @@ VgeDescriptorWriter& VgeDescriptorWriter::writeBuffer(
         m_setLayout.m_bindings.count(binding) == 1 &&
         "Layout does not contain specified binding");
 
-    auto& bindingDescription = m_setLayout.m_bindings[binding];
+    VkDescriptorSetLayoutBinding& bindingDescription =
+        m_setLayout.m_bindings[binding];
 
     assert(
         bindingDescription.descriptorCount == 1 &&
@@ -216,7 +218,8 @@ VgeDescriptorWriter& VgeDescriptorWriter::writeImage(
         m_setLayout.m_bindings.count(binding) == 1 &&
         "Layout does not contain specified binding");
 
-    auto& bindingDescription = m_setLayout.m_bindings[binding];
+    VkDescriptorSetLayoutBinding& bindingDescription =
+        m_setLayout.m_bindings[binding];
 
     assert(
         bindingDescription.descriptorCount == 1 &&
@@ -247,7 +250,7 @@ bool VgeDescriptorWriter::build(VkDescriptorSet& set)
 
 void VgeDescriptorWriter::overwrite(VkDescriptorSet& set)
 {
-    for (auto& write : m_writes)
+    for (VkWriteDescriptorSet& write : m_writes)
     {
         write.dstSet = set;
     }

@@ -92,13 +92,14 @@ void VgePointLightSystem::createPipeline(VkRenderPass renderPass)
 void VgePointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo)
 {
     // rotate lights
-    auto rotateLight =
+    glm::mat<4, 4, float, (glm::qualifier)0U> rotateLight =
         glm::rotate(glm::mat4(1.f), frameInfo.frameTime, { 0.f, -1.f, 0.f });
 
     int lightIndex = 0;
-    for (auto& kv : frameInfo.gameObjects)
+    for (std::pair<const unsigned int, VgeGameObject>& kv :
+         frameInfo.gameObjects)
     {
-        auto& obj = kv.second;
+        VgeGameObject& obj = kv.second;
         if (obj.m_pointLight == nullptr)
             continue;
 
@@ -135,9 +136,10 @@ void VgePointLightSystem::render(FrameInfo& frameInfo)
         0,
         nullptr);
 
-    for (auto& kv : frameInfo.gameObjects)
+    for (std::pair<const unsigned int, VgeGameObject>& kv :
+         frameInfo.gameObjects)
     {
-        auto& obj = kv.second;
+        VgeGameObject& obj = kv.second;
         if (obj.m_pointLight == nullptr)
             continue;
 

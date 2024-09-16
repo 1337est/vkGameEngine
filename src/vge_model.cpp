@@ -223,9 +223,9 @@ void VgeModel::Builder::loadModel(const std::string& filepath)
     std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
     // loop through each face
-    for (const auto& shape : shapes)
+    for (const tinyobj::shape_t& shape : shapes)
     {
-        for (const auto& index : shape.mesh.indices)
+        for (const tinyobj::index_t& index : shape.mesh.indices)
         {
             Vertex vertex{};
 

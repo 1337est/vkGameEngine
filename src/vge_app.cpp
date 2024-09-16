@@ -54,18 +54,19 @@ void VgeApp::run()
         uboBuffers[i]->map();
     }
 
-    auto globalSetLayout = VgeDescriptorSetLayout::Builder(m_vgeDevice)
-                               .addBinding(
-                                   0,
-                                   VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                                   VK_SHADER_STAGE_ALL_GRAPHICS)
-                               .build();
+    std::unique_ptr<VgeDescriptorSetLayout> globalSetLayout =
+        VgeDescriptorSetLayout::Builder(m_vgeDevice)
+            .addBinding(
+                0,
+                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                VK_SHADER_STAGE_ALL_GRAPHICS)
+            .build();
 
     std::vector<VkDescriptorSet> globalDescriptorSets(
         VgeSwapChain::MAX_FRAMES_IN_FLIGHT);
     for (int i = 0; i < globalDescriptorSets.size(); i++)
     {
-        auto bufferInfo = uboBuffers[i]->descriptorInfo();
+        VkDescriptorBufferInfo bufferInfo = uboBuffers[i]->descriptorInfo();
         VgeDescriptorWriter(*globalSetLayout, *m_globalPool)
             .writeBuffer(0, &bufferInfo)
             .build(globalDescriptorSets[i]);
@@ -85,18 +86,20 @@ void VgeApp::run()
     VgeCamera camera{};
     camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
 
-    auto viewerObject = VgeGameObject::createGameObject();
+    VgeGameObject viewerObject = VgeGameObject::createGameObject();
     viewerObject.m_transform.translation.z = -2.5f;
     VgaKeyboardMovementController cameraController{};
 
-    auto currentTime = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point currentTime =
+        std::chrono::high_resolution_clock::now();
 
     // run until window closes
     while (!m_vgeWindow.shouldClose())
     {
         glfwPollEvents(); // continuously processes and returns received events
 
-        auto newTime = std::chrono::high_resolution_clock::now();
+        std::chrono::time_point newTime =
+            std::chrono::high_resolution_clock::now();
         float frameTime =
             std::chrono::duration<float, std::chrono::seconds::period>(
                 newTime - currentTime)
@@ -116,7 +119,7 @@ void VgeApp::run()
             .setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 100.f);
 
         // beginFrame returns nullptr if swapchain needs to be recreated
-        if (auto commandBuffer = m_vgeRenderer.beginFrame())
+        if (VkCommandBuffer commandBuffer = m_vgeRenderer.beginFrame())
         {
             int frameIndex = m_vgeRenderer.getFrameIndex();
             FrameInfo frameInfo{
@@ -153,7 +156,7 @@ void VgeApp::loadGameObjects()
 {
     std::shared_ptr<VgeModel> vgeModel =
         VgeModel::createModelFromFile(m_vgeDevice, "models/flat_vase.obj");
-    auto flatVase = VgeGameObject::createGameObject();
+    VgeGameObject flatVase = VgeGameObject::createGameObject();
     flatVase.m_model = vgeModel;
     flatVase.m_transform.translation = { -.5f, .5f, 0.f };
     flatVase.m_transform.scale = { 3.f, 1.5f, 3.f };
@@ -161,14 +164,14 @@ void VgeApp::loadGameObjects()
 
     vgeModel =
         VgeModel::createModelFromFile(m_vgeDevice, "models/smooth_vase.obj");
-    auto smoothVase = VgeGameObject::createGameObject();
+    VgeGameObject smoothVase = VgeGameObject::createGameObject();
     smoothVase.m_model = vgeModel;
     smoothVase.m_transform.translation = { .5f, .5f, 0.f };
     smoothVase.m_transform.scale = { 3.f, 1.5f, 3.f };
     m_gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
 
     vgeModel = VgeModel::createModelFromFile(m_vgeDevice, "models/quad.obj");
-    auto floor = VgeGameObject::createGameObject();
+    VgeGameObject floor = VgeGameObject::createGameObject();
     floor.m_model = vgeModel;
     floor.m_transform.translation = { 0.f, .5f, 0.f };
     floor.m_transform.scale = { 3.f, 1.f, 3.f };
@@ -185,9 +188,9 @@ void VgeApp::loadGameObjects()
 
     for (int i = 0; i < lightColors.size(); i++)
     {
-        auto pointLight = VgeGameObject::makePointLight(0.2f);
+        VgeGameObject pointLight = VgeGameObject::makePointLight(0.2f);
         pointLight.m_color = lightColors[i];
-        auto rotateLight = glm::rotate(
+        glm::mat<4, 4, float, (glm::qualifier)0U> rotateLight = glm::rotate(
             glm::mat4(1.f),
             (i * glm::two_pi<float>()) / lightColors.size(),
             { 0.f, -1.f, 0.f });

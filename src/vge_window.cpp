@@ -53,7 +53,7 @@ void VgeWindow::frameBufferResizeCallback(
     int width,
     int height)
 {
-    auto vgeWindow =
+    VgeWindow* vgeWindow =
         reinterpret_cast<VgeWindow*>(glfwGetWindowUserPointer(window));
     vgeWindow->m_frameBufferResized = true;
     vgeWindow->m_width = width;

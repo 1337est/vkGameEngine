@@ -31,9 +31,9 @@ VkResult CreateDebugUtilsMessengerEXT(
     const VkAllocationCallbacks* pAllocator,
     VkDebugUtilsMessengerEXT* pDebugMessenger)
 {
-    auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-        instance,
-        "vkCreateDebugUtilsMessengerEXT");
+    PFN_vkCreateDebugUtilsMessengerEXT func =
+        (PFN_vkCreateDebugUtilsMessengerEXT)
+            vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr)
     {
         return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
@@ -50,9 +50,9 @@ void DestroyDebugUtilsMessengerEXT(
     VkDebugUtilsMessengerEXT debugMessenger,
     const VkAllocationCallbacks* pAllocator)
 {
-    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-        instance,
-        "vkDestroyDebugUtilsMessengerEXT");
+    PFN_vkDestroyDebugUtilsMessengerEXT func =
+        (PFN_vkDestroyDebugUtilsMessengerEXT)
+            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
     if (func != nullptr)
     {
         func(instance, debugMessenger, pAllocator);
@@ -159,7 +159,7 @@ void VgeDevice::pickPhysicalDevice()
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
 
-    for (const auto& device : devices)
+    for (const VkPhysicalDevice& device : devices)
     {
         if (isDeviceSuitable(device))
         {
@@ -328,7 +328,7 @@ bool VgeDevice::checkValidationLayerSupport()
     {
         bool layerFound = false;
 
-        for (const auto& layerProperties : availableLayers)
+        for (const VkLayerProperties& layerProperties : availableLayers)
         {
             if (strcmp(layerName, layerProperties.layerName) == 0)
             {
@@ -378,15 +378,15 @@ void VgeDevice::hasGflwRequiredInstanceExtensions()
 
     std::cout << "available extensions:" << std::endl;
     std::unordered_set<std::string> available;
-    for (const auto& extension : extensions)
+    for (const VkExtensionProperties& extension : extensions)
     {
         std::cout << "\t" << extension.extensionName << std::endl;
         available.insert(extension.extensionName);
     }
 
     std::cout << "required extensions:" << std::endl;
-    auto requiredExtensions = getRequiredExtensions();
-    for (const auto& required : requiredExtensions)
+    std::vector<const char*> requiredExtensions = getRequiredExtensions();
+    for (const char* const& required : requiredExtensions)
     {
         std::cout << "\t" << required << std::endl;
         if (available.find(required) == available.end())
@@ -417,7 +417,7 @@ bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
         m_deviceExtensions.begin(),
         m_deviceExtensions.end());
 
-    for (const auto& extension : availableExtensions)
+    for (const VkExtensionProperties& extension : availableExtensions)
     {
         requiredExtensions.erase(extension.extensionName);
     }
@@ -443,7 +443,7 @@ QueueFamilyIndices VgeDevice::findQueueFamilies(VkPhysicalDevice device)
         queueFamilies.data());
 
     int i = 0;
-    for (const auto& queueFamily : queueFamilies)
+    for (const VkQueueFamilyProperties& queueFamily : queueFamilies)
     {
         if (queueFamily.queueCount > 0 &&
             queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)

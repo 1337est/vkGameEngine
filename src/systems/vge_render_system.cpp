@@ -98,10 +98,11 @@ void VgeRenderSystem::renderGameObjects(FrameInfo& frameInfo)
         0,
         nullptr);
 
-    for (auto& kv : frameInfo.gameObjects)
+    for (std::pair<const unsigned int, VgeGameObject>& kv :
+         frameInfo.gameObjects)
     {
         // kv.second = gameObj kv.first = objId
-        auto& obj = kv.second;
+        VgeGameObject& obj = kv.second;
         if (obj.m_model == nullptr)
             continue;
         SimplePushConstantData pushData{};

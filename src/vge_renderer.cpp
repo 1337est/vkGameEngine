@@ -29,7 +29,7 @@ VgeRenderer::~VgeRenderer()
 
 void VgeRenderer::recreateSwapChain()
 {
-    auto extent = m_vgeWindow.getExtent();
+    VkExtent2D extent = m_vgeWindow.getExtent();
     while (extent.width == 0 || extent.height == 0)
     {
         extent = m_vgeWindow.getExtent();
@@ -92,7 +92,7 @@ VkCommandBuffer VgeRenderer::beginFrame()
         !m_isFrameStarted &&
         "Can't call beginFrame while already in progress!");
 
-    auto result = m_vgeSwapChain->acquireNextImage(&m_currentImageIndex);
+    VkResult result = m_vgeSwapChain->acquireNextImage(&m_currentImageIndex);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR)
     {
@@ -106,7 +106,7 @@ VkCommandBuffer VgeRenderer::beginFrame()
 
     m_isFrameStarted = true;
 
-    auto commandBuffer = getCurrentCommandBuffer();
+    VkCommandBuffer commandBuffer = getCurrentCommandBuffer();
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -123,13 +123,13 @@ void VgeRenderer::endFrame()
     assert(
         m_isFrameStarted && "Can't call endFrame while frame not in progress!");
 
-    auto commandBuffer = getCurrentCommandBuffer();
+    VkCommandBuffer commandBuffer = getCurrentCommandBuffer();
 
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to record command buffer!");
     }
-    auto result = m_vgeSwapChain->submitCommandBuffers(
+    VkResult result = m_vgeSwapChain->submitCommandBuffers(
         &commandBuffer,
         &m_currentImageIndex);
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
@@ -230,9 +230,9 @@ void VgeRenderer::sierpinski(
     }
     else
     {
-        auto ab = 0.5f * (a + b);
-        auto ac = 0.5f * (a + c);
-        auto bc = 0.5f * (b + c);
+        glm::vec2 ab = 0.5f * (a + b);
+        glm::vec2 ac = 0.5f * (a + c);
+        glm::vec2 bc = 0.5f * (b + c);
         // colored like the LOZ triforce (colors counterclockwise)
         sierpinski(vertices, cuts - 1, a, ab, ac, red);   // top triangle
         sierpinski(vertices, cuts - 1, ab, b, bc, green); // right triangle

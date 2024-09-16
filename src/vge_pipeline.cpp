@@ -107,8 +107,10 @@ void VgePipeline::createGraphicsPipeline(
     shaderStages[1].pSpecializationInfo = nullptr;
 
     // Vertex data
-    auto& bindingDescriptions = configInfo.bindingDescriptions;
-    auto& attributeDescriptions = configInfo.attributeDescriptions;
+    const std::vector<VkVertexInputBindingDescription>& bindingDescriptions =
+        configInfo.bindingDescriptions;
+    const std::vector<VkVertexInputAttributeDescription>&
+        attributeDescriptions = configInfo.attributeDescriptions;
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType =
