@@ -72,6 +72,11 @@ VgeDescriptorSetLayout::~VgeDescriptorSetLayout()
         nullptr);
 }
 
+VkDescriptorSetLayout VgeDescriptorSetLayout::getDescriptorSetLayout() const
+{
+    return m_descriptorSetLayout;
+}
+
 // *************** Descriptor Pool Builder *********************
 
 VgeDescriptorPool::Builder& VgeDescriptorPool::Builder::addPoolSize(

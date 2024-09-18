@@ -41,10 +41,7 @@ public:
     VgeDescriptorSetLayout(const VgeDescriptorSetLayout&) = delete;
     VgeDescriptorSetLayout& operator=(const VgeDescriptorSetLayout&) = delete;
 
-    VkDescriptorSetLayout getDescriptorSetLayout() const
-    {
-        return m_descriptorSetLayout;
-    }
+    VkDescriptorSetLayout getDescriptorSetLayout() const;
 
 private:
     VgeDevice& m_vgeDevice;
