@@ -36,11 +36,7 @@ public:
     using id_t = unsigned int;
     using Map = std::unordered_map<id_t, VgeGameObject>;
 
-    static VgeGameObject createGameObject()
-    {
-        static id_t currentId = 0;
-        return VgeGameObject{ currentId++ };
-    }
+    static VgeGameObject createGameObject();
 
     static VgeGameObject makePointLight(
         float intensity = 10.f,
@@ -52,10 +48,7 @@ public:
     VgeGameObject(VgeGameObject&&) = default;
     VgeGameObject& operator=(VgeGameObject&&) = default;
 
-    id_t getId()
-    {
-        return m_id;
-    }
+    id_t getId();
 
     glm::vec3 m_color{};
     TransformComponent m_transform{};
@@ -65,10 +58,7 @@ public:
     std::unique_ptr<PointLightComponent> m_pointLight = nullptr;
 
 private:
-    VgeGameObject(id_t objId)
-        : m_id{ objId }
-    {
-    }
+    VgeGameObject(id_t objId);
 
     id_t m_id;
 };

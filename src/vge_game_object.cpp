@@ -3,6 +3,22 @@
 
 namespace vge
 {
+VgeGameObject::VgeGameObject(id_t objId)
+    : m_id{ objId }
+{
+}
+
+VgeGameObject VgeGameObject::createGameObject()
+{
+    static id_t currentId = 0;
+    return VgeGameObject{ currentId++ };
+}
+
+id_t VgeGameObject::getId()
+{
+    return m_id;
+}
+
 glm::mat4 TransformComponent::mat4()
 {
     {

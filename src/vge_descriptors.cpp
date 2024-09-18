@@ -9,6 +9,10 @@ namespace vge
 {
 
 // *************** Descriptor Set Layout Builder *********************
+VgeDescriptorSetLayout::Builder::Builder(VgeDevice& vgeDevice)
+    : m_vgeDevice{ vgeDevice }
+{
+}
 
 VgeDescriptorSetLayout::Builder& VgeDescriptorSetLayout::Builder::addBinding(
     uint32_t binding,
@@ -78,6 +82,11 @@ VkDescriptorSetLayout VgeDescriptorSetLayout::getDescriptorSetLayout() const
 }
 
 // *************** Descriptor Pool Builder *********************
+
+VgeDescriptorPool::Builder::Builder(VgeDevice& vgeDevice)
+    : m_vgeDevice{ vgeDevice }
+{
+}
 
 VgeDescriptorPool::Builder& VgeDescriptorPool::Builder::addPoolSize(
     VkDescriptorType descriptorType,

@@ -17,10 +17,7 @@ public:
     class Builder
     {
     public:
-        Builder(VgeDevice& vgeDevice)
-            : m_vgeDevice{ vgeDevice }
-        {
-        }
+        Builder(VgeDevice& vgeDevice);
 
         Builder& addBinding(
             uint32_t binding,
@@ -57,10 +54,7 @@ public:
     class Builder
     {
     public:
-        Builder(VgeDevice& vgeDevice)
-            : m_vgeDevice{ vgeDevice }
-        {
-        }
+        Builder(VgeDevice& vgeDevice);
 
         Builder& addPoolSize(VkDescriptorType descriptorType, uint32_t count);
         Builder& setPoolFlags(VkDescriptorPoolCreateFlags flags);
