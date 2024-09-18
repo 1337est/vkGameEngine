@@ -14,48 +14,33 @@ namespace vge
 class VgeWindow
 {
 public:
-    VgeWindow(int width, int height, std::string name); // constructor
-    ~VgeWindow();                                       // destructor
+    VgeWindow(int width, int height, std::string name);
+    ~VgeWindow();
 
     // Disable copy constructor and copy assignment operator= to prevent
     // undefined behavior with GLFWwindow* m_window pointer variable
     VgeWindow(const VgeWindow&) = delete;
     VgeWindow& operator=(const VgeWindow&) = delete;
 
-    bool shouldClose()
-    {
-        return glfwWindowShouldClose(m_window);
-    }
+    bool shouldClose() const;
 
-    VkExtent2D getExtent()
-    {
-        return { static_cast<uint32_t>(m_width),
-                 static_cast<uint32_t>(m_height) };
-    }
+    VkExtent2D getExtent() const;
 
-    bool wasWindowResized()
-    {
-        return m_frameBufferResized;
-    }
+    bool wasWindowResized() const;
 
-    void resetWindowResizedFlag()
-    {
-        m_frameBufferResized = false;
-    }
+    void resetWindowResizedFlag();
 
-    GLFWwindow* getGLFWwindow() const
-    {
-        return m_window;
-    }
+    GLFWwindow* getGLFWwindow() const;
 
     void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
-private: // member variables and functions
+private:
     static void frameBufferResizeCallback(
-        GLFWwindow* m_window,
-        int m_width,
-        int m_height);
+        GLFWwindow* window,
+        int newWidth,
+        int newHeight);
     void initWindow();
+
     GLFWwindow* m_window;
     int m_width;
     int m_height;
