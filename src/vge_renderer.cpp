@@ -206,6 +206,37 @@ void VgeRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer)
     vkCmdEndRenderPass(commandBuffer);
 }
 
+VkRenderPass VgeRenderer::getSwapChainRenderPass() const
+{
+    return m_vgeSwapChain->getRenderPass();
+}
+
+float VgeRenderer::getAspectRatio() const
+{
+    return m_vgeSwapChain->extentAspectRatio();
+}
+
+bool VgeRenderer::isFrameInProgress() const
+{
+    return m_isFrameStarted;
+}
+
+VkCommandBuffer VgeRenderer::getCurrentCommandBuffer() const
+{
+    assert(
+        m_isFrameStarted &&
+        "Cannot get command buffer when frame not in progress");
+    return m_commandBuffers[m_currentFrameIndex];
+}
+
+uint32_t VgeRenderer::getFrameIndex() const
+{
+    assert(
+        m_isFrameStarted &&
+        "Cannot get frame index when frame not in progress");
+    return m_currentFrameIndex;
+}
+
 } // namespace vge
 
 /*

@@ -26,37 +26,11 @@ public:
     VgeRenderer(const VgeRenderer&) = delete;
     VgeRenderer& operator=(const VgeRenderer&) = delete;
 
-    VkRenderPass getSwapChainRenderPass() const
-    {
-        return m_vgeSwapChain->getRenderPass();
-    }
-
-    float getAspectRatio() const
-    {
-        return m_vgeSwapChain->extentAspectRatio();
-    }
-
-    bool isFrameInProgress() const
-    {
-        return m_isFrameStarted;
-    }
-
-    VkCommandBuffer getCurrentCommandBuffer() const
-    {
-        assert(
-            m_isFrameStarted &&
-            "Cannot get command buffer when frame not in progress");
-        return m_commandBuffers[m_currentFrameIndex];
-    }
-
-    uint32_t getFrameIndex() const
-    {
-        assert(
-            m_isFrameStarted &&
-            "Cannot get frame index when frame not in progress");
-        return m_currentFrameIndex;
-    }
-
+    VkRenderPass getSwapChainRenderPass() const;
+    float getAspectRatio() const;
+    bool isFrameInProgress() const;
+    VkCommandBuffer getCurrentCommandBuffer() const;
+    uint32_t getFrameIndex() const;
     VkCommandBuffer beginFrame();
     void endFrame();
     void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
