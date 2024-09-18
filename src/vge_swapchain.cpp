@@ -591,4 +591,55 @@ VkFormat VgeSwapChain::findDepthFormat()
         VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
 
+VkFramebuffer VgeSwapChain::getFrameBuffer(size_t index)
+{
+    return m_swapChainFramebuffers[index];
+}
+
+VkRenderPass VgeSwapChain::getRenderPass()
+{
+    return m_renderPass;
+}
+
+VkImageView VgeSwapChain::getImageView(size_t index)
+{
+    return m_swapChainImageViews[index];
+}
+
+size_t VgeSwapChain::imageCount()
+{
+    return m_swapChainImages.size();
+}
+
+VkFormat VgeSwapChain::getSwapChainImageFormat()
+{
+    return m_swapChainImageFormat;
+}
+
+VkExtent2D VgeSwapChain::getSwapChainExtent()
+{
+    return m_swapChainExtent;
+}
+
+uint32_t VgeSwapChain::width()
+{
+    return m_swapChainExtent.width;
+}
+
+uint32_t VgeSwapChain::height()
+{
+    return m_swapChainExtent.height;
+}
+
+float VgeSwapChain::extentAspectRatio()
+{
+    return static_cast<float>(m_swapChainExtent.width) /
+           static_cast<float>(m_swapChainExtent.height);
+}
+
+bool VgeSwapChain::compareSwapFormats(const VgeSwapChain& swapChain) const
+{
+    return swapChain.m_swapChainDepthFormat == m_swapChainDepthFormat &&
+           swapChain.m_swapChainImageFormat == m_swapChainImageFormat;
+}
 } // namespace vge
