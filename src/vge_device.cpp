@@ -723,4 +723,39 @@ void VgeDevice::createImageWithInfo(
     }
 }
 
+VkCommandPool VgeDevice::getCommandPool()
+{
+    return m_commandPool;
+}
+
+VkDevice VgeDevice::device()
+{
+    return m_device_;
+}
+
+VkSurfaceKHR VgeDevice::surface()
+{
+    return m_surface_;
+}
+
+VkQueue VgeDevice::graphicsQueue()
+{
+    return m_graphicsQueue_;
+}
+
+VkQueue VgeDevice::presentQueue()
+{
+    return m_presentQueue_;
+}
+
+SwapChainSupportDetails VgeDevice::getSwapChainSupport()
+{
+    return querySwapChainSupport(m_physicalDevice);
+}
+
+QueueFamilyIndices VgeDevice::findPhysicalQueueFamilies()
+{
+    return findQueueFamilies(m_physicalDevice);
+}
+
 } // namespace vge

@@ -47,44 +47,18 @@ public:
     VgeDevice(VgeDevice&&) = delete;
     VgeDevice& operator=(VgeDevice&&) = delete;
 
-    VkCommandPool getCommandPool()
-    {
-        return m_commandPool;
-    }
-
-    VkDevice device()
-    {
-        return m_device_;
-    }
-
-    VkSurfaceKHR surface()
-    {
-        return m_surface_;
-    }
-
-    VkQueue graphicsQueue()
-    {
-        return m_graphicsQueue_;
-    }
-
-    VkQueue presentQueue()
-    {
-        return m_presentQueue_;
-    }
-
-    SwapChainSupportDetails getSwapChainSupport()
-    {
-        return querySwapChainSupport(m_physicalDevice);
-    }
+    VkCommandPool getCommandPool();
+    VkDevice device();
+    VkSurfaceKHR surface();
+    VkQueue graphicsQueue();
+    VkQueue presentQueue();
+    SwapChainSupportDetails getSwapChainSupport();
 
     uint32_t findMemoryType(
         uint32_t typeFilter,
         VkMemoryPropertyFlags properties);
 
-    QueueFamilyIndices findPhysicalQueueFamilies()
-    {
-        return findQueueFamilies(m_physicalDevice);
-    }
+    QueueFamilyIndices findPhysicalQueueFamilies();
 
     VkFormat findSupportedFormat(
         const std::vector<VkFormat>& candidates,
