@@ -84,7 +84,9 @@ void VgeApp::run()
     };
 
     VgeCamera camera{};
-    camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
+    camera.setViewTargetDirectionMatrix(
+        glm::vec3(-1.f, -2.f, 2.f),
+        glm::vec3(0.f, 0.f, 2.5f));
 
     VgeGameObject viewerObject = VgeGameObject::createGameObject();
     viewerObject.m_transform.translation.z = -2.5f;
@@ -110,13 +112,16 @@ void VgeApp::run()
             m_vgeWindow.getGLFWwindow(),
             frameTime,
             viewerObject);
-        camera.setViewYXZ(
+        camera.setViewYXZMatrix(
             viewerObject.m_transform.translation,
             viewerObject.m_transform.rotation);
 
         float aspect = m_vgeRenderer.getAspectRatio();
-        camera
-            .setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 100.f);
+        camera.setPerspectiveProjectionMatrix(
+            glm::radians(50.f),
+            aspect,
+            0.1f,
+            100.f);
 
         // beginFrame returns nullptr if swapchain needs to be recreated
         if (VkCommandBuffer commandBuffer = m_vgeRenderer.beginFrame())
@@ -133,9 +138,9 @@ void VgeApp::run()
 
             // update
             GlobalUbo ubo{};
-            ubo.projection = camera.getProjection();
-            ubo.view = camera.getView();
-            ubo.inverseView = camera.getInverseView();
+            ubo.projection = camera.getProjectionMatrix();
+            ubo.view = camera.getViewMatrix();
+            ubo.inverseView = camera.getInverseViewMatrix();
             pointLightSystem.update(frameInfo, ubo);
             uboBuffers[frameIndex]->writeToBuffer(&ubo);
             uboBuffers[frameIndex]->flush();

@@ -45,7 +45,7 @@ namespace vge
  * @param `far`    The far depth clipping plane.
  */
 // TODO: Change name to setOrthographicProjectionMatrix
-void VgeCamera::setOrthographicProjection(
+void VgeCamera::setOrthographicProjectionMatrix(
     float left,
     float right,
     float top,

@@ -15,8 +15,7 @@ namespace vge
  * The orthographic projection defines a 2D view from a 3D space using clipping
  * planes.
  */
-// TODO: Change name to setOrthographicProjectionMatrix
-void VgeCamera::setOrthographicProjection(
+void VgeCamera::setOrthographicProjectionMatrix(
     float left,
     float right,
     float top,
@@ -46,8 +45,7 @@ void VgeCamera::setOrthographicProjection(
  * The perspective projection defines a matrix based on the vertical field of
  * view, aspect ratio of the window, and clipping planes.
  */
-// TODO: Change name to setPerspectiveProjectionMattrix
-void VgeCamera::setPerspectiveProjection(
+void VgeCamera::setPerspectiveProjectionMatrix(
     float fovy,
     float aspect,
     float near,
@@ -69,8 +67,7 @@ void VgeCamera::setPerspectiveProjection(
  * direction, and up vector to form an Orthonormal Basis with u, v, and w
  * vectors.
  */
-// TODO: Change name to setViewDirectionMatrix
-void VgeCamera::setViewDirection(
+void VgeCamera::setViewDirectionMatrix(
     glm::vec3 position,
     glm::vec3 direction,
     glm::vec3 up)
@@ -115,12 +112,12 @@ void VgeCamera::setViewDirection(
  * a given position, using the provided up vector for orientation.
  */
 // TODO: Add assertion making sure the direction is non-zero
-void VgeCamera::setViewTarget(
+void VgeCamera::setViewTargetDirectionMatrix(
     glm::vec3 position,
     glm::vec3 target,
     glm::vec3 up)
 {
-    setViewDirection(position, target - position, up);
+    setViewDirectionMatrix(position, target - position, up);
 }
 
 /* Sets the camera's View Matrix using Tait-Bryan angles (Y1X2Z3).
@@ -129,7 +126,7 @@ void VgeCamera::setViewTarget(
  * defined by yaw (Y1), pitch (X2), and roll (Z3) angles. The rotation matrix is
  * derived from these angles, and the view matrix is updated accordingly.
  */
-void VgeCamera::setViewYXZ(glm::vec3 position, glm::vec3 rotation)
+void VgeCamera::setViewYXZMatrix(glm::vec3 position, glm::vec3 rotation)
 {
     // s and c represents sine and cosine
     const float s1 = glm::sin(rotation.y);
@@ -187,19 +184,19 @@ void VgeCamera::setViewYXZ(glm::vec3 position, glm::vec3 rotation)
 }
 
 // Returns the current projection matrix.
-const glm::mat4& VgeCamera::getProjection() const
+const glm::mat4& VgeCamera::getProjectionMatrix() const
 {
     return m_projectionMatrix;
 }
 
 // Returns the current view matrix.
-const glm::mat4& VgeCamera::getView() const
+const glm::mat4& VgeCamera::getViewMatrix() const
 {
     return m_viewMatrix;
 }
 
 // Returns the current inverse view matrix.
-const glm::mat4& VgeCamera::getInverseView() const
+const glm::mat4& VgeCamera::getInverseViewMatrix() const
 {
     return m_inverseViewMatrix;
 }
