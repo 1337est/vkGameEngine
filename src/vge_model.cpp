@@ -1,6 +1,5 @@
 // headers
 #include "vge_model.hpp"
-#include "vge_utils.hpp"
 
 // libs
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -25,7 +24,7 @@ namespace std
 {
 template <> struct hash<vge::VgeModel::Vertex>
 {
-    size_t operator()(vge::VgeModel::Vertex const& vertex) const
+    size_t operator()(const vge::VgeModel::Vertex& vertex) const
     {
         size_t seed = 0;
         vge::hashCombine(
