@@ -249,4 +249,43 @@ VkResult VgeBuffer::invalidateIndex(int index)
     return invalidate(m_alignmentSize, index * m_alignmentSize);
 }
 
+VkBuffer VgeBuffer::getBuffer() const
+{
+    return m_buffer;
+}
+
+void* VgeBuffer::getMappedMemory() const
+{
+    return m_mapped;
+}
+
+uint32_t VgeBuffer::getInstanceCount() const
+{
+    return m_instanceCount;
+}
+
+VkDeviceSize VgeBuffer::getInstanceSize() const
+{
+    return m_instanceSize;
+}
+
+VkDeviceSize VgeBuffer::getAlignmentSize() const
+{
+    return m_instanceSize;
+}
+
+VkBufferUsageFlags VgeBuffer::getUsageFlags() const
+{
+    return m_usageFlags;
+}
+
+VkMemoryPropertyFlags VgeBuffer::getMemoryPropertyFlags() const
+{
+    return m_memoryPropertyFlags;
+}
+
+VkDeviceSize VgeBuffer::getBufferSize() const
+{
+    return m_bufferSize;
+}
 } // namespace vge
