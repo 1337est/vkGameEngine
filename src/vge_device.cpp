@@ -10,9 +10,12 @@
 namespace vge
 {
 
-// NOTE: Callback functions for debug messages
-
-// validation layer message data to std::cerr
+/* Callback function for Vulkan debug messages.
+ *
+ * This function is called by Vulkan whenever a validation message needs to be
+ * logged, It writes the validation message to std::cerr and returns VK_FALSE to
+ * indicate that the call should not be aborted.
+ */
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     [[maybe_unused]] VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     [[maybe_unused]] VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -24,7 +27,13 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     return VK_FALSE;
 }
 
-// grabs Vulkan debug messenger extension (if present) to create debug info
+/* Create Vulkan debug messenger if present to create debug info
+ *
+ * Attempts to create a debug messenger using the
+ * `vkCreateDebugUtilsMessengerEXT` function, which is retrieved using Vulkan's
+ * `vkGetInstanceProcAddr`. If successful, it returns VK_SUCCESS, otherwise
+ * VK_ERROR_EXTENSION_NOT_PRESENT if the function isn't available.
+ */
 VkResult CreateDebugUtilsMessengerEXT(
     VkInstance instance,
     const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
@@ -44,7 +53,12 @@ VkResult CreateDebugUtilsMessengerEXT(
     }
 }
 
-// The debug messenger needs to be deleted as well
+/* Destroy Vulkan debug messenger
+ *
+ * This function destroys a previously created Vulkan debug messenger using the
+ * `vkDestroyDebugUtilsMessengerEXT` function. It is retrieved similarly to
+ * `CreateDebugUtilsMessengerEXT` using `vkGetInstanceProcAddr`.
+ */
 void DestroyDebugUtilsMessengerEXT(
     VkInstance instance,
     VkDebugUtilsMessengerEXT debugMessenger,
@@ -61,7 +75,12 @@ void DestroyDebugUtilsMessengerEXT(
 
 // NOTE: Class member functions
 
-// Initialize Vulkan device
+/* Initialize Vulkan device
+ *
+ * Constructor for VgeDevice class. It sets up the Vulkan instance, debug
+ * messenger, window surface, and selects a physical device (GPU) and logical
+ * device. It also creates a command pool for managing Vulkan command buffers.
+ */
 VgeDevice::VgeDevice(VgeWindow& window) // default constructor
     : m_properties{}
     , m_instance{}
@@ -81,7 +100,12 @@ VgeDevice::VgeDevice(VgeWindow& window) // default constructor
     createCommandPool();   // TODO: add summary
 }
 
-// Cleanup resources
+/* Cleanup Vulkan resources
+ *
+ * Destructor for VgeDevice class. Cleans up all Vulkan resources including the
+ * command pool, logical device, debug messenger (if validation layers are
+ * enabled), window surface, and Vulkan instance.
+ */
 VgeDevice::~VgeDevice()
 {
     vkDestroyCommandPool(m_device_, m_commandPool, nullptr);
@@ -96,7 +120,13 @@ VgeDevice::~VgeDevice()
     vkDestroyInstance(m_instance, nullptr);
 }
 
-// First step: Create the Vulkan instance
+/* Create Vulkan instance
+ *
+ * This function sets up a Vulkan instance, which is the first step in
+ * initializing Vulkan. It configures application information, required
+ * extensions, and validation layers if enabled. Throws an exception if instance
+ * creation fails.
+ */
 void VgeDevice::createInstance()
 {
     if (m_enableValidationLayers && !checkValidationLayerSupport())
@@ -146,7 +176,11 @@ void VgeDevice::createInstance()
     hasGflwRequiredInstanceExtensions();
 }
 
-// Choose the GPU
+/* Selects a physical GPU for the Vulkan application
+ *
+ * This function chooses a suitable GPU by enumerating available physical
+ * devices and checking if they meet the application's requirements.
+ */
 void VgeDevice::pickPhysicalDevice()
 {
     uint32_t deviceCount = 0;
@@ -177,7 +211,12 @@ void VgeDevice::pickPhysicalDevice()
     std::cout << "physical device: " << m_properties.deviceName << std::endl;
 }
 
-// Manage features via logical device interface with GPU
+/* Creates a logical device to interface with the selected GPU
+ *
+ * This function creates a logical device for interacting with the physical GPU.
+ * It enables the required features and retrieves the graphics and presentation
+ * queues.
+ */
 void VgeDevice::createLogicalDevice()
 {
     QueueFamilyIndices indices = findQueueFamilies(m_physicalDevice);
@@ -235,7 +274,11 @@ void VgeDevice::createLogicalDevice()
     vkGetDeviceQueue(m_device_, indices.presentFamily, 0, &m_presentQueue_);
 }
 
-// Manages command buffers
+/* Creates a command pool for managing command buffers
+ *
+ * This function creates a Vulkan command pool for allocating and managing
+ * command buffers.
+ */
 void VgeDevice::createCommandPool()
 {
     QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
@@ -253,13 +296,21 @@ void VgeDevice::createCommandPool()
     }
 }
 
-// Vulkan window surface using GLFW
+/* Creates a Vulkan surface using GLFW
+ *
+ * This function creates a window surface using GLFW to interface with the
+ * Vulkan instance.
+ */
 void VgeDevice::createSurface()
 {
     m_window.createWindowSurface(m_instance, &m_surface_);
 }
 
-// Checks physical device
+/* Checks if a physical device is suitable for the Vulkan application
+ *
+ * This function checks if the provided physical device supports the required
+ * features, extensions, and queue families.
+ */
 bool VgeDevice::isDeviceSuitable(VkPhysicalDevice device)
 {
     QueueFamilyIndices indices = findQueueFamilies(device);
@@ -282,7 +333,11 @@ bool VgeDevice::isDeviceSuitable(VkPhysicalDevice device)
            supportedFeatures.samplerAnisotropy;
 }
 
-// Gathers info for debug messenger
+/* Fills out debug messenger create info
+ *
+ * This function populates the necessary information to create a Vulkan debug
+ * messenger.
+ */
 void VgeDevice::populateDebugMessengerCreateInfo(
     VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 {
@@ -298,7 +353,11 @@ void VgeDevice::populateDebugMessengerCreateInfo(
     createInfo.pUserData = nullptr; // Optional
 }
 
-// Initialize debug messenger (if enabled)
+/* Sets up the Vulkan debug messenger (if validation layers are enabled)
+ *
+ * This function creates the Vulkan debug messenger if validation layers are
+ * enabled.
+ */
 void VgeDevice::setupDebugMessenger()
 {
     if (!m_enableValidationLayers)
@@ -315,7 +374,10 @@ void VgeDevice::setupDebugMessenger()
     }
 }
 
-// Check if requested validation layers are present
+/* Checks if the requested validation layers are supported
+ *
+ * This function checks if the required Vulkan validation layers are available.
+ */
 bool VgeDevice::checkValidationLayerSupport()
 {
     uint32_t layerCount;
@@ -346,7 +408,11 @@ bool VgeDevice::checkValidationLayerSupport()
     return true;
 }
 
-// Get GLFW extensions and validation layer extensions
+/* Retrieves required Vulkan extensions, including GLFW and validation layers
+ *
+ * This function returns a list of required Vulkan extensions, including those
+ * needed for GLFW and validation layers.
+ */
 std::vector<const char*> VgeDevice::getRequiredExtensions()
 {
     uint32_t glfwExtensionCount = 0;
@@ -365,7 +431,11 @@ std::vector<const char*> VgeDevice::getRequiredExtensions()
     return extensions;
 }
 
-// Check if GLFW extensions are supported by Vulkan
+/* Checks if required GLFW extensions are supported by Vulkan
+ *
+ * This function checks if the required GLFW extensions are supported by the
+ * Vulkan instance.
+ */
 void VgeDevice::hasGflwRequiredInstanceExtensions()
 {
     uint32_t extensionCount = 0;
@@ -396,7 +466,12 @@ void VgeDevice::hasGflwRequiredInstanceExtensions()
     }
 }
 
-// Check if GPU supports all required extensions
+/* Checks if a physical device supports the required Vulkan extensions
+ *
+ * This function checks if the physical device supports the required Vulkan
+ * extensions by comparing the available extensions with those requested by the
+ * application.
+ */
 bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
 {
     uint32_t extensionCount;
@@ -425,7 +500,12 @@ bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
     return requiredExtensions.empty();
 }
 
-// Finds GPU queue families that supports graphics and presentation operations
+/* Finds queue families for a physical device that support graphics and
+ * presentation
+ *
+ * This function finds the queue families for the physical device that support
+ * both graphics and presentation operations.
+ */
 QueueFamilyIndices VgeDevice::findQueueFamilies(VkPhysicalDevice device)
 {
     QueueFamilyIndices indices;
@@ -475,7 +555,11 @@ QueueFamilyIndices VgeDevice::findQueueFamilies(VkPhysicalDevice device)
     return indices;
 }
 
-// Check GPU for swap chain support
+/* Queries swap chain support for a physical device
+ *
+ * This function queries the swap chain support details for a physical device,
+ * including surface capabilities, formats, and present modes.
+ */
 SwapChainSupportDetails VgeDevice::querySwapChainSupport(
     VkPhysicalDevice device)
 {
@@ -521,7 +605,11 @@ SwapChainSupportDetails VgeDevice::querySwapChainSupport(
     return details;
 }
 
-// Finds image formats supported by the GPU
+/* Finds a supported image format for the physical device
+ *
+ * This function searches for a suitable image format supported by the physical
+ * device based on the provided tiling and format feature flags.
+ */
 VkFormat VgeDevice::findSupportedFormat(
     const std::vector<VkFormat>& candidates,
     VkImageTiling tiling,
@@ -547,7 +635,11 @@ VkFormat VgeDevice::findSupportedFormat(
     throw std::runtime_error("failed to find supported format!");
 }
 
-// Find the memory properties for your GPU
+/* Finds the memory properties for your GPU
+ *
+ * Queries the physical device for its memory properties and selects a memory
+ * type that satisfies the given type filter and properties.
+ */
 uint32_t VgeDevice::findMemoryType(
     uint32_t typeFilter,
     VkMemoryPropertyFlags properties)
@@ -567,7 +659,11 @@ uint32_t VgeDevice::findMemoryType(
     throw std::runtime_error("failed to find suitable memory type!");
 }
 
-// Create a memory storage buffer
+/* Create a memory storage buffer
+ *
+ * Creates a Vulkan buffer with the specified size and usage flags, allocates
+ * memory for the buffer, and binds the memory to the buffer.
+ */
 void VgeDevice::createBuffer(
     VkDeviceSize size,
     VkBufferUsageFlags usage,
@@ -604,7 +700,11 @@ void VgeDevice::createBuffer(
     vkBindBufferMemory(m_device_, buffer, bufferMemory, 0);
 }
 
-// Initialize buffer for a single command
+/* Initialize buffer for a single command
+ *
+ * Allocates a command buffer for single-time command execution and begins
+ * recording commands into it.
+ */
 VkCommandBuffer VgeDevice::beginSingleTimeCommands()
 {
     VkCommandBufferAllocateInfo allocInfo{};
@@ -624,7 +724,11 @@ VkCommandBuffer VgeDevice::beginSingleTimeCommands()
     return commandBuffer;
 }
 
-// Execute the buffered command and cleanup the buffer
+/* Execute the buffered command and cleanup the buffer
+ *
+ * Ends command recording, submits the command buffer to the graphics queue,
+ * waits for the queue to finish processing, and then frees the command buffer.
+ */
 void VgeDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer)
 {
     vkEndCommandBuffer(commandBuffer);
@@ -640,7 +744,11 @@ void VgeDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer)
     vkFreeCommandBuffers(m_device_, m_commandPool, 1, &commandBuffer);
 }
 
-// Copy source buffer to destination buffer and cleanup
+/* Copy source buffer to destination buffer and cleanup
+ *
+ * Copies data from the source buffer to the destination buffer using a
+ * single-time command buffer and then cleans up the command buffer.
+ */
 void VgeDevice::copyBuffer(
     VkBuffer srcBuffer,
     VkBuffer dstBuffer,
@@ -657,7 +765,11 @@ void VgeDevice::copyBuffer(
     endSingleTimeCommands(commandBuffer);
 }
 
-// Copy the buffer data to an image
+/* Copy the buffer data to an image
+ *
+ * Copies data from a buffer to an image using a single-time command buffer and
+ * specifies the region of the image to copy the buffer data into.
+ */
 void VgeDevice::copyBufferToImage(
     VkBuffer buffer,
     VkImage image,
@@ -690,7 +802,11 @@ void VgeDevice::copyBufferToImage(
     endSingleTimeCommands(commandBuffer);
 }
 
-// Create a Vulkan image
+/* Create a Vulkan image
+ *
+ * Creates a Vulkan image with the given create info, allocates memory for it,
+ * and binds the memory to the image.
+ */
 void VgeDevice::createImageWithInfo(
     const VkImageCreateInfo& imageInfo,
     VkMemoryPropertyFlags properties,
@@ -723,36 +839,66 @@ void VgeDevice::createImageWithInfo(
     }
 }
 
+/* Get the command pool
+ *
+ * Returns the Vulkan command pool associated with the device.
+ */
 VkCommandPool VgeDevice::getCommandPool()
 {
     return m_commandPool;
 }
 
+/* Get the Vulkan device
+ *
+ * Returns the Vulkan logical device created for the application.
+ */
 VkDevice VgeDevice::device()
 {
     return m_device_;
 }
 
+/* Get the surface
+ *
+ * Returns the Vulkan surface associated with the device.
+ */
 VkSurfaceKHR VgeDevice::surface()
 {
     return m_surface_;
 }
 
+/* Get the graphics queue
+ *
+ * Returns the Vulkan queue used for graphics operations.
+ */
 VkQueue VgeDevice::graphicsQueue()
 {
     return m_graphicsQueue_;
 }
 
+/* Get the present queue
+ *
+ * Returns the Vulkan queue used for presenting images to the swap chain.
+ */
 VkQueue VgeDevice::presentQueue()
 {
     return m_presentQueue_;
 }
 
+/* Get swap chain support details
+ *
+ * Queries the physical device for the supported swap chain capabilities,
+ * formats, and present modes.
+ */
 SwapChainSupportDetails VgeDevice::getSwapChainSupport()
 {
     return querySwapChainSupport(m_physicalDevice);
 }
 
+/* Find the queue families for the physical device
+ *
+ * Finds the queue families supported by the physical device that are suitable
+ * for graphics and presentation operations.
+ */
 QueueFamilyIndices VgeDevice::findPhysicalQueueFamilies()
 {
     return findQueueFamilies(m_physicalDevice);
