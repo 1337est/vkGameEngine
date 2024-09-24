@@ -13,6 +13,12 @@
 namespace vge
 {
 
+/* VgeSwapChain constructor
+ *
+ * Initializes a new instance of the VgeSwapChain class with the specified
+ * Vulkan device and swap chain extent. This constructor sets up the swap chain
+ * and its related resources.
+ */
 VgeSwapChain::VgeSwapChain(VgeDevice& deviceRef, VkExtent2D extent)
     : m_swapChainImageFormat{}
     , m_swapChainDepthFormat{}
@@ -36,6 +42,12 @@ VgeSwapChain::VgeSwapChain(VgeDevice& deviceRef, VkExtent2D extent)
     initSwapChain();
 }
 
+/* VgeSwapChain constructor with previous swap chain
+ *
+ * Initializes a new instance of the VgeSwapChain class with the specified
+ * Vulkan device, swap chain extent, and a shared pointer to the previous swap
+ * chain. Cleans up the old swap chain after initializing the new one.
+ */
 VgeSwapChain::VgeSwapChain(
     VgeDevice& deviceRef,
     VkExtent2D extent,
@@ -65,6 +77,11 @@ VgeSwapChain::VgeSwapChain(
     m_oldSwapChain = nullptr;
 }
 
+/* Initializes the swap chain and its related resources
+ *
+ * This function creates the swap chain, image views, render pass, depth
+ * resources, framebuffers, and synchronization objects necessary for rendering.
+ */
 void VgeSwapChain::initSwapChain()
 {
     createSwapChain();
@@ -75,6 +92,12 @@ void VgeSwapChain::initSwapChain()
     createSyncObjects();
 }
 
+/* VgeSwapChain destructor
+ *
+ * Cleans up and releases all resources associated with the swap chain,
+ * including image views, framebuffers, render pass, depth resources, and
+ * synchronization objects.
+ */
 VgeSwapChain::~VgeSwapChain()
 {
     for (VkImageView_T* imageView : m_swapChainImageViews)
@@ -127,6 +150,16 @@ VgeSwapChain::~VgeSwapChain()
     }
 }
 
+/* Acquires the next image in the swap chain
+ *
+ * Waits for the specified fence and acquires the next image from the swap
+ * chain, storing the index of the acquired image in the provided imageIndex
+ * pointer.
+ *
+ * @param imageIndex Pointer to a variable that will receive the index of the
+ * acquired image.
+ * @return Result of the image acquisition operation.
+ */
 VkResult VgeSwapChain::acquireNextImage(uint32_t* imageIndex)
 {
     vkWaitForFences(
@@ -148,6 +181,15 @@ VkResult VgeSwapChain::acquireNextImage(uint32_t* imageIndex)
     return result;
 }
 
+/* Submits command buffers for execution
+ *
+ * Submits the specified command buffers to the graphics queue and presents the
+ * acquired image. Waits for the previous frame's in-flight fence if necessary.
+ *
+ * @param buffers Pointer to the command buffers to submit.
+ * @param imageIndex Pointer to the index of the acquired image to present.
+ * @return Result of the submission and presentation operation.
+ */
 VkResult VgeSwapChain::submitCommandBuffers(
     const VkCommandBuffer* buffers,
     uint32_t* imageIndex)
@@ -214,6 +256,11 @@ VkResult VgeSwapChain::submitCommandBuffers(
     return result;
 }
 
+/* Creates the swap chain
+ *
+ * Configures and creates the swap chain based on the supported formats, present
+ * modes, and capabilities of the Vulkan device.
+ */
 void VgeSwapChain::createSwapChain()
 {
     SwapChainSupportDetails swapChainSupport = m_device.getSwapChainSupport();
@@ -299,6 +346,11 @@ void VgeSwapChain::createSwapChain()
     m_swapChainExtent = extent;
 }
 
+/* Creates image views for the swap chain images
+ *
+ * Iterates through the swap chain images and creates a corresponding image view
+ * for each one.
+ */
 void VgeSwapChain::createImageViews()
 {
     m_swapChainImageViews.resize(m_swapChainImages.size());
@@ -326,6 +378,11 @@ void VgeSwapChain::createImageViews()
     }
 }
 
+/* Creates the render pass for the swap chain
+ *
+ * Configures and creates the render pass that defines how rendering will be
+ * done to the swap chain images and depth attachments.
+ */
 void VgeSwapChain::createRenderPass()
 {
     VkAttachmentDescription depthAttachment{};
@@ -396,6 +453,11 @@ void VgeSwapChain::createRenderPass()
     }
 }
 
+/* Creates framebuffers for the swap chain
+ *
+ * Creates framebuffers that connect the swap chain image views and depth image
+ * views to the render pass for rendering operations.
+ */
 void VgeSwapChain::createFramebuffers()
 {
     m_swapChainFramebuffers.resize(imageCount());
@@ -426,6 +488,11 @@ void VgeSwapChain::createFramebuffers()
     }
 }
 
+/* Creates depth resources for the swap chain
+ *
+ * Allocates and creates depth images and views necessary for rendering with
+ * depth attachments in the swap chain.
+ */
 void VgeSwapChain::createDepthResources()
 {
     VkFormat depthFormat = findDepthFormat();
@@ -482,6 +549,11 @@ void VgeSwapChain::createDepthResources()
     }
 }
 
+/* Creates synchronization objects for managing the rendering process in Vulkan.
+ *
+ * This function initializes semaphores and fences to synchronize image
+ * presentation and rendering operations for multiple frames in flight.
+ */
 void VgeSwapChain::createSyncObjects()
 {
     m_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -520,6 +592,12 @@ void VgeSwapChain::createSyncObjects()
     }
 }
 
+/* Chooses the best surface format for the swap chain.
+ *
+ * This function iterates through available surface formats and returns the
+ * format that supports the VK_FORMAT_B8G8R8A8_UNORM format and the
+ * VK_COLOR_SPACE_SRGB_NONLINEAR_KHR color space.
+ */
 VkSurfaceFormatKHR VgeSwapChain::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR>& availableFormats)
 {
@@ -535,6 +613,11 @@ VkSurfaceFormatKHR VgeSwapChain::chooseSwapSurfaceFormat(
     return availableFormats[0];
 }
 
+/* Chooses the best present mode for the swap chain.
+ *
+ * This function checks available present modes and selects the mailbox mode if
+ * available, or defaults to V-Sync mode if not.
+ */
 VkPresentModeKHR VgeSwapChain::chooseSwapPresentMode(
     const std::vector<VkPresentModeKHR>& availablePresentModes)
 {
@@ -559,6 +642,11 @@ VkPresentModeKHR VgeSwapChain::chooseSwapPresentMode(
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
+/* Chooses the swap extent for the swap chain.
+ *
+ * This function determines the dimensions of the swap chain images based on
+ * the surface capabilities and the desired window size.
+ */
 VkExtent2D VgeSwapChain::chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR& capabilities)
 {
@@ -581,6 +669,11 @@ VkExtent2D VgeSwapChain::chooseSwapExtent(
     }
 }
 
+/* Finds a suitable depth format for the swap chain.
+ *
+ * This function queries the device for supported depth formats suitable for
+ * depth and stencil attachments.
+ */
 VkFormat VgeSwapChain::findDepthFormat()
 {
     return m_device.findSupportedFormat(
@@ -591,52 +684,98 @@ VkFormat VgeSwapChain::findDepthFormat()
         VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
 
+/* Retrieves the framebuffer at the specified index.
+ *
+ * This function returns the framebuffer object associated with the given index
+ * in the swap chain.
+ */
 VkFramebuffer VgeSwapChain::getFrameBuffer(size_t index)
 {
     return m_swapChainFramebuffers[index];
 }
 
+/* Retrieves the render pass used by the swap chain.
+ *
+ * This function returns the Vulkan render pass object configured for rendering
+ * with the swap chain.
+ */
 VkRenderPass VgeSwapChain::getRenderPass()
 {
     return m_renderPass;
 }
 
+/* Retrieves the image view at the specified index.
+ *
+ * This function returns the image view object associated with the given index
+ * in the swap chain.
+ */
 VkImageView VgeSwapChain::getImageView(size_t index)
 {
     return m_swapChainImageViews[index];
 }
 
+/* Returns the number of images in the swap chain.
+ *
+ * This function returns the count of images currently managed by the swap
+ * chain.
+ */
 size_t VgeSwapChain::imageCount()
 {
     return m_swapChainImages.size();
 }
 
+/* Retrieves the format of the swap chain images.
+ *
+ * This function returns the Vulkan format used for the swap chain images.
+ */
 VkFormat VgeSwapChain::getSwapChainImageFormat()
 {
     return m_swapChainImageFormat;
 }
 
+/* Retrieves the extent of the swap chain.
+ *
+ * This function returns the dimensions of the swap chain images.
+ */
 VkExtent2D VgeSwapChain::getSwapChainExtent()
 {
     return m_swapChainExtent;
 }
 
+/* Retrieves the width of the swap chain extent.
+ *
+ * This function returns the width of the swap chain's image extent.
+ */
 uint32_t VgeSwapChain::width()
 {
     return m_swapChainExtent.width;
 }
 
+/* Retrieves the height of the swap chain extent.
+ *
+ * This function returns the height of the swap chain's image extent.
+ */
 uint32_t VgeSwapChain::height()
 {
     return m_swapChainExtent.height;
 }
 
+/* Calculates the aspect ratio of the swap chain extent.
+ *
+ * This function computes and returns the aspect ratio of the swap chain's image
+ * extent (width divided by height).
+ */
 float VgeSwapChain::extentAspectRatio()
 {
     return static_cast<float>(m_swapChainExtent.width) /
            static_cast<float>(m_swapChainExtent.height);
 }
 
+/* Compares the swap formats of two swap chain objects.
+ *
+ * This function checks if the depth format and image format of the current swap
+ * chain match those of the provided swap chain.
+ */
 bool VgeSwapChain::compareSwapFormats(const VgeSwapChain& swapChain) const
 {
     return swapChain.m_swapChainDepthFormat == m_swapChainDepthFormat &&
