@@ -21,6 +21,12 @@ struct SimplePushConstantData
     glm::mat4 normalMatrix{ 1.f }; // identity matrix
 };
 
+/* Constructs a VgeRenderSystem object.
+ *
+ * Initializes the render system by creating the pipeline layout and
+ * pipeline with the provided Vulkan device, render pass, and global
+ * descriptor set layout.
+ */
 VgeRenderSystem::VgeRenderSystem(
     VgeDevice& device,
     VkRenderPass renderPass,
@@ -33,11 +39,21 @@ VgeRenderSystem::VgeRenderSystem(
     createPipeline(renderPass);
 }
 
+/* Destroys the VgeRenderSystem object.
+ *
+ * Cleans up the Vulkan pipeline layout used by the render system
+ * to release resources.
+ */
 VgeRenderSystem::~VgeRenderSystem()
 {
     vkDestroyPipelineLayout(m_vgeDevice.device(), m_pipelineLayout, nullptr);
 }
 
+/* Creates the pipeline layout for the render system.
+ *
+ * Sets up the push constant range and descriptor set layouts for the
+ * pipeline, allowing the shader to access model transformation data.
+ */
 void VgeRenderSystem::createPipelineLayout(
     VkDescriptorSetLayout globalSetLayout)
 {
@@ -67,6 +83,11 @@ void VgeRenderSystem::createPipelineLayout(
     }
 }
 
+/* Creates the graphics pipeline for rendering game objects.
+ *
+ * Configures the pipeline settings, including vertex and fragment shader
+ * paths, and binds it to the specified render pass.
+ */
 void VgeRenderSystem::createPipeline(VkRenderPass renderPass)
 {
     assert(
@@ -84,6 +105,12 @@ void VgeRenderSystem::createPipeline(VkRenderPass renderPass)
         pipelineConfig);
 }
 
+/* Renders game objects in the current frame.
+ *
+ * Binds the pipeline and descriptor sets, then pushes the transformation
+ * matrices for each game object to the shaders and issues draw calls
+ * for the corresponding models.
+ */
 void VgeRenderSystem::renderGameObjects(FrameInfo& frameInfo)
 {
     m_vgePipeline->bind(frameInfo.commandBuffer);

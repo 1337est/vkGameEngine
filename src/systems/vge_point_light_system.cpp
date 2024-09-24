@@ -24,6 +24,12 @@ struct PointLightPushConstants
     float radius;
 };
 
+/* Constructs a VgePointLightSystem object.
+ *
+ * Initializes the point light system by creating the pipeline layout
+ * and pipeline with the provided Vulkan device, render pass, and global
+ * descriptor set layout.
+ */
 VgePointLightSystem::VgePointLightSystem(
     VgeDevice& device,
     VkRenderPass renderPass,
@@ -36,11 +42,21 @@ VgePointLightSystem::VgePointLightSystem(
     createPipeline(renderPass);
 }
 
+/* Destroys the VgePointLightSystem object.
+ *
+ * Cleans up the Vulkan pipeline layout used by the point light system
+ * to release resources.
+ */
 VgePointLightSystem::~VgePointLightSystem()
 {
     vkDestroyPipelineLayout(m_vgeDevice.device(), m_pipelineLayout, nullptr);
 }
 
+/* Creates the pipeline layout for the point light system.
+ *
+ * Sets up the push constant range and descriptor set layouts for the
+ * pipeline, allowing the shader to access point light information.
+ */
 void VgePointLightSystem::createPipelineLayout(
     VkDescriptorSetLayout globalSetLayout)
 {
@@ -70,6 +86,11 @@ void VgePointLightSystem::createPipelineLayout(
     }
 }
 
+/* Creates the graphics pipeline for rendering point lights.
+ *
+ * Configures the pipeline settings, including vertex and fragment shader
+ * paths, and binds it to the specified render pass.
+ */
 void VgePointLightSystem::createPipeline(VkRenderPass renderPass)
 {
     assert(
@@ -89,6 +110,11 @@ void VgePointLightSystem::createPipeline(VkRenderPass renderPass)
         pipelineConfig);
 }
 
+/* Updates the point lights in the current frame.
+ *
+ * Rotates the lights based on the frame time and updates their positions
+ * and colors in the global uniform buffer object for rendering.
+ */
 void VgePointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo)
 {
     // rotate lights
@@ -122,6 +148,11 @@ void VgePointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo)
     ubo.numLights = lightIndex;
 }
 
+/* Renders the point lights for the current frame.
+ *
+ * Binds the pipeline and descriptor sets, then pushes the point light
+ * data to the shaders and issues draw calls for each active point light.
+ */
 void VgePointLightSystem::render(FrameInfo& frameInfo)
 {
     m_vgePipeline->bind(frameInfo.commandBuffer);

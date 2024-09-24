@@ -9,7 +9,11 @@
 
 namespace vge
 {
-
+/* Initializes a VgeRenderer instance.
+ *
+ * This constructor takes a reference to a VgeWindow and a VgeDevice,
+ * setting up the renderer and initializing necessary resources.
+ */
 VgeRenderer::VgeRenderer(VgeWindow& window, VgeDevice& device)
     : m_vgeWindow{ window }
     , m_vgeDevice{ device }
@@ -22,11 +26,22 @@ VgeRenderer::VgeRenderer(VgeWindow& window, VgeDevice& device)
     createCommandBuffers();
 }
 
+/* Cleans up the VgeRenderer instance.
+ *
+ * This destructor frees any allocated command buffers to ensure
+ * proper resource management when the renderer is destroyed.
+ */
 VgeRenderer::~VgeRenderer()
 {
     freeCommandBuffers();
 }
 
+/* Recreates the swap chain.
+ *
+ * This function checks the window's extent and recreates the swap
+ * chain if necessary. It also handles the case where the format of
+ * the swap chain has changed, throwing an exception if that occurs.
+ */
 void VgeRenderer::recreateSwapChain()
 {
     VkExtent2D extent = m_vgeWindow.getExtent();
@@ -55,6 +70,12 @@ void VgeRenderer::recreateSwapChain()
     }
 }
 
+/* Creates command buffers for rendering.
+ *
+ * This function allocates command buffers for rendering operations,
+ * resizing the command buffer array to accommodate the maximum number
+ * of frames in flight. It throws an exception if the allocation fails.
+ */
 void VgeRenderer::createCommandBuffers()
 {
     m_commandBuffers.resize(VgeSwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -75,6 +96,11 @@ void VgeRenderer::createCommandBuffers()
     }
 }
 
+/* Frees the allocated command buffers.
+ *
+ * This function releases the memory associated with the command buffers
+ * and clears the buffer array.
+ */
 void VgeRenderer::freeCommandBuffers()
 {
     vkFreeCommandBuffers(
@@ -86,6 +112,12 @@ void VgeRenderer::freeCommandBuffers()
     m_commandBuffers.clear();
 }
 
+/* Begins the frame for rendering.
+ *
+ * This function acquires the next image from the swap chain and prepares
+ * the command buffer for recording. It throws an exception if it fails
+ * to acquire the image or begin the command buffer.
+ */
 VkCommandBuffer VgeRenderer::beginFrame()
 {
     assert(
@@ -118,6 +150,12 @@ VkCommandBuffer VgeRenderer::beginFrame()
     return commandBuffer;
 }
 
+/* Ends the current rendering frame and submits the command buffer for
+ * presentation.
+ *
+ * This method finalizes the recorded commands and handles any necessary
+ * cleanup, including checking if the swap chain needs to be recreated.
+ */
 void VgeRenderer::endFrame()
 {
     assert(
@@ -148,6 +186,11 @@ void VgeRenderer::endFrame()
         (m_currentFrameIndex + 1) % VgeSwapChain::MAX_FRAMES_IN_FLIGHT;
 }
 
+/* Begins the render pass for the current frame's swap chain.
+ *
+ * This method sets up the render pass with the appropriate framebuffer and
+ * clear values, allowing for rendering operations to be recorded.
+ */
 void VgeRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
 {
     assert(
@@ -195,6 +238,11 @@ void VgeRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 }
 
+/* Ends the render pass for the current frame's swap chain.
+ *
+ * This method finalizes the render pass and allows the command buffer to be
+ * submitted.
+ */
 void VgeRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer)
 {
     assert(
@@ -206,21 +254,41 @@ void VgeRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer)
     vkCmdEndRenderPass(commandBuffer);
 }
 
+/* Retrieves the render pass used by the swap chain.
+ *
+ * This method returns the Vulkan render pass associated with the current swap
+ * chain, allowing for further rendering operations.
+ */
 VkRenderPass VgeRenderer::getSwapChainRenderPass() const
 {
     return m_vgeSwapChain->getRenderPass();
 }
 
+/* Calculates the aspect ratio of the swap chain.
+ *
+ * This method provides the aspect ratio based on the current swap chain extent,
+ * useful for maintaining correct rendering proportions.
+ */
 float VgeRenderer::getAspectRatio() const
 {
     return m_vgeSwapChain->extentAspectRatio();
 }
 
+/* Checks if a rendering frame is currently in progress.
+ *
+ * This method returns a boolean indicating whether the renderer is currently
+ * in the process of rendering a frame.
+ */
 bool VgeRenderer::isFrameInProgress() const
 {
     return m_isFrameStarted;
 }
 
+/* Retrieves the command buffer for the current rendering frame.
+ *
+ * This method returns the command buffer that is currently being recorded,
+ * ensuring that commands are added to the correct buffer.
+ */
 VkCommandBuffer VgeRenderer::getCurrentCommandBuffer() const
 {
     assert(
@@ -229,6 +297,11 @@ VkCommandBuffer VgeRenderer::getCurrentCommandBuffer() const
     return m_commandBuffers[m_currentFrameIndex];
 }
 
+/* Retrieves the index of the current rendering frame.
+ *
+ * This method returns the index of the frame being rendered, useful for
+ * managing frame-related resources and logic.
+ */
 uint32_t VgeRenderer::getFrameIndex() const
 {
     assert(

@@ -20,12 +20,7 @@ namespace vge
 {
 
 template <typename T, typename... Rest>
-void hashCombine(std::size_t& seed, const T& v, const Rest&... rest)
-{
-    seed ^= std::hash<T>{}(v) + 0x9e'37'79'b9 + (seed << 6) + (seed >> 2);
-    // C++17 fold expression (f(), ...) to hash remaining element in rest...
-    (hashCombine(seed, rest), ...);
-}
+void hashCombine(std::size_t& seed, const T& v, const Rest&... rest);
 
 class VgeModel
 {
@@ -42,11 +37,7 @@ public:
         static std::vector<VkVertexInputAttributeDescription>
         getAttributeDescriptions();
 
-        bool operator==(const Vertex& other) const
-        {
-            return position == other.position && color == other.color &&
-                   normal == other.normal && uv == other.uv;
-        }
+        bool operator==(const Vertex& other) const;
     };
 
     struct Builder

@@ -23,10 +23,7 @@ struct QueueFamilyIndices
     bool graphicsFamilyHasValue = false;
     bool presentFamilyHasValue = false;
 
-    bool isComplete()
-    {
-        return graphicsFamilyHasValue && presentFamilyHasValue;
-    }
+    bool isComplete();
 };
 
 class VgeDevice

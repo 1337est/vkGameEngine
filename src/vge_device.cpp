@@ -904,4 +904,15 @@ QueueFamilyIndices VgeDevice::findPhysicalQueueFamilies()
     return findQueueFamilies(m_physicalDevice);
 }
 
+/* Checks if both graphics and present families have been set.
+ *
+ * This function returns true if both the graphicsFamily and presentFamily
+ * indices have valid values, indicating that the queue families required
+ * for rendering and presentation are available for use.
+ */
+bool QueueFamilyIndices::isComplete()
+{
+    return graphicsFamilyHasValue && presentFamilyHasValue;
+}
+
 } // namespace vge

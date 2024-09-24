@@ -3,22 +3,46 @@
 
 namespace vge
 {
+/* Constructs a VgeGameObject with a unique identifier.
+ *
+ * This constructor initializes the VgeGameObject with the given id_t object
+ * identifier, allowing for unique identification of the game object within the
+ * scene.
+ */
 VgeGameObject::VgeGameObject(id_t objId)
     : m_id{ objId }
 {
 }
 
+/* Creates and returns a new instance of VgeGameObject.
+ *
+ * This static method generates a new VgeGameObject with a unique identifier,
+ * incrementing the current ID for each new object created. This ensures that
+ * each game object has a distinct ID, which is essential for object management.
+ */
 VgeGameObject VgeGameObject::createGameObject()
 {
     static id_t currentId = 0;
     return VgeGameObject{ currentId++ };
 }
 
+/* Retrieves the unique identifier of the VgeGameObject.
+ *
+ * This method returns the ID associated with the VgeGameObject, which can be
+ * used for identification and management purposes within the game engine.
+ */
 id_t VgeGameObject::getId()
 {
     return m_id;
 }
 
+/* Computes the transformation matrix for the TransformComponent.
+ *
+ * This method constructs a 4x4 transformation matrix based on the scale,
+ * rotation, and translation of the TransformComponent. It accounts for the
+ * object's orientation in 3D space and applies scaling factors, making it
+ * suitable for rendering.
+ */
 glm::mat4 TransformComponent::mat4()
 {
     {
@@ -50,6 +74,13 @@ glm::mat4 TransformComponent::mat4()
     }
 }
 
+/* Computes the normal matrix for the TransformComponent.
+ *
+ * This method generates a 3x3 matrix that is used to transform normals
+ * correctly based on the current scale and rotation of the TransformComponent.
+ * It ensures that lighting calculations are accurate in 3D rendering by
+ * maintaining the correct orientation of surface normals.
+ */
 glm::mat3 TransformComponent::normalMatrix()
 {
     {
@@ -82,6 +113,13 @@ glm::mat3 TransformComponent::normalMatrix()
     }
 }
 
+/* Creates a VgeGameObject configured as a point light source.
+ *
+ * This method constructs a VgeGameObject that acts as a point light, setting
+ * its intensity and radius. It initializes the point light component and scales
+ * the object based on the provided radius, allowing for realistic lighting
+ * effects within the scene.
+ */
 VgeGameObject VgeGameObject::makePointLight(
     float intensity,
     float radius,

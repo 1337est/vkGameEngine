@@ -17,7 +17,12 @@
 
 namespace vge
 {
-
+/* Constructs a VgePipeline object.
+ *
+ * This constructor initializes the VgePipeline by creating the graphics
+ * pipeline from the specified vertex and fragment shader file paths, along with
+ * the provided pipeline configuration information.
+ */
 VgePipeline::VgePipeline(
     VgeDevice& device,
     const std::string& vertFilepath,
@@ -31,6 +36,11 @@ VgePipeline::VgePipeline(
     createGraphicsPipeline(vertFilepath, fragFilePath, configInfo);
 }
 
+/* Destroys the VgePipeline object.
+ *
+ * This destructor cleans up the Vulkan resources associated with the graphics
+ * pipeline, including the shader modules and the graphics pipeline itself.
+ */
 VgePipeline::~VgePipeline()
 {
     vkDestroyShaderModule(m_vgeDevice.device(), m_vertShaderModule, nullptr);
@@ -38,6 +48,12 @@ VgePipeline::~VgePipeline()
     vkDestroyPipeline(m_vgeDevice.device(), m_graphicsPipeline, nullptr);
 }
 
+/* Reads the contents of a binary file into a vector of characters.
+ *
+ * This function opens the specified file at the end and reads its contents into
+ * a vector, returning the data as a vector of characters. If the file cannot be
+ * opened, a runtime error is thrown.
+ */
 std::vector<char> VgePipeline::readFile(const std::string& filepath)
 {
     // NOTE: filepath is the location of a binary file
@@ -66,6 +82,13 @@ std::vector<char> VgePipeline::readFile(const std::string& filepath)
     return buffer;
 }
 
+/* Creates a graphics pipeline using the provided vertex and fragment shader
+ * files and configuration information.
+ *
+ * This function reads the binary shader files, creates shader modules, and
+ * initializes the graphics pipeline state, including vertex input state, input
+ * assembly state, viewport state, and more.
+ */
 void VgePipeline::createGraphicsPipeline(
     const std::string& vertFilepath,
     const std::string& fragFilePath,
@@ -156,7 +179,12 @@ void VgePipeline::createGraphicsPipeline(
     }
 }
 
-// Creates the shader module info from compiled shader bytecode
+/* Creates a Vulkan shader module from compiled shader bytecode.
+ *
+ * This function initializes the VkShaderModuleCreateInfo structure and calls
+ * vkCreateShaderModule to create a shader module from the provided bytecode. If
+ * creation fails, a runtime error is thrown.
+ */
 void VgePipeline::createShaderModule(
     const std::vector<char>& code,
     VkShaderModule* shaderModule)
@@ -177,6 +205,11 @@ void VgePipeline::createShaderModule(
     }
 }
 
+/* Binds the graphics pipeline to the specified command buffer.
+ *
+ * This function binds the graphics pipeline to the given command buffer for
+ * subsequent rendering commands.
+ */
 void VgePipeline::bind(VkCommandBuffer commandBuffer)
 {
     vkCmdBindPipeline(
@@ -185,7 +218,13 @@ void VgePipeline::bind(VkCommandBuffer commandBuffer)
         m_graphicsPipeline);
 }
 
-//
+/* Configures the default pipeline settings for the specified PipelineConfigInfo
+ * object.
+ *
+ * This function sets default values for input assembly, viewport,
+ * rasterization, multisampling, color blending, depth testing, and dynamic
+ * states, preparing the configInfo for creating a graphics pipeline.
+ */
 void VgePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
 {
     // How to interpret and draw out vertices

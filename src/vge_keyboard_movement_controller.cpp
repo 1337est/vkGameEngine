@@ -9,7 +9,13 @@
 
 namespace vge
 {
-
+/* Moves the game object in the XZ plane based on keyboard input.
+ *
+ * This method checks the state of specified keys in the GLFW window and
+ * applies rotation and translation to the provided game object accordingly.
+ * It handles pitch and yaw limits to ensure realistic movement in 3D space,
+ * allowing the game object to rotate and move based on user input.
+ */
 void VgaKeyboardMovementController::moveInPlaneXZ(
     GLFWwindow* window,
     float dt,

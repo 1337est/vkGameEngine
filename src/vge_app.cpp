@@ -22,7 +22,11 @@
 
 namespace vge
 {
-
+/* Constructs a VgeApp object.
+ *
+ * Initializes the application by setting up the global descriptor pool
+ * and loading game objects into the scene.
+ */
 VgeApp::VgeApp()
     : m_gameObjects{}
 {
@@ -35,10 +39,19 @@ VgeApp::VgeApp()
     loadGameObjects();
 }
 
+/* Destroys the VgeApp object.
+ *
+ * Cleans up resources associated with the VgeApp instance.
+ */
 VgeApp::~VgeApp()
 {
 }
 
+/* Runs the main loop of the application.
+ *
+ * Handles input events, updates the camera and game objects, and
+ * manages the rendering process for each frame until the window is closed.
+ */
 void VgeApp::run()
 {
     std::vector<std::unique_ptr<VgeBuffer>> uboBuffers(
@@ -157,6 +170,11 @@ void VgeApp::run()
     vkDeviceWaitIdle(m_vgeDevice.device());
 }
 
+/* Loads game objects into the application.
+ *
+ * Creates models from files, sets their transformations, and stores
+ * them in the game object container for rendering.
+ */
 void VgeApp::loadGameObjects()
 {
     std::shared_ptr<VgeModel> vgeModel =

@@ -22,6 +22,13 @@
 
 namespace std
 {
+/* Specializes the hash function for vge::VgeModel::Vertex.
+ *
+ * This struct provides a custom hash function for Vertex objects, combining
+ * the hash values of the position, color, normal, and UV coordinates to
+ * produce a unique hash value for each Vertex, enabling its use in hash-based
+ * containers like std::unordered_map.
+ */
 template <> struct hash<vge::VgeModel::Vertex>
 {
     size_t operator()(const vge::VgeModel::Vertex& vertex) const
@@ -41,6 +48,25 @@ template <> struct hash<vge::VgeModel::Vertex>
 namespace vge
 {
 
+/* Combines multiple hash values into a single hash seed.
+ *
+ * This function updates the provided seed with the hash of the given values,
+ * allowing for the efficient hashing of multiple components by using a
+ * combination algorithm.
+ */
+template <typename T, typename... Rest>
+void hashCombine(std::size_t& seed, const T& v, const Rest&... rest)
+{
+    seed ^= std::hash<T>{}(v) + 0x9e'37'79'b9 + (seed << 6) + (seed >> 2);
+    // C++17 fold expression (f(), ...) to hash remaining element in rest...
+    (hashCombine(seed, rest), ...);
+}
+
+/* Constructs a VgeModel from the given device and builder.
+ *
+ * This constructor initializes vertex and index buffers by calling the
+ * respective creation methods with data from the builder.
+ */
 VgeModel::VgeModel(VgeDevice& device, const VgeModel::Builder& builder)
     : m_vgeDevice{ device }
     , m_vertexBuffer{}
@@ -52,10 +78,30 @@ VgeModel::VgeModel(VgeDevice& device, const VgeModel::Builder& builder)
     createIndexBuffers(builder.indices);
 }
 
+/* Cleans up resources associated with the VgeModel.
+ *
+ * This destructor ensures that all allocated resources are properly released.
+ */
 VgeModel::~VgeModel()
 {
 }
 
+/* Compares two Vertex instances for equality.
+ *
+ * This method checks if the position, color, normal, and UV coordinates
+ * of two Vertex objects are identical.
+ */
+bool VgeModel::Vertex::operator==(const Vertex& other) const
+{
+    return position == other.position && color == other.color &&
+           normal == other.normal && uv == other.uv;
+}
+
+/* Creates a VgeModel instance from a specified file.
+ *
+ * This static method loads a model from the given file path and returns
+ * a unique pointer to the created VgeModel instance.
+ */
 std::unique_ptr<VgeModel> VgeModel::createModelFromFile(
     VgeDevice& device,
     const std::string& filepath)
@@ -66,6 +112,11 @@ std::unique_ptr<VgeModel> VgeModel::createModelFromFile(
     return std::make_unique<VgeModel>(device, builder);
 }
 
+/* Creates vertex buffers for the model from the provided vertices.
+ *
+ * This method allocates a staging buffer, maps it, and copies vertex data
+ * into the GPU-usable vertex buffer.
+ */
 void VgeModel::createVertexBuffers(const std::vector<Vertex>& vertices)
 {
     m_vertexCount = static_cast<uint32_t>(vertices.size());
@@ -100,6 +151,12 @@ void VgeModel::createVertexBuffers(const std::vector<Vertex>& vertices)
         bufferSize);
 }
 
+/* Creates index buffers for the model from the provided indices.
+ *
+ * This method allocates a staging buffer for index data, maps it, and
+ * copies the indices into the GPU-usable index buffer, if any indices are
+ * provided.
+ */
 void VgeModel::createIndexBuffers(const std::vector<uint32_t>& indices)
 {
     m_indexCount = static_cast<uint32_t>(indices.size());
@@ -138,6 +195,11 @@ void VgeModel::createIndexBuffers(const std::vector<uint32_t>& indices)
         bufferSize);
 }
 
+/* Draws the model using the specified command buffer.
+ *
+ * This method issues a draw call, either indexed or non-indexed, depending
+ * on the presence of an index buffer.
+ */
 void VgeModel::draw(VkCommandBuffer commandBuffer)
 {
     if (m_hasIndexBuffer)
@@ -150,6 +212,11 @@ void VgeModel::draw(VkCommandBuffer commandBuffer)
     }
 }
 
+/* Binds the vertex and index buffers to the specified command buffer.
+ *
+ * This method sets up the buffers for rendering, ensuring they are bound
+ * to the correct slots in the command buffer.
+ */
 void VgeModel::bind(VkCommandBuffer commandBuffer)
 {
     VkBuffer buffers[] = { m_vertexBuffer->getBuffer() };
@@ -166,6 +233,11 @@ void VgeModel::bind(VkCommandBuffer commandBuffer)
     }
 }
 
+/* Retrieves the vertex input binding descriptions for the model.
+ *
+ * This method returns a vector of binding descriptions required for
+ * configuring vertex input in the graphics pipeline.
+ */
 std::vector<VkVertexInputBindingDescription> VgeModel::Vertex::
     getBindingDescriptions()
 {
@@ -176,6 +248,11 @@ std::vector<VkVertexInputBindingDescription> VgeModel::Vertex::
     return bindingDescriptions;
 }
 
+/* Retrieves the vertex input attribute descriptions for the model.
+ *
+ * This method returns a vector of attribute descriptions that define the
+ * layout of vertex data in the graphics pipeline.
+ */
 std::vector<VkVertexInputAttributeDescription> VgeModel::Vertex::
     getAttributeDescriptions()
 {
@@ -194,6 +271,11 @@ std::vector<VkVertexInputAttributeDescription> VgeModel::Vertex::
     return attributeDescriptions;
 }
 
+/* Loads a model from the specified file into the builder.
+ *
+ * This method reads a Wavefront .obj file, extracts vertex and index data,
+ * and stores it in the builder's vertices and indices vectors.
+ */
 void VgeModel::Builder::loadModel(const std::string& filepath)
 {
     // All of these values will be set by tinyobjloader and will store the
