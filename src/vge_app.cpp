@@ -167,7 +167,7 @@ void VgeApp::run()
         }
     }
 
-    vkDeviceWaitIdle(m_vgeDevice.device());
+    vkDeviceWaitIdle(m_vgeDevice.getDevice());
 }
 
 /* Loads game objects into the application.

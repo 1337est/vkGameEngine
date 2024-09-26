@@ -78,7 +78,7 @@ VgeDescriptorSetLayout::VgeDescriptorSetLayout(
     descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
 
     if (vkCreateDescriptorSetLayout(
-            vgeDevice.device(),
+            vgeDevice.getDevice(),
             &descriptorSetLayoutInfo,
             nullptr,
             &m_descriptorSetLayout) != VK_SUCCESS)
@@ -94,7 +94,7 @@ VgeDescriptorSetLayout::VgeDescriptorSetLayout(
 VgeDescriptorSetLayout::~VgeDescriptorSetLayout()
 {
     vkDestroyDescriptorSetLayout(
-        m_vgeDevice.device(),
+        m_vgeDevice.getDevice(),
         m_descriptorSetLayout,
         nullptr);
 }
@@ -191,7 +191,7 @@ VgeDescriptorPool::VgeDescriptorPool(
     descriptorPoolInfo.flags = poolFlags;
 
     if (vkCreateDescriptorPool(
-            vgeDevice.device(),
+            vgeDevice.getDevice(),
             &descriptorPoolInfo,
             nullptr,
             &m_descriptorPool) != VK_SUCCESS)
@@ -206,7 +206,7 @@ VgeDescriptorPool::VgeDescriptorPool(
  */
 VgeDescriptorPool::~VgeDescriptorPool()
 {
-    vkDestroyDescriptorPool(m_vgeDevice.device(), m_descriptorPool, nullptr);
+    vkDestroyDescriptorPool(m_vgeDevice.getDevice(), m_descriptorPool, nullptr);
 }
 
 /* Allocates a descriptor set from the pool.
@@ -229,7 +229,7 @@ bool VgeDescriptorPool::allocateDescriptorSet(
     // case, and builds a new pool whenever an old pool fills up. But this is
     // beyond our current scope
     if (vkAllocateDescriptorSets(
-            m_vgeDevice.device(),
+            m_vgeDevice.getDevice(),
             &allocInfo,
             &descriptor) != VK_SUCCESS)
     {
@@ -247,7 +247,7 @@ void VgeDescriptorPool::freeDescriptors(
     std::vector<VkDescriptorSet>& descriptors) const
 {
     vkFreeDescriptorSets(
-        m_vgeDevice.device(),
+        m_vgeDevice.getDevice(),
         m_descriptorPool,
         static_cast<uint32_t>(descriptors.size()),
         descriptors.data());
@@ -260,7 +260,7 @@ void VgeDescriptorPool::freeDescriptors(
  */
 void VgeDescriptorPool::resetPool()
 {
-    vkResetDescriptorPool(m_vgeDevice.device(), m_descriptorPool, 0);
+    vkResetDescriptorPool(m_vgeDevice.getDevice(), m_descriptorPool, 0);
 }
 
 // *************** Descriptor Writer *********************
@@ -369,7 +369,7 @@ void VgeDescriptorWriter::overwrite(VkDescriptorSet& set)
         write.dstSet = set;
     }
     vkUpdateDescriptorSets(
-        m_pool.m_vgeDevice.device(),
+        m_pool.m_vgeDevice.getDevice(),
         m_writes.size(),
         m_writes.data(),
         0,

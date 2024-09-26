@@ -102,51 +102,51 @@ VgeSwapChain::~VgeSwapChain()
 {
     for (VkImageView_T* imageView : m_swapChainImageViews)
     {
-        vkDestroyImageView(m_device.device(), imageView, nullptr);
+        vkDestroyImageView(m_device.getDevice(), imageView, nullptr);
     }
     m_swapChainImageViews.clear();
 
     if (m_swapChain != nullptr)
     {
-        vkDestroySwapchainKHR(m_device.device(), m_swapChain, nullptr);
+        vkDestroySwapchainKHR(m_device.getDevice(), m_swapChain, nullptr);
         m_swapChain = nullptr;
     }
 
     for (int i = 0; i < static_cast<int>(m_depthImages.size()); i++)
     {
         vkDestroyImageView(
-            m_device.device(),
+            m_device.getDevice(),
             m_depthImageViews[static_cast<size_t>(i)],
             nullptr);
         vkDestroyImage(
-            m_device.device(),
+            m_device.getDevice(),
             m_depthImages[static_cast<size_t>(i)],
             nullptr);
         vkFreeMemory(
-            m_device.device(),
+            m_device.getDevice(),
             m_depthImageMemorys[static_cast<size_t>(i)],
             nullptr);
     }
 
     for (VkFramebuffer_T* framebuffer : m_swapChainFramebuffers)
     {
-        vkDestroyFramebuffer(m_device.device(), framebuffer, nullptr);
+        vkDestroyFramebuffer(m_device.getDevice(), framebuffer, nullptr);
     }
 
-    vkDestroyRenderPass(m_device.device(), m_renderPass, nullptr);
+    vkDestroyRenderPass(m_device.getDevice(), m_renderPass, nullptr);
 
     // cleanup synchronization objects
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
         vkDestroySemaphore(
-            m_device.device(),
+            m_device.getDevice(),
             m_renderFinishedSemaphores[i],
             nullptr);
         vkDestroySemaphore(
-            m_device.device(),
+            m_device.getDevice(),
             m_imageAvailableSemaphores[i],
             nullptr);
-        vkDestroyFence(m_device.device(), m_inFlightFences[i], nullptr);
+        vkDestroyFence(m_device.getDevice(), m_inFlightFences[i], nullptr);
     }
 }
 
@@ -163,14 +163,14 @@ VgeSwapChain::~VgeSwapChain()
 VkResult VgeSwapChain::acquireNextImage(uint32_t* imageIndex)
 {
     vkWaitForFences(
-        m_device.device(),
+        m_device.getDevice(),
         1,
         &m_inFlightFences[m_currentFrame],
         VK_TRUE,
         std::numeric_limits<uint64_t>::max());
 
     VkResult result = vkAcquireNextImageKHR(
-        m_device.device(),
+        m_device.getDevice(),
         m_swapChain,
         std::numeric_limits<uint64_t>::max(),
         m_imageAvailableSemaphores[m_currentFrame], // must be a not signaled
@@ -197,7 +197,7 @@ VkResult VgeSwapChain::submitCommandBuffers(
     if (m_imagesInFlight[*imageIndex] != VK_NULL_HANDLE)
     {
         vkWaitForFences(
-            m_device.device(),
+            m_device.getDevice(),
             1,
             &m_imagesInFlight[*imageIndex],
             VK_TRUE,
@@ -227,9 +227,9 @@ VkResult VgeSwapChain::submitCommandBuffers(
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    vkResetFences(m_device.device(), 1, &m_inFlightFences[m_currentFrame]);
+    vkResetFences(m_device.getDevice(), 1, &m_inFlightFences[m_currentFrame]);
     if (vkQueueSubmit(
-            m_device.graphicsQueue(),
+            m_device.getGraphicsQueue(),
             1,
             &submitInfo,
             m_inFlightFences[m_currentFrame]) != VK_SUCCESS)
@@ -249,7 +249,8 @@ VkResult VgeSwapChain::submitCommandBuffers(
 
     presentInfo.pImageIndices = imageIndex;
 
-    VkResult result = vkQueuePresentKHR(m_device.presentQueue(), &presentInfo);
+    VkResult result =
+        vkQueuePresentKHR(m_device.getPresentQueue(), &presentInfo);
 
     m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 
@@ -280,7 +281,7 @@ void VgeSwapChain::createSwapChain()
 
     VkSwapchainCreateInfoKHR createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    createInfo.surface = m_device.surface();
+    createInfo.surface = m_device.getSurface();
 
     createInfo.minImageCount = imageCount;
     createInfo.imageFormat = surfaceFormat.format;
@@ -317,7 +318,7 @@ void VgeSwapChain::createSwapChain()
                                   : m_oldSwapChain->m_swapChain;
 
     if (vkCreateSwapchainKHR(
-            m_device.device(),
+            m_device.getDevice(),
             &createInfo,
             nullptr,
             &m_swapChain) != VK_SUCCESS)
@@ -331,13 +332,13 @@ void VgeSwapChain::createSwapChain()
     // vkGetSwapchainImagesKHR, then resize the container and finally call it
     // again to retrieve the handles.
     vkGetSwapchainImagesKHR(
-        m_device.device(),
+        m_device.getDevice(),
         m_swapChain,
         &imageCount,
         nullptr);
     m_swapChainImages.resize(imageCount);
     vkGetSwapchainImagesKHR(
-        m_device.device(),
+        m_device.getDevice(),
         m_swapChain,
         &imageCount,
         m_swapChainImages.data());
@@ -368,7 +369,7 @@ void VgeSwapChain::createImageViews()
         viewInfo.subresourceRange.layerCount = 1;
 
         if (vkCreateImageView(
-                m_device.device(),
+                m_device.getDevice(),
                 &viewInfo,
                 nullptr,
                 &m_swapChainImageViews[i]) != VK_SUCCESS)
@@ -444,7 +445,7 @@ void VgeSwapChain::createRenderPass()
     renderPassInfo.pDependencies = &dependency;
 
     if (vkCreateRenderPass(
-            m_device.device(),
+            m_device.getDevice(),
             &renderPassInfo,
             nullptr,
             &m_renderPass) != VK_SUCCESS)
@@ -478,7 +479,7 @@ void VgeSwapChain::createFramebuffers()
         framebufferInfo.layers = 1;
 
         if (vkCreateFramebuffer(
-                m_device.device(),
+                m_device.getDevice(),
                 &framebufferInfo,
                 nullptr,
                 &m_swapChainFramebuffers[i]) != VK_SUCCESS)
@@ -539,7 +540,7 @@ void VgeSwapChain::createDepthResources()
         viewInfo.subresourceRange.layerCount = 1;
 
         if (vkCreateImageView(
-                m_device.device(),
+                m_device.getDevice(),
                 &viewInfo,
                 nullptr,
                 &m_depthImageViews[static_cast<size_t>(i)]) != VK_SUCCESS)
@@ -571,17 +572,17 @@ void VgeSwapChain::createSyncObjects()
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
         if (vkCreateSemaphore(
-                m_device.device(),
+                m_device.getDevice(),
                 &semaphoreInfo,
                 nullptr,
                 &m_imageAvailableSemaphores[i]) != VK_SUCCESS ||
             vkCreateSemaphore(
-                m_device.device(),
+                m_device.getDevice(),
                 &semaphoreInfo,
                 nullptr,
                 &m_renderFinishedSemaphores[i]) != VK_SUCCESS ||
             vkCreateFence(
-                m_device.device(),
+                m_device.getDevice(),
                 &fenceInfo,
                 nullptr,
                 &m_inFlightFences[i]) != VK_SUCCESS)

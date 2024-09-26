@@ -852,7 +852,7 @@ VkCommandPool VgeDevice::getCommandPool()
  *
  * Returns the Vulkan logical device created for the application.
  */
-VkDevice VgeDevice::device()
+VkDevice VgeDevice::getDevice()
 {
     return m_device_;
 }
@@ -861,7 +861,7 @@ VkDevice VgeDevice::device()
  *
  * Returns the Vulkan surface associated with the device.
  */
-VkSurfaceKHR VgeDevice::surface()
+VkSurfaceKHR VgeDevice::getSurface()
 {
     return m_surface_;
 }
@@ -870,7 +870,7 @@ VkSurfaceKHR VgeDevice::surface()
  *
  * Returns the Vulkan queue used for graphics operations.
  */
-VkQueue VgeDevice::graphicsQueue()
+VkQueue VgeDevice::getGraphicsQueue()
 {
     return m_graphicsQueue_;
 }
@@ -879,7 +879,7 @@ VkQueue VgeDevice::graphicsQueue()
  *
  * Returns the Vulkan queue used for presenting images to the swap chain.
  */
-VkQueue VgeDevice::presentQueue()
+VkQueue VgeDevice::getPresentQueue()
 {
     return m_presentQueue_;
 }

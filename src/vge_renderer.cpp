@@ -50,7 +50,7 @@ void VgeRenderer::recreateSwapChain()
         extent = m_vgeWindow.getExtent();
         glfwWaitEvents();
     }
-    vkDeviceWaitIdle(m_vgeDevice.device());
+    vkDeviceWaitIdle(m_vgeDevice.getDevice());
 
     if (m_vgeSwapChain == nullptr)
     {
@@ -88,7 +88,7 @@ void VgeRenderer::createCommandBuffers()
         static_cast<uint32_t>(m_commandBuffers.size());
 
     if (vkAllocateCommandBuffers(
-            m_vgeDevice.device(),
+            m_vgeDevice.getDevice(),
             &allocInfo,
             m_commandBuffers.data()) != VK_SUCCESS)
     {
@@ -104,7 +104,7 @@ void VgeRenderer::createCommandBuffers()
 void VgeRenderer::freeCommandBuffers()
 {
     vkFreeCommandBuffers(
-        m_vgeDevice.device(),
+        m_vgeDevice.getDevice(),
         m_vgeDevice.getCommandPool(),
         static_cast<uint32_t>(m_commandBuffers.size()),
         m_commandBuffers.data());

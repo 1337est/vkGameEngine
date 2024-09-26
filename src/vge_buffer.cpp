@@ -71,8 +71,8 @@ VgeBuffer::VgeBuffer(
 VgeBuffer::~VgeBuffer()
 {
     unmap();
-    vkDestroyBuffer(m_vgeDevice.device(), m_buffer, nullptr);
-    vkFreeMemory(m_vgeDevice.device(), m_memory, nullptr);
+    vkDestroyBuffer(m_vgeDevice.getDevice(), m_buffer, nullptr);
+    vkFreeMemory(m_vgeDevice.getDevice(), m_memory, nullptr);
 }
 
 /* Maps a memory range of this buffer. If successful, mapped points to the
@@ -85,7 +85,7 @@ VkResult VgeBuffer::map(VkDeviceSize size, VkDeviceSize offset)
 {
     assert(m_buffer && m_memory && "Called map on buffer before create");
     return vkMapMemory(
-        m_vgeDevice.device(),
+        m_vgeDevice.getDevice(),
         m_memory,
         offset,
         size,
@@ -102,7 +102,7 @@ void VgeBuffer::unmap()
 {
     if (m_mapped)
     {
-        vkUnmapMemory(m_vgeDevice.device(), m_memory);
+        vkUnmapMemory(m_vgeDevice.getDevice(), m_memory);
         m_mapped = nullptr;
     }
 }
@@ -144,7 +144,7 @@ VkResult VgeBuffer::flush(VkDeviceSize size, VkDeviceSize offset)
     mappedRange.memory = m_memory;
     mappedRange.offset = offset;
     mappedRange.size = size;
-    return vkFlushMappedMemoryRanges(m_vgeDevice.device(), 1, &mappedRange);
+    return vkFlushMappedMemoryRanges(m_vgeDevice.getDevice(), 1, &mappedRange);
 }
 
 /* Invalidates a memory range of the buffer to make it visible to the host.
@@ -161,7 +161,7 @@ VkResult VgeBuffer::invalidate(VkDeviceSize size, VkDeviceSize offset)
     mappedRange.offset = offset;
     mappedRange.size = size;
     return vkInvalidateMappedMemoryRanges(
-        m_vgeDevice.device(),
+        m_vgeDevice.getDevice(),
         1,
         &mappedRange);
 }

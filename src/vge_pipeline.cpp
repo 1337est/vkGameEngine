@@ -43,9 +43,9 @@ VgePipeline::VgePipeline(
  */
 VgePipeline::~VgePipeline()
 {
-    vkDestroyShaderModule(m_vgeDevice.device(), m_vertShaderModule, nullptr);
-    vkDestroyShaderModule(m_vgeDevice.device(), m_fragShaderModule, nullptr);
-    vkDestroyPipeline(m_vgeDevice.device(), m_graphicsPipeline, nullptr);
+    vkDestroyShaderModule(m_vgeDevice.getDevice(), m_vertShaderModule, nullptr);
+    vkDestroyShaderModule(m_vgeDevice.getDevice(), m_fragShaderModule, nullptr);
+    vkDestroyPipeline(m_vgeDevice.getDevice(), m_graphicsPipeline, nullptr);
 }
 
 /* Reads the contents of a binary file into a vector of characters.
@@ -168,7 +168,7 @@ void VgePipeline::createGraphicsPipeline(
 
     // Create graphics pipeline
     if (vkCreateGraphicsPipelines(
-            m_vgeDevice.device(),
+            m_vgeDevice.getDevice(),
             VK_NULL_HANDLE,
             1,
             &pipelineInfo,
@@ -196,7 +196,7 @@ void VgePipeline::createShaderModule(
     createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
     if (vkCreateShaderModule(
-            m_vgeDevice.device(),
+            m_vgeDevice.getDevice(),
             &createInfo,
             nullptr,
             shaderModule) != VK_SUCCESS)

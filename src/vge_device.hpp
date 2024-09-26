@@ -45,10 +45,10 @@ public:
     VgeDevice& operator=(VgeDevice&&) = delete;
 
     VkCommandPool getCommandPool();
-    VkDevice device();
-    VkSurfaceKHR surface();
-    VkQueue graphicsQueue();
-    VkQueue presentQueue();
+    VkDevice getDevice();
+    VkSurfaceKHR getSurface();
+    VkQueue getGraphicsQueue();
+    VkQueue getPresentQueue();
     SwapChainSupportDetails getSwapChainSupport();
 
     uint32_t findMemoryType(

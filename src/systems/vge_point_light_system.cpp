@@ -42,7 +42,7 @@ VgePointLightSystem::VgePointLightSystem(
  */
 VgePointLightSystem::~VgePointLightSystem()
 {
-    vkDestroyPipelineLayout(m_vgeDevice.device(), m_pipelineLayout, nullptr);
+    vkDestroyPipelineLayout(m_vgeDevice.getDevice(), m_pipelineLayout, nullptr);
 }
 
 /* Creates the pipeline layout for the point light system.
@@ -70,7 +70,7 @@ void VgePointLightSystem::createPipelineLayout(
     pipelineLayoutInfo.pushConstantRangeCount = 1;
     pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
     if (vkCreatePipelineLayout(
-            m_vgeDevice.device(),
+            m_vgeDevice.getDevice(),
             &pipelineLayoutInfo,
             nullptr,
             &m_pipelineLayout) != VK_SUCCESS)
