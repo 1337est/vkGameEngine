@@ -1,7 +1,6 @@
 #pragma once
 
 // libs
-#include <vulkan/vulkan_core.h>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -24,27 +23,12 @@ public:
 
     bool shouldClose() const;
 
-    VkExtent2D getExtent() const;
-
-    bool wasWindowResized() const;
-
-    void resetWindowResizedFlag();
-
-    GLFWwindow* getGLFWwindow() const;
-
-    void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
-
 private:
-    static void frameBufferResizeCallback(
-        GLFWwindow* window,
-        int newWidth,
-        int newHeight);
     void initWindow();
 
     GLFWwindow* m_window;
     int m_width;
     int m_height;
-    bool m_frameBufferResized = false;
     std::string m_name;
 };
 

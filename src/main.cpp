@@ -6,7 +6,7 @@
 #include <exception> // std::exception e.what()
 #include <iostream>  // std::cerr
 
-/* Entry point for the VgeApp application.
+/* Entry point for the Vulkan Game Engine Application
  *
  * Initializes the VgeApp instance and runs the main application loop. If an
  * exception occurs during execution, it catches the exception, logs the error
