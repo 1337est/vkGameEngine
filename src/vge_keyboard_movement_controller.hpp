@@ -5,7 +5,7 @@
 
 namespace vge
 {
-class VgaKeyboardMovementController
+class VgeKeyboardMovementController
 {
 public:
     struct KeyMappings

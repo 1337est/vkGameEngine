@@ -16,7 +16,7 @@ namespace vge
  * It handles pitch and yaw limits to ensure realistic movement in 3D space,
  * allowing the game object to rotate and move based on user input.
  */
-void VgaKeyboardMovementController::moveInPlaneXZ(
+void VgeKeyboardMovementController::moveInPlaneXZ(
     GLFWwindow* window,
     float dt,
     VgeGameObject& gameObject)

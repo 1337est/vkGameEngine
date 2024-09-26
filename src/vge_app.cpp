@@ -103,7 +103,7 @@ void VgeApp::run()
 
     VgeGameObject viewerObject = VgeGameObject::createGameObject();
     viewerObject.m_transform.translation.z = -2.5f;
-    VgaKeyboardMovementController cameraController{};
+    VgeKeyboardMovementController cameraController{};
 
     std::chrono::time_point currentTime =
         std::chrono::high_resolution_clock::now();
