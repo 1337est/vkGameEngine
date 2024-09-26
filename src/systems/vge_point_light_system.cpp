@@ -17,13 +17,6 @@
 namespace vge
 {
 
-struct PointLightPushConstants
-{
-    glm::vec4 position{};
-    glm::vec4 color{};
-    float radius;
-};
-
 /* Constructs a VgePointLightSystem object.
  *
  * Initializes the point light system by creating the pipeline layout

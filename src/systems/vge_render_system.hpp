@@ -14,6 +14,12 @@
 namespace vge
 {
 
+struct SimplePushConstantData
+{
+    glm::mat4 modelMatrix{ 1.f };  // identity matrix
+    glm::mat4 normalMatrix{ 1.f }; // identity matrix
+};
+
 class VgeRenderSystem
 {
 public:
