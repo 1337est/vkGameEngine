@@ -6,19 +6,21 @@ namespace vge
 
 /* Constructs a `VgeWindow` object and initializes the GLFW window
  *
- * TODO: Description
+ * Sets the window's dimenstions and title, then initializes the window by
+ * calling `initWindow()`.
  */
 VgeWindow::VgeWindow(int width, int height, std::string name)
     : m_width{ width }
     , m_height{ height }
-    , m_name(name)
+    , m_name{ name }
 {
     initWindow();
 }
 
 /* Cleans up and destroys the GLFW window
  *
- * TODO: Description
+ * Ensures the GLFW window is properly destroyed, and terminates the GLFW
+ * library to free any associated resources.
  */
 VgeWindow::~VgeWindow()
 {
@@ -28,7 +30,9 @@ VgeWindow::~VgeWindow()
 
 /* Initializes the GLFW window.
  *
- * TODO: Description
+ * This method creates a window with the specified width, height, and name. It
+ * sets up the window to use Vulkan instead of OpenGL and makes it
+ * non-resizable.
  */
 void VgeWindow::initWindow()
 {
@@ -42,7 +46,8 @@ void VgeWindow::initWindow()
 
 /* Checks if the GLFW window should close.
  *
- * TODO: Description
+ * Returns true if the window is instructed to close, which typically occurs
+ * when the user clicks the close button.
  */
 bool VgeWindow::shouldClose() const
 {

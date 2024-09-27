@@ -5,7 +5,9 @@ namespace vge
 {
 /* Runs the main loop of the application.
  *
- * TODO: Description
+ * Continuously polls for window events, keeping the app active until the window
+ * is closed. It processes user inputs, window interactions, and other events to
+ * ensure the application remains responsive.
  */
 void VgeApp::run()
 {

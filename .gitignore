@@ -1,9 +1,2 @@
-**/*.out
 build
-.cache
-build/**
-.vscode
-**/.env
-**/.obj
-*.spv
-.env.cmake
+.env

@@ -12,6 +12,7 @@
  * exception occurs during execution, it catches the exception, logs the error
  * message, and returns a failure status.
  */
+
 int main()
 {
     vge::VgeApp app{};

@@ -16,8 +16,6 @@ public:
     VgeWindow(int width, int height, std::string name);
     ~VgeWindow();
 
-    // Disable copy constructor and copy assignment operator= to prevent
-    // undefined behavior with GLFWwindow* m_window pointer variable
     VgeWindow(const VgeWindow&) = delete;
     VgeWindow& operator=(const VgeWindow&) = delete;
 

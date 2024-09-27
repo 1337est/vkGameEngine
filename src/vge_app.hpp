@@ -1,6 +1,7 @@
 #pragma once
 
 // headers
+#include "vge_pipeline.hpp"
 #include "vge_window.hpp"
 
 namespace vge
@@ -9,13 +10,19 @@ namespace vge
 class VgeApp
 {
 public:
-    static constexpr int WIDTH = 800;  // TODO: what for?
-    static constexpr int HEIGHT = 600; // TODO: what for?
+    // windows width/height
+    static constexpr int WINDOW_WIDTH = 800;
+    static constexpr int WINDOW_HEIGHT = 600;
 
     void run();
 
 private:
-    VgeWindow m_vgeWindow{ WIDTH, HEIGHT, "Hello Vulkan!" }; //  window
+    // Creates a VgeWindow with width, height, and title
+    VgeWindow m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" };
+
+    // Creates a VgePipeline with the vertex and fragment shaders
+    VgePipeline m_vgePipeline{ "build/shaders/shader.vert.spv",
+                               "build/shaders/shader.frag.spv" };
 };
 
 } // namespace vge
