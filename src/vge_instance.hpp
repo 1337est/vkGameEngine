@@ -1,5 +1,8 @@
 #pragma once
 
+// headers
+#include "vge_validation_layers.hpp"
+
 // libs
 #include <vulkan/vulkan.h>
 
@@ -18,11 +21,12 @@ public:
     VgeInstance(const VgeInstance&) = delete;
     VgeInstance& operator=(const VgeInstance&) = delete;
 
+private:
     void createInstance();
     void hasGlfwRequiredInstanceExtensions();
     std::vector<const char*> getRequiredExtensions();
 
-private:
     VkInstance m_instance = VK_NULL_HANDLE;
+    VgeValidationLayers m_validationLayers;
 };
 } // namespace vge

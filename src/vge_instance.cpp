@@ -1,5 +1,6 @@
 // headers
 #include "vge_instance.hpp"
+#include "vge_validation_layers.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
@@ -45,6 +46,13 @@ VgeInstance::~VgeInstance()
  */
 void VgeInstance::createInstance()
 {
+    if (m_validationLayers.enableValidationLayers() &&
+        !m_validationLayers.checkValidationLayerSupport())
+    {
+        throw std::runtime_error(
+            "validation layers requested, but not available!");
+    }
+
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Vulkan Game Engine";
