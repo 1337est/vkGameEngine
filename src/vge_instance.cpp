@@ -46,7 +46,7 @@ VgeInstance::~VgeInstance()
  */
 void VgeInstance::createInstance()
 {
-    if (m_validationLayers.enableValidationLayers() &&
+    if (m_validationLayers.areValidationLayersEnabled() &&
         !m_validationLayers.checkValidationLayerSupport())
     {
         throw std::runtime_error(
@@ -69,7 +69,18 @@ void VgeInstance::createInstance()
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     createInfo.ppEnabledExtensionNames = extensions.data();
 
-    createInfo.enabledLayerCount = 0;
+    // Configure enabled layers
+    if (m_validationLayers.areValidationLayersEnabled())
+    {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(
+            m_validationLayers.getValidationLayers().size());
+        createInfo.ppEnabledLayerNames =
+            m_validationLayers.getValidationLayers().data();
+    }
+    else
+    {
+        createInfo.enabledLayerCount = 0;
+    }
 
     if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS)
     {
@@ -95,6 +106,11 @@ std::vector<const char*> VgeInstance::getRequiredExtensions()
     std::vector<const char*> extensions(
         glfwExtensions,
         glfwExtensions + glfwExtensionCount);
+
+    if (m_validationLayers.areValidationLayersEnabled())
+    {
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    }
 
     return extensions;
 }

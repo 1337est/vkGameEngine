@@ -12,9 +12,14 @@ public:
     VgeValidationLayers();
     ~VgeValidationLayers();
 
-    bool enableValidationLayers() const
+    bool areValidationLayersEnabled() const
     {
         return m_enableValidationLayers;
+    }
+
+    const std::vector<const char*>& getValidationLayers() const
+    {
+        return m_validationLayers;
     }
 
     bool checkValidationLayerSupport() const;
