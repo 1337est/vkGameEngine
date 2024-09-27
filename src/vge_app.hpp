@@ -19,18 +19,18 @@ public:
     void run();
 
 private:
-    // Creates a VgeWindow with width, height, and title
-    VgeWindow m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" };
+    // Validation layers (only active in debug builds)
+    VgeValidationLayers m_vgeValidationLayers;
 
     // Creates a Vulkan instance
     VgeInstance m_vgeInstance;
 
-    // Validation layers (only active in debug builds)
-    VgeValidationLayers m_vgeValidationLayers;
-
     // Creates a VgePipeline with the vertex and fragment shaders
     VgePipeline m_vgePipeline{ "build/shaders/shader.vert.spv",
                                "build/shaders/shader.frag.spv" };
+
+    // Creates a VgeWindow with width, height, and title
+    VgeWindow m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" };
 };
 
 } // namespace vge
