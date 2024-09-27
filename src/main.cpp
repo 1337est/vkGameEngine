@@ -19,6 +19,10 @@ int main()
 
     try
     {
+
+        std::cout << "Starting Vulkan Game Engine Application..."
+                  << std::endl; // Log start message
+
         app.run();
     }
     catch (const std::exception& e)
@@ -26,6 +30,9 @@ int main()
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
     }
+
+    std::cout << "Application closed successfully."
+              << std::endl; // Log successful exit
 
     return EXIT_SUCCESS;
 }

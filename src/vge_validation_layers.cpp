@@ -20,14 +20,17 @@ VgeValidationLayers::VgeValidationLayers()
     : m_enableValidationLayers{ true }
 #endif
 {
+
+    std::cout << "Creating VgeValidationLayers. Validation layers enabled: "
+              << (m_enableValidationLayers ? "true" : "false") << std::endl;
 }
 
 VgeValidationLayers::~VgeValidationLayers()
 {
-    if (m_debugMessenger != VK_NULL_HANDLE)
-    {
-        destroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
-    }
+
+    std::cout << "Destroying VgeValidationLayers." << std::endl;
+
+    cleanup();
 }
 
 void VgeValidationLayers::setInstance(VkInstance instance)

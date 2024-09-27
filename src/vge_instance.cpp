@@ -18,6 +18,9 @@ namespace vge
  */
 VgeInstance::VgeInstance()
 {
+
+    std::cout << "Initializing Vulkan Instance..." << std::endl;
+
     createInstance();
     m_validationLayers.setInstance(m_instance);
 }
@@ -30,6 +33,9 @@ VgeInstance::VgeInstance()
  */
 VgeInstance::~VgeInstance()
 {
+
+    std::cout << "Cleaning up Vulkan Instance..." << std::endl;
+
     // Validation layers cleanup happens first
     m_validationLayers.cleanup();
 
@@ -37,6 +43,8 @@ VgeInstance::~VgeInstance()
     {
         vkDestroyInstance(m_instance, nullptr);
         m_instance = VK_NULL_HANDLE;
+
+        std::cout << "Vulkan Instance destroyed." << std::endl;
     }
 }
 
