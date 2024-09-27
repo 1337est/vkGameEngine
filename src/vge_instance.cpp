@@ -19,6 +19,7 @@ namespace vge
 VgeInstance::VgeInstance()
 {
     createInstance();
+    m_validationLayers.setInstance(m_instance);
 }
 
 /* Cleans up the Vulkan instance
@@ -29,6 +30,9 @@ VgeInstance::VgeInstance()
  */
 VgeInstance::~VgeInstance()
 {
+    // Validation layers cleanup happens first
+    m_validationLayers.cleanup();
+
     if (m_instance != VK_NULL_HANDLE)
     {
         vkDestroyInstance(m_instance, nullptr);
@@ -69,6 +73,8 @@ void VgeInstance::createInstance()
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     createInfo.ppEnabledExtensionNames = extensions.data();
 
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
+
     // Configure enabled layers
     if (m_validationLayers.areValidationLayersEnabled())
     {
@@ -76,10 +82,15 @@ void VgeInstance::createInstance()
             m_validationLayers.getValidationLayers().size());
         createInfo.ppEnabledLayerNames =
             m_validationLayers.getValidationLayers().data();
+
+        m_validationLayers.populateDebugMessengerCreateInfo(debugCreateInfo);
+        createInfo.pNext =
+            (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
     }
     else
     {
         createInfo.enabledLayerCount = 0;
+        createInfo.pNext = nullptr;
     }
 
     if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS)
