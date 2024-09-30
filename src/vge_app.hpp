@@ -1,6 +1,7 @@
 #pragma once
 
 // headers
+#include "vge_device_physical.hpp"
 #include "vge_instance.hpp"
 #include "vge_pipeline.hpp"
 #include "vge_validation_layers.hpp"
@@ -27,6 +28,8 @@ private:
 
     // Validation layers (only active in debug builds)
     VgeValidationLayers m_vgeValidationLayers;
+
+    VgeDevicePhysical m_vgePhysicalDevice{ m_vgeInstance.getInstance() };
 
     // Creates a VgePipeline with the vertex and fragment shaders
     VgePipeline m_vgePipeline{ "build/shaders/shader.vert.spv",
