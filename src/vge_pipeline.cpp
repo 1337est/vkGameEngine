@@ -18,10 +18,6 @@ VgePipeline::VgePipeline(
     const std::string& vertFilepath,
     const std::string& fragFilePath)
 {
-
-    std::cout << "Creating VgePipeline with vertex shader: " << vertFilepath
-              << " and fragment shader: " << fragFilePath << std::endl;
-
     createGraphicsPipeline(vertFilepath, fragFilePath);
 }
 

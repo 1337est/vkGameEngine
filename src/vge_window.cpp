@@ -1,8 +1,6 @@
 // headers
 #include "vge_window.hpp"
 
-#include <iostream>
-
 namespace vge
 {
 
@@ -16,10 +14,6 @@ VgeWindow::VgeWindow(int width, int height, std::string name)
     , m_height{ height }
     , m_name{ name }
 {
-
-    std::cout << "Creating VgeWindow: " << m_name << " (" << m_width << "x"
-              << m_height << ")" << std::endl;
-
     initWindow();
 }
 
@@ -30,8 +24,6 @@ VgeWindow::VgeWindow(int width, int height, std::string name)
  */
 VgeWindow::~VgeWindow()
 {
-
-    std::cout << "Destroying VgeWindow: " << m_name << std::endl;
 
     glfwDestroyWindow(m_window);
     glfwTerminate();

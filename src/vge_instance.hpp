@@ -21,6 +21,8 @@ public:
     VgeInstance(const VgeInstance&) = delete;
     VgeInstance& operator=(const VgeInstance&) = delete;
 
+    VkInstance getInstance() const;
+
 private:
     void createInstance();
     void hasGlfwRequiredInstanceExtensions();

@@ -20,23 +20,10 @@ VgeValidationLayers::VgeValidationLayers()
     : m_enableValidationLayers{ true }
 #endif
 {
-
-    std::cout << "Creating VgeValidationLayers. Validation layers enabled: "
-              << (m_enableValidationLayers ? "true" : "false") << std::endl;
 }
 
 VgeValidationLayers::~VgeValidationLayers()
 {
-
-    std::cout << "Destroying VgeValidationLayers." << std::endl;
-
-    cleanup();
-}
-
-void VgeValidationLayers::setInstance(VkInstance instance)
-{
-    m_instance = instance;
-    setupDebugMessenger();
 }
 
 /* Sets up the Vulkan debug messenger (if validation layers are enabled)
@@ -44,7 +31,7 @@ void VgeValidationLayers::setInstance(VkInstance instance)
  * This function creates the Vulkan debug messenger if validation layers are
  * enabled.
  */
-void VgeValidationLayers::setupDebugMessenger()
+void VgeValidationLayers::setupDebugMessenger(const VkInstance& instance)
 {
     if (!m_enableValidationLayers)
         return;
@@ -53,7 +40,7 @@ void VgeValidationLayers::setupDebugMessenger()
     populateDebugMessengerCreateInfo(createInfo);
 
     if (createDebugUtilsMessengerEXT(
-            m_instance,
+            instance,
             &createInfo,
             nullptr,
             &m_debugMessenger) != VK_SUCCESS)
@@ -107,7 +94,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VgeValidationLayers::debugCallback(
  * VK_ERROR_EXTENSION_NOT_PRESENT if the function isn't available.
  */
 VkResult VgeValidationLayers::createDebugUtilsMessengerEXT(
-    VkInstance instance,
+    const VkInstance& instance,
     const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
     const VkAllocationCallbacks* pAllocator,
     VkDebugUtilsMessengerEXT* pDebugMessenger)
@@ -160,11 +147,11 @@ bool VgeValidationLayers::checkValidationLayerSupport() const
     return true;
 }
 
-void VgeValidationLayers::cleanup()
+void VgeValidationLayers::cleanup(const VkInstance& instance)
 {
     if (m_debugMessenger != VK_NULL_HANDLE)
     {
-        destroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
+        destroyDebugUtilsMessengerEXT(instance, m_debugMessenger, nullptr);
         m_debugMessenger = VK_NULL_HANDLE;
     }
 }
@@ -176,7 +163,7 @@ void VgeValidationLayers::cleanup()
  * `CreateDebugUtilsMessengerEXT` using `vkGetInstanceProcAddr`.
  */
 void VgeValidationLayers::destroyDebugUtilsMessengerEXT(
-    VkInstance instance,
+    const VkInstance& instance,
     VkDebugUtilsMessengerEXT debugMessenger,
     const VkAllocationCallbacks* pAllocator)
 {
@@ -188,4 +175,15 @@ void VgeValidationLayers::destroyDebugUtilsMessengerEXT(
         func(instance, debugMessenger, pAllocator);
     }
 }
+
+bool VgeValidationLayers::areValidationLayersEnabled() const
+{
+    return m_enableValidationLayers;
+}
+
+const std::vector<const char*>& VgeValidationLayers::getValidationLayers() const
+{
+    return m_validationLayers;
+}
+
 } // namespace vge

@@ -18,11 +18,7 @@ namespace vge
  */
 VgeInstance::VgeInstance()
 {
-
-    std::cout << "Initializing Vulkan Instance..." << std::endl;
-
     createInstance();
-    m_validationLayers.setInstance(m_instance);
 }
 
 /* Cleans up the Vulkan instance
@@ -33,18 +29,16 @@ VgeInstance::VgeInstance()
  */
 VgeInstance::~VgeInstance()
 {
-
-    std::cout << "Cleaning up Vulkan Instance..." << std::endl;
-
     // Validation layers cleanup happens first
-    m_validationLayers.cleanup();
+    m_validationLayers.cleanup(m_instance);
+    std::cout << "Vulkan Debug Messenger destroyed.\n";
 
     if (m_instance != VK_NULL_HANDLE)
     {
         vkDestroyInstance(m_instance, nullptr);
         m_instance = VK_NULL_HANDLE;
 
-        std::cout << "Vulkan Instance destroyed." << std::endl;
+        std::cout << "Vulkan Instance destroyed.\n";
     }
 }
 
@@ -150,24 +144,29 @@ void VgeInstance::hasGlfwRequiredInstanceExtensions()
         &extensionCount,
         extensions.data());
 
-    std::cout << "available extensions:" << std::endl;
+    std::cout << "available extensions:\n";
     std::unordered_set<std::string> available;
     for (const VkExtensionProperties& extension : extensions)
     {
-        std::cout << "\t" << extension.extensionName << std::endl;
+        std::cout << "\t" << extension.extensionName << '\n';
         available.insert(extension.extensionName);
     }
 
-    std::cout << "required extensions:" << std::endl;
+    std::cout << "required extensions:\n";
     std::vector<const char*> requiredExtensions = getRequiredExtensions();
     for (const char* const& required : requiredExtensions)
     {
-        std::cout << "\t" << required << std::endl;
+        std::cout << "\t" << required << '\n';
         if (available.find(required) == available.end())
         {
             throw std::runtime_error("Missing required glfw extension");
         }
     }
+}
+
+VkInstance VgeInstance::getInstance() const
+{
+    return m_instance;
 }
 
 } // namespace vge

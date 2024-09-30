@@ -13,38 +13,27 @@ public:
     VgeValidationLayers();
     ~VgeValidationLayers();
 
-    bool areValidationLayersEnabled() const
-    {
-        return m_enableValidationLayers;
-    }
-
-    const std::vector<const char*>& getValidationLayers() const
-    {
-        return m_validationLayers;
-    }
-
+    bool areValidationLayersEnabled() const;
+    const std::vector<const char*>& getValidationLayers() const;
     bool checkValidationLayerSupport() const;
 
-    void setInstance(VkInstance instance);
-    void cleanup();
-    void setupDebugMessenger();
-
+    void setupDebugMessenger(const VkInstance& instance);
+    void cleanup(const VkInstance& instance);
     void populateDebugMessengerCreateInfo(
         VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
 private:
     VkResult createDebugUtilsMessengerEXT(
-        VkInstance instance,
+        const VkInstance& instance,
         const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
         const VkAllocationCallbacks* pAllocator,
         VkDebugUtilsMessengerEXT* pDebugMessenger);
 
     void destroyDebugUtilsMessengerEXT(
-        VkInstance instance,
+        const VkInstance& instance,
         VkDebugUtilsMessengerEXT debugMessenger,
         const VkAllocationCallbacks* pAllocator);
 
-    VkInstance m_instance = VK_NULL_HANDLE;
     VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
     const std::vector<const char*> m_validationLayers = {
         "VK_LAYER_KHRONOS_validation"
