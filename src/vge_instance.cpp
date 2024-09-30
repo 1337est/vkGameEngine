@@ -164,6 +164,7 @@ void VgeInstance::hasGlfwRequiredInstanceExtensions()
     }
 }
 
+// Retrieves the Vulkan instance
 VkInstance VgeInstance::getInstance() const
 {
     return m_instance;

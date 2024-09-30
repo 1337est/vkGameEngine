@@ -22,10 +22,6 @@ VgeValidationLayers::VgeValidationLayers()
 {
 }
 
-VgeValidationLayers::~VgeValidationLayers()
-{
-}
-
 /* Sets up the Vulkan debug messenger (if validation layers are enabled)
  *
  * This function creates the Vulkan debug messenger if validation layers are
@@ -147,6 +143,12 @@ bool VgeValidationLayers::checkValidationLayerSupport() const
     return true;
 }
 
+/* Cleans up resources associated with the validation layers
+ *
+ * This function releases the Vulkan debug messenger if it has been created,
+ * ensuring that no resources are leaked when the validation layers are
+ * no longer needed.
+ */
 void VgeValidationLayers::cleanup(const VkInstance& instance)
 {
     if (m_debugMessenger != VK_NULL_HANDLE)
@@ -176,11 +178,13 @@ void VgeValidationLayers::destroyDebugUtilsMessengerEXT(
     }
 }
 
+// Checks if validation layers are enabled
 bool VgeValidationLayers::areValidationLayersEnabled() const
 {
     return m_enableValidationLayers;
 }
 
+// Retrieves the validation layers being used
 const std::vector<const char*>& VgeValidationLayers::getValidationLayers() const
 {
     return m_validationLayers;

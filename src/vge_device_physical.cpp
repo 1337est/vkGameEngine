@@ -10,28 +10,35 @@ namespace vge
 
 /* Checks if both graphics and present families have been set.
  *
- * This function returns true if both the graphicsFamily and presentFamily
- * indices have valid values, indicating that the queue families required
- * for rendering and presentation are available for use.
+ * This function verifies if the necessary queue families for graphics
+ * operations are available by checking if the graphics family has been set.
  */
 bool QueueFamilyIndices::isComplete()
 {
     return graphicsFamilyHasValue;
 }
 
+/* Selects a physical device
+ *
+ * Initializes the `VgeDevicePhysical` object and calls the `pickPhysicalDevice`
+ * function to select a suitable physical GPU from the Vulkan instance
+ */
 VgeDevicePhysical::VgeDevicePhysical(const VkInstance& instance)
 {
     pickPhysicalDevice(instance);
 }
 
+// TODO: Description
 VgeDevicePhysical::~VgeDevicePhysical()
 {
 }
 
 /* Selects a physical GPU for the Vulkan application
  *
- * This function chooses a suitable GPU by enumerating available physical
- * devices and checking if they meet the application's requirements.
+ * This function enumerates available physical devices associated with
+ * the provided Vulkan instance and selects one that meets the
+ * requirements for the Vulkan application. It throws an exception
+ * if no suitable device is found.
  */
 void VgeDevicePhysical::pickPhysicalDevice(const VkInstance& instance)
 {
@@ -67,8 +74,10 @@ void VgeDevicePhysical::pickPhysicalDevice(const VkInstance& instance)
 
 /* Checks if a physical device is suitable for the Vulkan application
  *
- * This function checks if the provided physical device supports the required
- * features, extensions, and queue families.
+ * This function evaluates the specified physical device to determine
+ * if it supports the required features for the Vulkan application.
+ * It uses the findQueueFamilies method to check for the necessary queue
+ * families.
  */
 bool VgeDevicePhysical::isDeviceSuitable(VkPhysicalDevice device)
 {
@@ -80,8 +89,9 @@ bool VgeDevicePhysical::isDeviceSuitable(VkPhysicalDevice device)
 /* Finds queue families for a physical device that support graphics and
  * presentation
  *
- * This function finds the queue families for the physical device that support
- * both graphics and presentation operations.
+ * This function queries the physical device for its available queue families
+ * and checks if any of them support graphics operations. It returns a
+ * QueueFamilyIndices structure that indicates the suitable queue families.
  */
 QueueFamilyIndices VgeDevicePhysical::findQueueFamilies(VkPhysicalDevice device)
 {
@@ -119,6 +129,7 @@ QueueFamilyIndices VgeDevicePhysical::findQueueFamilies(VkPhysicalDevice device)
     return indices;
 }
 
+// Retrieves the selected physical device from `pickPhysicalDevice`
 VkPhysicalDevice VgeDevicePhysical::getPhysicalDevice() const
 {
     return m_physicalDevice;

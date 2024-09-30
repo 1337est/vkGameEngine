@@ -11,7 +11,6 @@ class VgeValidationLayers
 {
 public:
     VgeValidationLayers();
-    ~VgeValidationLayers();
 
     bool areValidationLayersEnabled() const;
     const std::vector<const char*>& getValidationLayers() const;
