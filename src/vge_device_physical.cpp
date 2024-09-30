@@ -1,5 +1,6 @@
 // headers
 #include "vge_device_physical.hpp"
+#include "vge_queue_families.hpp"
 
 // std
 #include <iostream>
@@ -7,16 +8,6 @@
 
 namespace vge
 {
-
-/* Checks if both graphics and present families have been set.
- *
- * This function verifies if the necessary queue families for graphics
- * operations are available by checking if the graphics family has been set.
- */
-bool QueueFamilyIndices::isComplete()
-{
-    return graphicsFamilyHasValue;
-}
 
 /* Selects a physical device
  *
@@ -79,54 +70,11 @@ void VgeDevicePhysical::pickPhysicalDevice(const VkInstance& instance)
  * It uses the findQueueFamilies method to check for the necessary queue
  * families.
  */
-bool VgeDevicePhysical::isDeviceSuitable(VkPhysicalDevice device)
+bool VgeDevicePhysical::isDeviceSuitable(const VkPhysicalDevice& device)
 {
-    QueueFamilyIndices indices = findQueueFamilies(device);
+    VgeQueueFamilies queueFamilies(device);
 
-    return indices.isComplete();
-}
-
-/* Finds queue families for a physical device that support graphics and
- * presentation
- *
- * This function queries the physical device for its available queue families
- * and checks if any of them support graphics operations. It returns a
- * QueueFamilyIndices structure that indicates the suitable queue families.
- */
-QueueFamilyIndices VgeDevicePhysical::findQueueFamilies(VkPhysicalDevice device)
-{
-    QueueFamilyIndices indices;
-
-    uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(
-        device,
-        &queueFamilyCount,
-        nullptr);
-
-    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(
-        device,
-        &queueFamilyCount,
-        queueFamilies.data());
-
-    int i = 0;
-    for (const VkQueueFamilyProperties& queueFamily : queueFamilies)
-    {
-        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-        {
-            indices.graphicsFamily = i;
-            indices.graphicsFamilyHasValue = true;
-        }
-
-        if (indices.isComplete())
-        {
-            break;
-        }
-
-        i++; // still type int on increment
-    }
-
-    return indices;
+    return queueFamilies.isComplete();
 }
 
 // Retrieves the selected physical device from `pickPhysicalDevice`

@@ -6,14 +6,6 @@
 namespace vge
 {
 
-struct QueueFamilyIndices
-{
-    uint32_t graphicsFamily{};
-    bool graphicsFamilyHasValue = false;
-
-    bool isComplete();
-};
-
 class VgeDevicePhysical
 {
 public:
@@ -32,8 +24,7 @@ private:
     void pickPhysicalDevice(const VkInstance& instance);
 
     // helper functions
-    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-    bool isDeviceSuitable(VkPhysicalDevice device);
+    bool isDeviceSuitable(const VkPhysicalDevice& device);
 
     VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
     VkPhysicalDeviceProperties m_deviceProperties;
