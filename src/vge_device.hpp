@@ -34,6 +34,7 @@ private:
     void pickPhysicalDevice(const VkInstance& instance, VkSurfaceKHR surface);
     void createLogicalDevice(VkSurfaceKHR surface);
     bool isDeviceSuitable(const VkPhysicalDevice& device, VkSurfaceKHR surface);
+    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 
     // Device handles
     VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
