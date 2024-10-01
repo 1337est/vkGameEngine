@@ -1,11 +1,9 @@
-// headers
+// hdrs
 #include "vge_instance.hpp"
 #include "vge_validation_layers.hpp"
-
 // libs
 #include <GLFW/glfw3.h>
-
-// std
+// stds
 #include <iostream>
 #include <unordered_set>
 

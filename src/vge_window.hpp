@@ -1,10 +1,9 @@
 #pragma once
-
+// hdrs
 // libs
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-
-// std
+// stds
 #include <string>
 
 namespace vge

@@ -1,10 +1,10 @@
-// headers
+// hdrs
 #include "vge_validation_layers.hpp"
 
 // libs
 #include <vulkan/vulkan.h>
 
-// std
+// stds
 #include <cstring>
 #include <iostream>
 #include <vulkan/vulkan_core.h>

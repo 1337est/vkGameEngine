@@ -1,7 +1,7 @@
-// headers
+// hdrs
 #include "vge_queue_families.hpp"
-
-// std
+// libs
+// stds
 #include <stdexcept>
 #include <vector>
 

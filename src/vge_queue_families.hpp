@@ -1,6 +1,9 @@
 #pragma once
-
+// hdrs
+// libs
 #include <vulkan/vulkan_core.h>
+
+// stds
 
 namespace vge
 {
