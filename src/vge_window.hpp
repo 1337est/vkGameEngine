@@ -19,6 +19,7 @@ public:
     VgeWindow& operator=(const VgeWindow&) = delete;
 
     bool shouldClose() const;
+    GLFWwindow* getGLFWwindow() const;
 
 private:
     void initWindow();

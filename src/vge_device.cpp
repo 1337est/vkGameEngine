@@ -18,12 +18,13 @@ namespace vge
  */
 VgeDevice::VgeDevice(
     const VkInstance& instance,
+    VkSurfaceKHR surface,
     VgeValidationLayers& validationLayers)
     : m_enableValidationLayers(validationLayers.areValidationLayersEnabled())
     , m_validationLayers(validationLayers.getValidationLayers())
 {
-    pickPhysicalDevice(instance);
-    createLogicalDevice();
+    pickPhysicalDevice(instance, surface);
+    createLogicalDevice(surface);
 }
 
 // TODO: Description
@@ -39,7 +40,9 @@ VgeDevice::~VgeDevice()
  * requirements for the Vulkan application. It throws an exception
  * if no suitable device is found.
  */
-void VgeDevice::pickPhysicalDevice(const VkInstance& instance)
+void VgeDevice::pickPhysicalDevice(
+    const VkInstance& instance,
+    VkSurfaceKHR surface)
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -54,7 +57,7 @@ void VgeDevice::pickPhysicalDevice(const VkInstance& instance)
 
     for (const VkPhysicalDevice& device : devices)
     {
-        if (isDeviceSuitable(device))
+        if (isDeviceSuitable(device, surface))
         {
             m_physicalDevice = device;
             break;
@@ -78,17 +81,13 @@ void VgeDevice::pickPhysicalDevice(const VkInstance& instance)
  * It uses the findQueueFamilies method to check for the necessary queue
  * families.
  */
-bool VgeDevice::isDeviceSuitable(const VkPhysicalDevice& device)
+bool VgeDevice::isDeviceSuitable(
+    const VkPhysicalDevice& device,
+    VkSurfaceKHR surface)
 {
-    VgeQueueFamilies queueFamilies(device);
+    VgeQueueFamilies queueFamilies(device, surface);
 
     return queueFamilies.isComplete();
-}
-
-// Retrieves the selected physical device from `pickPhysicalDevice`
-VkPhysicalDevice VgeDevice::getPhysicalDevice() const
-{
-    return m_physicalDevice;
 }
 
 /* Creates a logical device for the selected physical device
@@ -96,13 +95,14 @@ VkPhysicalDevice VgeDevice::getPhysicalDevice() const
  * This function uses the queue families found for the physical device
  * to create a logical device that can interact with the GPU.
  */
-void VgeDevice::createLogicalDevice()
+void VgeDevice::createLogicalDevice(VkSurfaceKHR surface)
 {
-    VgeQueueFamilies queueFamilies(m_physicalDevice); // Find queue families
+    VgeQueueFamilies queueFamilies(m_physicalDevice, surface);
 
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
     std::set<uint32_t> uniqueQueueFamilies = {
-        queueFamilies.getGraphicsFamily()
+        queueFamilies.getGraphicsFamily(),
+        queueFamilies.getPresentFamily()
     };
 
     float queuePriority = 1.0f;
@@ -154,10 +154,33 @@ void VgeDevice::createLogicalDevice()
         queueFamilies.getGraphicsFamily(),
         0,
         &m_graphicsQueue);
+
+    vkGetDeviceQueue(
+        m_logicalDevice,
+        queueFamilies.getPresentFamily(),
+        0,
+        &m_presentQueue);
+}
+
+// Retrieves the selected physical device from `pickPhysicalDevice`
+VkPhysicalDevice VgeDevice::getPhysicalDevice() const
+{
+    return m_physicalDevice;
 }
 
 VkDevice VgeDevice::getLogicalDevice() const
 {
     return m_logicalDevice;
 }
+
+VkQueue VgeDevice::getGraphicsQueue() const
+{
+    return m_graphicsQueue;
+}
+
+VkQueue VgeDevice::getPresentQueue() const
+{
+    return m_presentQueue;
+}
+
 } // namespace vge

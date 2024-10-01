@@ -15,6 +15,7 @@ class VgeDevice
 public:
     VgeDevice(
         const VkInstance& instance,
+        VkSurfaceKHR surface,
         VgeValidationLayers& validationLayers);
     ~VgeDevice();
 
@@ -26,11 +27,13 @@ public:
 
     VkPhysicalDevice getPhysicalDevice() const;
     VkDevice getLogicalDevice() const;
+    VkQueue getGraphicsQueue() const;
+    VkQueue getPresentQueue() const;
 
 private:
-    void pickPhysicalDevice(const VkInstance& instance);
-    void createLogicalDevice();
-    bool isDeviceSuitable(const VkPhysicalDevice& device);
+    void pickPhysicalDevice(const VkInstance& instance, VkSurfaceKHR surface);
+    void createLogicalDevice(VkSurfaceKHR surface);
+    bool isDeviceSuitable(const VkPhysicalDevice& device, VkSurfaceKHR surface);
 
     // Device handles
     VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
@@ -38,6 +41,7 @@ private:
 
     // Queue handles
     VkQueue m_graphicsQueue = VK_NULL_HANDLE;
+    VkQueue m_presentQueue = VK_NULL_HANDLE;
 
     // Properties and features
     VkPhysicalDeviceProperties m_deviceProperties;

@@ -1,5 +1,6 @@
 // hdrs
 #include "vge_surface.hpp"
+#include <stdexcept>
 
 // libs
 // stds
@@ -7,12 +8,19 @@
 namespace vge
 {
 
-VgeSurface::VgeSurface()
+VgeSurface::VgeSurface(VgeInstance& instance, VgeWindow& window)
+    : m_instance{ instance }
+    , m_window{ window }
 {
+    createSurface(instance, window);
 }
 
 VgeSurface::~VgeSurface()
 {
+    if (m_surface != VK_NULL_HANDLE)
+    {
+        vkDestroySurfaceKHR(m_instance.getInstance(), m_surface, nullptr);
+    }
 }
 
 /* Creates a Vulkan surface using GLFW
@@ -20,9 +28,16 @@ VgeSurface::~VgeSurface()
  * This function creates a window surface using GLFW to interface with the
  * Vulkan instance.
  */
-void VgeSurface::createSurface()
+void VgeSurface::createSurface(VgeInstance& instance, VgeWindow& window)
 {
-    m_window.createWindowSurface(m_instance, &m_surface);
+    if (glfwCreateWindowSurface(
+            instance.getInstance(),
+            window.getGLFWwindow(),
+            nullptr,
+            &m_surface) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create window surface!");
+    }
 }
 
 /* Get the surface

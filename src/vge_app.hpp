@@ -3,6 +3,7 @@
 #include "vge_device.hpp"
 #include "vge_instance.hpp"
 #include "vge_pipeline.hpp"
+#include "vge_surface.hpp"
 #include "vge_validation_layers.hpp"
 #include "vge_window.hpp"
 
@@ -28,10 +29,18 @@ private:
     // Creates a Vulkan instance
     VgeInstance m_vgeInstance;
 
-    // Validation layers (only active in debug builds)
+    // Creates a Vulkan surface
+    VgeSurface m_vgeSurface{ m_vgeInstance, m_vgeWindow };
+
+    // Validation layers for the Vulkan app
     VgeValidationLayers m_vgeValidationLayers;
 
-    VgeDevice m_vgeDevice{ m_vgeInstance.getInstance(), m_vgeValidationLayers };
+    // Creates a Vulkan device
+    VgeDevice m_vgeDevice{
+        m_vgeInstance.getInstance(),
+        m_vgeSurface.getSurface(),
+        m_vgeValidationLayers,
+    };
 
     // Creates a VgePipeline with the vertex and fragment shaders
     VgePipeline m_vgePipeline{ "build/shaders/shader.vert.spv",

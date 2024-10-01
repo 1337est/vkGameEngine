@@ -58,4 +58,12 @@ bool VgeWindow::shouldClose() const
     return glfwWindowShouldClose(m_window);
 }
 
+/* Gets the GLFW window handle.
+ *
+ * Returns the `GLFWwindow*` handle for the current GLFW window.
+ */
+GLFWwindow* VgeWindow::getGLFWwindow() const
+{
+    return m_window;
+}
 } // namespace vge
