@@ -6,22 +6,11 @@
 
 namespace vge
 {
-
-/* Initializes a vulkan instance
- *
- * Calls `createInstance` to set up the Vulkan instance.
- */
 VgeInstance::VgeInstance()
 {
     createInstance();
 }
 
-/* Cleans up the Vulkan instance
- *
- * When the instance goes out of scope, it destroys and releases the allocated
- * resources. It then sets the intance handle back to VK_NULL_HANDLE to avoid
- * dangling pointers.
- */
 VgeInstance::~VgeInstance()
 {
     // Validation layers cleanup happens first
@@ -37,14 +26,6 @@ VgeInstance::~VgeInstance()
     }
 }
 
-/* Create a Vulkan instance
- *
- * Sets up the `VkApplicationInfo` with application and engine information,
- * prepares a `VkInstanceCreateInfo` structure with required extensions, and
- * calls `vkCreateInstance`. If instance creation fails, it throws a runtime
- * error. The method also verifies required GLFW extensions by calling
- * `hasGlfwRequiredInstanceExtensions`.
- */
 void VgeInstance::createInstance()
 {
     if (m_validationLayers.areValidationLayersEnabled() &&
@@ -98,12 +79,6 @@ void VgeInstance::createInstance()
     hasGlfwRequiredInstanceExtensions();
 }
 
-/* Retrieves the necessary GLFW extensions for the Vulkan instance
- *
- * Calls `glfwGetRequiredInstanceExtensions` to obtain the names of the required
- * extensions and returns them as a vector of const char*, allowing other parts
- * of the code to access the necessary extensions for Vulkan initialization.
- */
 std::vector<const char*> VgeInstance::getRequiredExtensions()
 {
     uint32_t glfwExtensionCount = 0;
@@ -123,12 +98,6 @@ std::vector<const char*> VgeInstance::getRequiredExtensions()
     return extensions;
 }
 
-/* Checks if the required GLFW extensions are supported by the Vulkan instance
- *
- * Retrieves the list of available extensions and compares them with the
- * required extensions obtained from `getRequiredExtensions`. If any necessary
- * extensions are missing it throws a runtime error.
- */
 void VgeInstance::hasGlfwRequiredInstanceExtensions()
 {
     uint32_t extensionCount = 0;
@@ -159,7 +128,6 @@ void VgeInstance::hasGlfwRequiredInstanceExtensions()
     }
 }
 
-// Retrieves the Vulkan instance
 VkInstance VgeInstance::getInstance() const
 {
     return m_instance;

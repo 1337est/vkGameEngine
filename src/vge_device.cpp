@@ -8,11 +8,6 @@
 namespace vge
 {
 
-/* Selects a physical device
- *
- * Initializes the `VgeDevice` object and calls the `pickPhysicalDevice`
- * function to select a suitable physical GPU from the Vulkan instance
- */
 VgeDevice::VgeDevice(
     const VkInstance& instance,
     VkSurfaceKHR surface,
@@ -24,19 +19,11 @@ VgeDevice::VgeDevice(
     createLogicalDevice(surface);
 }
 
-// TODO: Description
 VgeDevice::~VgeDevice()
 {
     vkDestroyDevice(m_logicalDevice, nullptr);
 }
 
-/* Selects a physical GPU for the Vulkan application
- *
- * This function enumerates available physical devices associated with
- * the provided Vulkan instance and selects one that meets the
- * requirements for the Vulkan application. It throws an exception
- * if no suitable device is found.
- */
 void VgeDevice::pickPhysicalDevice(
     const VkInstance& instance,
     VkSurfaceKHR surface)
@@ -71,13 +58,6 @@ void VgeDevice::pickPhysicalDevice(
               << std::endl;
 }
 
-/* Checks if a physical device is suitable for the Vulkan application
- *
- * This function evaluates the specified physical device to determine
- * if it supports the required features for the Vulkan application.
- * It uses the findQueueFamilies method to check for the necessary queue
- * families.
- */
 bool VgeDevice::isDeviceSuitable(
     const VkPhysicalDevice& device,
     VkSurfaceKHR surface)
@@ -89,12 +69,6 @@ bool VgeDevice::isDeviceSuitable(
     return queueFamilies.isComplete() && extensionsSupported;
 }
 
-/* Checks if a physical device supports the required Vulkan extensions
- *
- * This function checks if the physical device supports the required Vulkan
- * extensions by comparing the available extensions with those requested by the
- * application.
- */
 bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
 {
     uint32_t extensionCount;
@@ -123,11 +97,6 @@ bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
     return requiredExtensions.empty();
 }
 
-/* Creates a logical device for the selected physical device
- *
- * This function uses the queue families found for the physical device
- * to create a logical device that can interact with the GPU.
- */
 void VgeDevice::createLogicalDevice(VkSurfaceKHR surface)
 {
     VgeQueueFamilies queueFamilies(m_physicalDevice, surface);
@@ -195,7 +164,6 @@ void VgeDevice::createLogicalDevice(VkSurfaceKHR surface)
         &m_presentQueue);
 }
 
-// Retrieves the selected physical device from `pickPhysicalDevice`
 VkPhysicalDevice VgeDevice::getPhysicalDevice() const
 {
     return m_physicalDevice;

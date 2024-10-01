@@ -3,15 +3,21 @@
 
 namespace vge
 {
-/* Runs the main loop of the application.
- *
- * Continuously polls for window events, keeping the app active until the window
- * is closed. It processes user inputs, window interactions, and other events to
- * ensure the application remains responsive.
- */
+VgeApp::VgeApp()
+    : m_vgeWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!")
+    , m_vgeSurface(m_vgeInstance, m_vgeWindow)
+    , m_vgeDevice(
+          m_vgeInstance.getInstance(),
+          m_vgeSurface.getSurface(),
+          m_vgeValidationLayers)
+    , m_vgePipeline(
+          "build/shaders/shader.vert.spv",
+          "build/shaders/shader.frag.spv")
+{
+}
+
 void VgeApp::run()
 {
-
     std::cout << "Application is running. Waiting for window events..."
               << std::endl;
 

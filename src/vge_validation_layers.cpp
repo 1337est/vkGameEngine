@@ -17,11 +17,6 @@ VgeValidationLayers::VgeValidationLayers()
 {
 }
 
-/* Sets up the Vulkan debug messenger (if validation layers are enabled)
- *
- * This function creates the Vulkan debug messenger if validation layers are
- * enabled.
- */
 void VgeValidationLayers::setupDebugMessenger(const VkInstance& instance)
 {
     if (!m_enableValidationLayers)
@@ -40,11 +35,6 @@ void VgeValidationLayers::setupDebugMessenger(const VkInstance& instance)
     }
 }
 
-/* Fills out debug messenger create info
- *
- * This function populates the necessary information to create a Vulkan debug
- * messenger.
- */
 void VgeValidationLayers::populateDebugMessengerCreateInfo(
     VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 {
@@ -60,12 +50,6 @@ void VgeValidationLayers::populateDebugMessengerCreateInfo(
     createInfo.pUserData = nullptr; // Optional
 }
 
-/* Callback function for Vulkan debug messages.
- *
- * This function is called by Vulkan whenever a validation message needs to be
- * logged, It writes the validation message to std::cerr and returns VK_FALSE to
- * indicate that the call should not be aborted.
- */
 VKAPI_ATTR VkBool32 VKAPI_CALL VgeValidationLayers::debugCallback(
     [[maybe_unused]] VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     [[maybe_unused]] VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -77,13 +61,6 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VgeValidationLayers::debugCallback(
     return VK_FALSE;
 }
 
-/* Create Vulkan debug messenger if present to create debug info
- *
- * Attempts to create a debug messenger using the
- * `vkCreateDebugUtilsMessengerEXT` function, which is retrieved using Vulkan's
- * `vkGetInstanceProcAddr`. If successful, it returns VK_SUCCESS, otherwise
- * VK_ERROR_EXTENSION_NOT_PRESENT if the function isn't available.
- */
 VkResult VgeValidationLayers::createDebugUtilsMessengerEXT(
     const VkInstance& instance,
     const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
@@ -103,11 +80,6 @@ VkResult VgeValidationLayers::createDebugUtilsMessengerEXT(
     }
 }
 
-/* Checks if the requested validation layers are supported
- *
- * This function checks if the required Vulkan validation layers are
- * available.
- */
 bool VgeValidationLayers::checkValidationLayerSupport() const
 {
     uint32_t layerCount;
@@ -138,12 +110,6 @@ bool VgeValidationLayers::checkValidationLayerSupport() const
     return true;
 }
 
-/* Cleans up resources associated with the validation layers
- *
- * This function releases the Vulkan debug messenger if it has been created,
- * ensuring that no resources are leaked when the validation layers are
- * no longer needed.
- */
 void VgeValidationLayers::cleanup(const VkInstance& instance)
 {
     if (m_debugMessenger != VK_NULL_HANDLE)
@@ -153,12 +119,6 @@ void VgeValidationLayers::cleanup(const VkInstance& instance)
     }
 }
 
-/* Destroy Vulkan debug messenger
- *
- * This function destroys a previously created Vulkan debug messenger using the
- * `vkDestroyDebugUtilsMessengerEXT` function. It is retrieved similarly to
- * `CreateDebugUtilsMessengerEXT` using `vkGetInstanceProcAddr`.
- */
 void VgeValidationLayers::destroyDebugUtilsMessengerEXT(
     const VkInstance& instance,
     VkDebugUtilsMessengerEXT debugMessenger,
@@ -173,13 +133,11 @@ void VgeValidationLayers::destroyDebugUtilsMessengerEXT(
     }
 }
 
-// Checks if validation layers are enabled
 bool VgeValidationLayers::areValidationLayersEnabled() const
 {
     return m_enableValidationLayers;
 }
 
-// Retrieves the validation layers being used
 const std::vector<const char*>& VgeValidationLayers::getValidationLayers() const
 {
     return m_validationLayers;

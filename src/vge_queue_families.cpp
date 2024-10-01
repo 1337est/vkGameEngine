@@ -5,11 +5,6 @@
 
 namespace vge
 {
-/* Initializes QueueFamilies and finds queue families
- *
- * This constructor automatically searches for queue families that support
- * graphics operations on the specified physical device.
- */
 VgeQueueFamilies::VgeQueueFamilies(
     const VkPhysicalDevice& device,
     VkSurfaceKHR surface)
@@ -17,9 +12,6 @@ VgeQueueFamilies::VgeQueueFamilies(
     findQueueFamilies(device, surface);
 }
 
-/* Verifies if the necessary queue families for graphics operations
- * have been set. Returns true if the graphics queue family has been found.
- */
 bool VgeQueueFamilies::isComplete() const
 {
     return m_graphicsFamilyHasValue && m_presentFamilyHasValue;
@@ -35,13 +27,6 @@ uint32_t VgeQueueFamilies::getPresentFamily() const
     return m_presentFamily;
 }
 
-/* Finds queue families for a physical device that support graphics operations
- *
- * This function queries the physical device for available queue families and
- * checks if any support graphics operations. It updates the internal state
- * of the QueueFamilies object to reflect which queue family supports
- * graphics.
- */
 void VgeQueueFamilies::findQueueFamilies(
     const VkPhysicalDevice& device,
     VkSurfaceKHR surface)

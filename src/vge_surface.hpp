@@ -14,7 +14,7 @@ public:
     VgeSurface(const VgeSurface&) = delete;
     VgeSurface& operator=(const VgeSurface&) = delete;
 
-    VkSurfaceKHR getSurface();
+    VkSurfaceKHR getSurface() const;
 
 private:
     void createSurface(VgeInstance& instance, VgeWindow& window);

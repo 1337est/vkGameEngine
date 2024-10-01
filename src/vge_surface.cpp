@@ -19,11 +19,6 @@ VgeSurface::~VgeSurface()
     }
 }
 
-/* Creates a Vulkan surface using GLFW
- *
- * This function creates a window surface using GLFW to interface with the
- * Vulkan instance.
- */
 void VgeSurface::createSurface(VgeInstance& instance, VgeWindow& window)
 {
     if (glfwCreateWindowSurface(
@@ -36,11 +31,7 @@ void VgeSurface::createSurface(VgeInstance& instance, VgeWindow& window)
     }
 }
 
-/* Get the surface
- *
- * Returns the Vulkan surface associated with the device.
- */
-VkSurfaceKHR VgeSurface::getSurface()
+VkSurfaceKHR VgeSurface::getSurface() const
 {
     return m_surface;
 }
