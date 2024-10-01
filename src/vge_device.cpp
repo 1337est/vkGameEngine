@@ -1,12 +1,9 @@
-// hdrs
 #include "vge_device.hpp"
 #include "vge_queue_families.hpp"
-// libs
-#include <vulkan/vulkan_core.h>
-// stds
 #include <iostream>
 #include <set>
 #include <vector>
+#include <vulkan/vulkan_core.h>
 
 namespace vge
 {

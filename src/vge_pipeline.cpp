@@ -1,7 +1,4 @@
-// hdrs
 #include "vge_pipeline.hpp"
-// libs
-// stds
 #include <fstream>
 #include <iostream>
 #include <stdexcept>

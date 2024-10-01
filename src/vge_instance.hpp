@@ -1,10 +1,7 @@
 #pragma once
-// hdrs
 #include "vge_validation_layers.hpp"
-// libs
-#include <vulkan/vulkan.h>
-// stds
 #include <vector>
+#include <vulkan/vulkan.h>
 
 namespace vge
 {

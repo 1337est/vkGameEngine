@@ -1,12 +1,7 @@
-// hdrs
 #include "vge_validation_layers.hpp"
-
-// libs
-#include <vulkan/vulkan.h>
-
-// stds
 #include <cstring>
 #include <iostream>
+#include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
 namespace vge

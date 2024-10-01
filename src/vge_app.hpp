@@ -1,14 +1,10 @@
 #pragma once
-// hdrs
 #include "vge_device.hpp"
 #include "vge_instance.hpp"
 #include "vge_pipeline.hpp"
 #include "vge_surface.hpp"
 #include "vge_validation_layers.hpp"
 #include "vge_window.hpp"
-
-// libs
-// stds
 
 namespace vge
 {

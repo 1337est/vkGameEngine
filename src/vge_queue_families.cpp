@@ -1,7 +1,4 @@
-// hdrs
 #include "vge_queue_families.hpp"
-// libs
-// stds
 #include <stdexcept>
 #include <vector>
 #include <vulkan/vulkan_core.h>

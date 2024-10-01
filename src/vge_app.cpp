@@ -1,7 +1,4 @@
-// hdrs
 #include "vge_app.hpp"
-// libs
-// stds
 #include <iostream>
 
 namespace vge

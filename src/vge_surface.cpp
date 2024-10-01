@@ -1,9 +1,5 @@
-// hdrs
 #include "vge_surface.hpp"
 #include <stdexcept>
-
-// libs
-// stds
 
 namespace vge
 {

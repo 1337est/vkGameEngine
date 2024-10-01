@@ -1,7 +1,4 @@
-// hdrs
 #include "vge_app.hpp"
-// libs
-// stds
 #include <cstdlib>   // EXIT_FAILURE & EXIT_SUCCESS macros
 #include <exception> // std::exception e.what()
 #include <iostream>  // std::cerr

@@ -1,8 +1,4 @@
-// hdrs
 #include "vge_window.hpp"
-
-// libs
-// stds
 
 namespace vge
 {

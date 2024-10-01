@@ -1,7 +1,4 @@
 #pragma once
-// hdrs
-// libs
-// stds
 #include <string>
 #include <vector>
 
