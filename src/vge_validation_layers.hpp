@@ -14,8 +14,8 @@ public:
     const std::vector<const char*>& getValidationLayers() const;
     bool checkValidationLayerSupport() const;
 
-    void setupDebugMessenger(const VkInstance& instance);
-    void cleanup(const VkInstance& instance);
+    void setupDebugMessenger(VkInstance instance);
+    void cleanup(VkInstance instance);
     void populateDebugMessengerCreateInfo(
         VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 

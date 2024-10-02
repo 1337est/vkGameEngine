@@ -1,6 +1,9 @@
 #include "vge_validation_layers.hpp"
+#include <cstdint>
 #include <cstring>
+#include <ios>
 #include <iostream>
+#include <string>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
@@ -19,7 +22,7 @@ VgeValidationLayers::VgeValidationLayers()
               << std::boolalpha << m_enableValidationLayers << "\n";
 }
 
-void VgeValidationLayers::setupDebugMessenger(const VkInstance& instance)
+void VgeValidationLayers::setupDebugMessenger(VkInstance instance)
 {
     if (!m_enableValidationLayers)
         return;
@@ -52,13 +55,46 @@ void VgeValidationLayers::populateDebugMessengerCreateInfo(
     createInfo.pUserData = nullptr; // Optional
 }
 
+// TODO: Add color codes for messages?
 VKAPI_ATTR VkBool32 VKAPI_CALL VgeValidationLayers::debugCallback(
-    [[maybe_unused]] VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-    [[maybe_unused]] VkDebugUtilsMessageTypeFlagsEXT messageType,
+    VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT messageType,
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
     [[maybe_unused]] void* pUserData)
 {
-    std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+    std::string formattedMessage;
+
+    // Check the message type and construct appropriate messages
+    if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT)
+    {
+        formattedMessage = "General: ";
+    }
+    else if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
+    {
+        formattedMessage = "Validation: ";
+    }
+    else if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
+    {
+        formattedMessage = "Performance: ";
+    }
+
+    // Append the severity level
+    if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+    {
+        formattedMessage += "Error: ";
+    }
+    else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+    {
+        formattedMessage += "Warning: ";
+    }
+    else
+    {
+        formattedMessage += "Info: ";
+    }
+
+    // Append and output the actual message from pCallbackData
+    formattedMessage += pCallbackData->pMessage;
+    std::cerr << formattedMessage << std::endl;
 
     return VK_FALSE;
 }
@@ -112,7 +148,7 @@ bool VgeValidationLayers::checkValidationLayerSupport() const
     return true;
 }
 
-void VgeValidationLayers::cleanup(const VkInstance& instance)
+void VgeValidationLayers::cleanup(VkInstance instance)
 {
     if (m_debugMessenger != VK_NULL_HANDLE)
     {
