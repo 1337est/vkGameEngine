@@ -17,15 +17,23 @@ VgeSwapChain::VgeSwapChain(
     , m_surface{ surface }
     , m_queueFamilies{ queueFamilies }
 {
+    std::cout << "VgeSwapChain Constructor: Initializing swap chain.\n"
+              << "Physical Device: " << physicalDevice << ", Device: " << device
+              << "\nWindow and surface contexts provided." << std::endl;
     querySwapChainSupport();
     createSwapChain();
+    std::cout << "VgeSwapChain Constructor: Swap chain successfully created.\n";
 }
 
 VgeSwapChain::~VgeSwapChain()
 {
     if (m_swapChain != VK_NULL_HANDLE)
     {
+        std::cout << "VgeSwapChain Destructor: Destroying swap chain."
+                  << std::endl;
         vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
+        std::cout << "VgeSwapChain Destructor: Swap chain destruction complete."
+                  << std::endl;
     }
 }
 

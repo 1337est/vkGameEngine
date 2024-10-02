@@ -15,13 +15,22 @@ VgeDevice::VgeDevice(
     : m_enableValidationLayers(validationLayers.areValidationLayersEnabled())
     , m_validationLayers(validationLayers.getValidationLayers())
 {
+    std::cout << "VgeDevice Constructor: Starting device creation process.\n";
+    std::cout << "VgeDevice Constructor: Picking physical device and creating "
+                 "logical device.\n";
     pickPhysicalDevice(instance, surface);
     createLogicalDevice(surface);
+    std::cout << "VgeDevice Constructor: Physical device selected and logical "
+                 "device created.\n";
+    std::cout << "VgeDevice Constructor: Device creation process completed.\n";
 }
 
 VgeDevice::~VgeDevice()
 {
+    std::cout << "VgeDevice Destructor: Starting logical device destruction.\n";
     vkDestroyDevice(m_logicalDevice, nullptr);
+    std::cout << "VgeDevice Destructor: Logical device destroyed.\n";
+    std::cout << "VgeDevice Destructor: Device destruction completed.\n";
 }
 
 void VgeDevice::pickPhysicalDevice(

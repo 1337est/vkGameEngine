@@ -1,4 +1,5 @@
 #include "vge_window.hpp"
+#include <iostream>
 
 namespace vge
 {
@@ -8,14 +9,22 @@ VgeWindow::VgeWindow(int width, int height, std::string name)
     , m_height{ height }
     , m_name{ name }
 {
+    std::cout << "VgeWindow Constructor: Initializing window..." << std::endl;
     initWindow();
+    std::cout << "VgeWindow Constructor: "
+              << "\nWindow created with dimensions: " << m_width << "x"
+              << m_height << "\nWindow name: " << m_name << std::endl;
 }
 
 VgeWindow::~VgeWindow()
 {
-
+    std::cout << "VgeWindow Destructor: Destroying window named: " << m_name
+              << " with dimensions: " << m_width << "x" << m_height
+              << std::endl;
     glfwDestroyWindow(m_window);
     glfwTerminate();
+    std::cout << "VgeWindow Destructor: Window destruction complete."
+              << std::endl;
 }
 
 void VgeWindow::initWindow()

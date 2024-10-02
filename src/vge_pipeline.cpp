@@ -10,7 +10,13 @@ VgePipeline::VgePipeline(
     const std::string& vertFilepath,
     const std::string& fragFilePath)
 {
+    std::cout << "VgePipeline constructor: Starting to create the graphics "
+                 "pipeline.\n";
+    std::cout << "Loading shaders from:\n  Vertex shader: " << vertFilepath
+              << "\n  Fragment shader: " << fragFilePath << '\n';
     createGraphicsPipeline(vertFilepath, fragFilePath);
+    std::cout
+        << "VgePipeline constructor: Graphics pipeline creation complete.\n";
 }
 
 std::vector<char> VgePipeline::readShaderFile(const std::string& filepath)

@@ -1,5 +1,4 @@
 #include "vge_instance.hpp"
-#include "vge_validation_layers.hpp"
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <unordered_set>
@@ -8,22 +7,32 @@ namespace vge
 {
 VgeInstance::VgeInstance()
 {
+    std::cout << "VgeInstance Constructor: Creating Vulkan instance.\n";
     createInstance();
+    m_validationLayers.setupDebugMessenger(m_instance);
+    std::cout << "VgeInstance Constructor: Vulkan instance created.\n";
 }
 
 VgeInstance::~VgeInstance()
 {
+    std::cout << "VgeInstance Destructor: Starting cleanup of Vulkan instance "
+                 "resources.\n";
+
     // Validation layers cleanup happens first
+    std::cout << "Destroying Vulkan Debug Messenger.\n";
     m_validationLayers.cleanup(m_instance);
     std::cout << "Vulkan Debug Messenger destroyed.\n";
 
     if (m_instance != VK_NULL_HANDLE)
     {
+        std::cout << "Destroying Vulkan Instance.\n";
         vkDestroyInstance(m_instance, nullptr);
         m_instance = VK_NULL_HANDLE;
 
         std::cout << "Vulkan Instance destroyed.\n";
     }
+
+    std::cout << "VgeInstance Destructor: Cleanup complete.\n";
 }
 
 void VgeInstance::createInstance()

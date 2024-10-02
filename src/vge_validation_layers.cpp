@@ -15,6 +15,8 @@ VgeValidationLayers::VgeValidationLayers()
     : m_enableValidationLayers{ true }
 #endif
 {
+    std::cout << "VgeValidationLayers Constructor. Validation layers enabled: "
+              << std::boolalpha << m_enableValidationLayers << "\n";
 }
 
 void VgeValidationLayers::setupDebugMessenger(const VkInstance& instance)

@@ -1,4 +1,5 @@
 #include "vge_queue_families.hpp"
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 #include <vulkan/vulkan_core.h>
@@ -9,7 +10,17 @@ VgeQueueFamilies::VgeQueueFamilies(
     const VkPhysicalDevice& device,
     VkSurfaceKHR surface)
 {
+    std::cout << "VgeQueueFamilies Constructor: Finding queue families."
+              << std::endl;
     findQueueFamilies(device, surface);
+    std::cout << "VgeQueueFamilies Constructor: Queue families found. "
+              << "Graphics Family: "
+              << (m_graphicsFamilyHasValue ? std::to_string(m_graphicsFamily)
+                                           : "None")
+              << ", Present Family: "
+              << (m_presentFamilyHasValue ? std::to_string(m_presentFamily)
+                                          : "None")
+              << std::endl;
 }
 
 bool VgeQueueFamilies::isComplete() const
