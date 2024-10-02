@@ -17,41 +17,7 @@ VgeSwapChain::VgeSwapChain(
     , m_surface{ surface }
     , m_queueFamilies{ queueFamilies }
 {
-    // Get surface capabilities, formats, and present modes
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
-        m_physicalDevice,
-        m_surface.getSurface(),
-        &m_surfaceCapabilities);
-
-    // Retrieve formats
-    uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(
-        m_physicalDevice,
-        m_surface.getSurface(),
-        &formatCount,
-        nullptr); // First call to get the count
-
-    m_surfaceFormats.resize(formatCount);
-    vkGetPhysicalDeviceSurfaceFormatsKHR(
-        m_physicalDevice,
-        m_surface.getSurface(),
-        &formatCount,
-        m_surfaceFormats.data()); // Second call to get the actual formats
-
-    // Retrieve present modes
-    uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(
-        m_physicalDevice,
-        m_surface.getSurface(),
-        &presentModeCount,
-        nullptr); // First call to get the count
-
-    m_presentModes.resize(presentModeCount);
-    vkGetPhysicalDeviceSurfacePresentModesKHR(
-        m_physicalDevice,
-        m_surface.getSurface(),
-        &presentModeCount,
-        m_presentModes.data()); // Second call to get the actual present modes
+    querySwapChainSupport();
     createSwapChain();
 }
 
@@ -60,6 +26,51 @@ VgeSwapChain::~VgeSwapChain()
     if (m_swapChain != VK_NULL_HANDLE)
     {
         vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
+    }
+}
+
+void VgeSwapChain::querySwapChainSupport()
+{
+    // Query surface capabilities
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+        m_physicalDevice,
+        m_surface.getSurface(),
+        &m_surfaceCapabilities);
+
+    // Query surface formats
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(
+        m_physicalDevice,
+        m_surface.getSurface(),
+        &formatCount,
+        nullptr);
+
+    if (formatCount != 0)
+    {
+        m_surfaceFormats.resize(formatCount);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(
+            m_physicalDevice,
+            m_surface.getSurface(),
+            &formatCount,
+            m_surfaceFormats.data());
+    }
+
+    // Query present modes
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(
+        m_physicalDevice,
+        m_surface.getSurface(),
+        &presentModeCount,
+        nullptr);
+
+    if (presentModeCount != 0)
+    {
+        m_presentModes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(
+            m_physicalDevice,
+            m_surface.getSurface(),
+            &presentModeCount,
+            m_presentModes.data());
     }
 }
 

@@ -27,6 +27,7 @@ public:
 
 private:
     void createSwapChain();
+    void querySwapChainSupport();
 
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(
         const std::vector<VkSurfaceFormatKHR>& availableFormats);
