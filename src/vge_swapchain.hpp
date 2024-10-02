@@ -1,7 +1,7 @@
 #pragma once
 #include "vge_queue_families.hpp"
-#include "vge_surface.hpp"
 #include "vge_window.hpp"
+#include <GLFW/glfw3.h>
 #include <vector>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
@@ -13,10 +13,10 @@ class VgeSwapChain
 public:
     VgeSwapChain(
         VkPhysicalDevice physicalDevice,
-        VkDevice device,
-        VgeWindow& window,
-        VgeSurface& surface,
-        VgeQueueFamilies& queueFamilies);
+        VkDevice logicalDevice,
+        const VgeWindow& window,
+        VkSurfaceKHR surface,
+        const VgeQueueFamilies& queueFamilies);
     ~VgeSwapChain();
 
     VgeSwapChain(const VgeSwapChain&) = delete;
@@ -40,10 +40,10 @@ private:
     std::vector<VkPresentModeKHR> m_presentModes{};
 
     VkPhysicalDevice m_physicalDevice;
-    VkDevice m_device;
-    VgeWindow& m_window;
-    VgeSurface& m_surface;
-    VgeQueueFamilies& m_queueFamilies;
+    VkDevice m_logicalDevice;
+    const VgeWindow& m_window;
+    VkSurfaceKHR m_surface;
+    const VgeQueueFamilies& m_queueFamilies;
 
     VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
     std::vector<VkImage> m_swapChainImages;

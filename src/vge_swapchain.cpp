@@ -7,18 +7,19 @@ namespace vge
 {
 VgeSwapChain::VgeSwapChain(
     VkPhysicalDevice physicalDevice,
-    VkDevice device,
-    VgeWindow& window,
-    VgeSurface& surface,
-    VgeQueueFamilies& queueFamilies)
+    VkDevice logicalDevice,
+    const VgeWindow& window,
+    VkSurfaceKHR surface,
+    const VgeQueueFamilies& queueFamilies)
     : m_physicalDevice{ physicalDevice }
-    , m_device{ device }
+    , m_logicalDevice{ logicalDevice }
     , m_window{ window }
     , m_surface{ surface }
     , m_queueFamilies{ queueFamilies }
 {
     std::cout << "VgeSwapChain Constructor: Initializing swap chain.\n"
-              << "Physical Device: " << physicalDevice << ", Device: " << device
+              << "Physical Device: " << physicalDevice
+              << ", Device: " << logicalDevice
               << "\nWindow and surface contexts provided." << std::endl;
     querySwapChainSupport();
     createSwapChain();
@@ -31,7 +32,7 @@ VgeSwapChain::~VgeSwapChain()
     {
         std::cout << "VgeSwapChain Destructor: Destroying swap chain."
                   << std::endl;
-        vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
+        vkDestroySwapchainKHR(m_logicalDevice, m_swapChain, nullptr);
         std::cout << "VgeSwapChain Destructor: Swap chain destruction complete."
                   << std::endl;
     }
@@ -42,14 +43,14 @@ void VgeSwapChain::querySwapChainSupport()
     // Query surface capabilities
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
         m_physicalDevice,
-        m_surface.getSurface(),
+        m_surface,
         &m_surfaceCapabilities);
 
     // Query surface formats
     uint32_t formatCount;
     vkGetPhysicalDeviceSurfaceFormatsKHR(
         m_physicalDevice,
-        m_surface.getSurface(),
+        m_surface,
         &formatCount,
         nullptr);
 
@@ -58,7 +59,7 @@ void VgeSwapChain::querySwapChainSupport()
         m_surfaceFormats.resize(formatCount);
         vkGetPhysicalDeviceSurfaceFormatsKHR(
             m_physicalDevice,
-            m_surface.getSurface(),
+            m_surface,
             &formatCount,
             m_surfaceFormats.data());
     }
@@ -67,7 +68,7 @@ void VgeSwapChain::querySwapChainSupport()
     uint32_t presentModeCount;
     vkGetPhysicalDeviceSurfacePresentModesKHR(
         m_physicalDevice,
-        m_surface.getSurface(),
+        m_surface,
         &presentModeCount,
         nullptr);
 
@@ -76,7 +77,7 @@ void VgeSwapChain::querySwapChainSupport()
         m_presentModes.resize(presentModeCount);
         vkGetPhysicalDeviceSurfacePresentModesKHR(
             m_physicalDevice,
-            m_surface.getSurface(),
+            m_surface,
             &presentModeCount,
             m_presentModes.data());
     }
@@ -100,7 +101,7 @@ void VgeSwapChain::createSwapChain()
     // Create swap chain
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    createInfo.surface = m_surface.getSurface();
+    createInfo.surface = m_surface;
     createInfo.minImageCount = imageCount;
     createInfo.imageFormat = surfaceFormat.format;
     createInfo.imageColorSpace = surfaceFormat.colorSpace;
@@ -131,8 +132,11 @@ void VgeSwapChain::createSwapChain()
     createInfo.clipped = VK_TRUE;
     createInfo.oldSwapchain = VK_NULL_HANDLE; // For now, no previous swapchain
 
-    if (vkCreateSwapchainKHR(m_device, &createInfo, nullptr, &m_swapChain) !=
-        VK_SUCCESS)
+    if (vkCreateSwapchainKHR(
+            m_logicalDevice,
+            &createInfo,
+            nullptr,
+            &m_swapChain) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create swap chain!");
     }
@@ -140,14 +144,14 @@ void VgeSwapChain::createSwapChain()
     // Store the swap chain images
     uint32_t swapChainImageCount;
     vkGetSwapchainImagesKHR(
-        m_device,
+        m_logicalDevice,
         m_swapChain,
         &swapChainImageCount,
         nullptr); // First call to get the count
 
     m_swapChainImages.resize(swapChainImageCount);
     vkGetSwapchainImagesKHR(
-        m_device,
+        m_logicalDevice,
         m_swapChain,
         &swapChainImageCount,
         m_swapChainImages.data());

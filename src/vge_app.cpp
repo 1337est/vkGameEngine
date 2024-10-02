@@ -4,15 +4,20 @@
 namespace vge
 {
 VgeApp::VgeApp()
-    : m_vgeWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!")
-    , m_vgeSurface(m_vgeInstance, m_vgeWindow)
-    , m_vgeDevice(
-          m_vgeInstance.getInstance(),
-          m_vgeSurface.getSurface(),
-          m_vgeValidationLayers)
-    , m_vgePipeline(
-          "build/shaders/shader.vert.spv",
-          "build/shaders/shader.frag.spv")
+    : m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" }
+    , m_vgeSurface{ m_vgeInstance, m_vgeWindow }
+    , m_vgeDevice{ m_vgeInstance.getInstance(),
+                   m_vgeSurface.getSurface(),
+                   m_vgeValidationLayers }
+    , m_vgeQueueFamilies{ m_vgeDevice.getPhysicalDevice(),
+                          m_vgeSurface.getSurface() }
+    , m_vgeSwapChain{ m_vgeDevice.getPhysicalDevice(),
+                      m_vgeDevice.getLogicalDevice(),
+                      m_vgeWindow,
+                      m_vgeSurface.getSurface(),
+                      m_vgeQueueFamilies }
+    , m_vgePipeline{ "build/shaders/shader.vert.spv",
+                     "build/shaders/shader.frag.spv" }
 {
     std::cout << "VgeApp Constructor: " << "\nWindow dimensions: "
               << WINDOW_WIDTH << "x" << WINDOW_HEIGHT << "\nInstance created: "
