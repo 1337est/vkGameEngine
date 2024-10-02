@@ -9,6 +9,8 @@ namespace vge
 VgePipeline::VgePipeline(
     const std::string& vertFilepath,
     const std::string& fragFilePath)
+    : m_vertFilePath{ vertFilepath }
+    , m_fragFilePath{ fragFilePath }
 {
     std::cout << "VgePipeline constructor: Starting to create the graphics "
                  "pipeline.\n";
@@ -17,6 +19,16 @@ VgePipeline::VgePipeline(
     createGraphicsPipeline(vertFilepath, fragFilePath);
     std::cout
         << "VgePipeline constructor: Graphics pipeline creation complete.\n";
+}
+
+const std::string& VgePipeline::getVertFilePath() const
+{
+    return m_vertFilePath;
+}
+
+const std::string& VgePipeline::getFragFilePath() const
+{
+    return m_fragFilePath;
 }
 
 std::vector<char> VgePipeline::readShaderFile(const std::string& filepath)

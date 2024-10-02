@@ -14,7 +14,7 @@ public:
     VgeSwapChain(
         VkPhysicalDevice physicalDevice,
         VkDevice logicalDevice,
-        const VgeWindow& window,
+        GLFWwindow* window,
         VkSurfaceKHR surface,
         const VgeQueueFamilies& queueFamilies);
     ~VgeSwapChain();
@@ -41,7 +41,7 @@ private:
 
     VkPhysicalDevice m_physicalDevice;
     VkDevice m_logicalDevice;
-    const VgeWindow& m_window;
+    GLFWwindow* m_window;
     VkSurfaceKHR m_surface;
     const VgeQueueFamilies& m_queueFamilies;
 

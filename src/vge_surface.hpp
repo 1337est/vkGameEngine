@@ -1,6 +1,6 @@
 #pragma once
-#include "vge_instance.hpp"
-#include "vge_window.hpp"
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
 namespace vge
@@ -8,7 +8,7 @@ namespace vge
 class VgeSurface
 {
 public:
-    VgeSurface(VgeInstance& instance, VgeWindow& window);
+    VgeSurface(VkInstance instance, GLFWwindow* window);
     ~VgeSurface();
 
     VgeSurface(const VgeSurface&) = delete;
@@ -17,10 +17,10 @@ public:
     VkSurfaceKHR getSurface() const;
 
 private:
-    void createSurface(VgeInstance& instance, VgeWindow& window);
+    void createSurface(VkInstance instance, GLFWwindow* window);
 
     VkSurfaceKHR m_surface = VK_NULL_HANDLE;
-    VgeInstance& m_instance;
-    VgeWindow& m_window;
+    VkInstance m_instance;
+    GLFWwindow* m_window;
 };
 } // namespace vge

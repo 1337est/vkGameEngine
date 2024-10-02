@@ -8,7 +8,7 @@ namespace vge
 VgeSwapChain::VgeSwapChain(
     VkPhysicalDevice physicalDevice,
     VkDevice logicalDevice,
-    const VgeWindow& window,
+    GLFWwindow* window,
     VkSurfaceKHR surface,
     const VgeQueueFamilies& queueFamilies)
     : m_physicalDevice{ physicalDevice }

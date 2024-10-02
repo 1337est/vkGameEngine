@@ -5,7 +5,7 @@
 namespace vge
 {
 
-VgeSurface::VgeSurface(VgeInstance& instance, VgeWindow& window)
+VgeSurface::VgeSurface(VkInstance instance, GLFWwindow* window)
     : m_instance{ instance }
     , m_window{ window }
 {
@@ -20,19 +20,16 @@ VgeSurface::~VgeSurface()
     if (m_surface != VK_NULL_HANDLE)
     {
         std::cout << "VgeSurface Destructor: Destroying surface." << std::endl;
-        vkDestroySurfaceKHR(m_instance.getInstance(), m_surface, nullptr);
+        vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
         std::cout << "VgeSurface Destructor: Surface destruction complete."
                   << std::endl;
     }
 }
 
-void VgeSurface::createSurface(VgeInstance& instance, VgeWindow& window)
+void VgeSurface::createSurface(VkInstance instance, GLFWwindow* window)
 {
-    if (glfwCreateWindowSurface(
-            instance.getInstance(),
-            window.getGLFWwindow(),
-            nullptr,
-            &m_surface) != VK_SUCCESS)
+    if (glfwCreateWindowSurface(instance, window, nullptr, &m_surface) !=
+        VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create window surface!");
     }

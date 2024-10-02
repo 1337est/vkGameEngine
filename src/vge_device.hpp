@@ -1,5 +1,4 @@
 #pragma once
-#include "vge_validation_layers.hpp"
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
@@ -12,7 +11,8 @@ public:
     VgeDevice(
         const VkInstance& instance,
         VkSurfaceKHR surface,
-        VgeValidationLayers& validationLayers);
+        bool enableValidationLayers,
+        const std::vector<const char*> validationLayers);
     ~VgeDevice();
 
     // Not copyable or movable
@@ -23,8 +23,6 @@ public:
 
     VkPhysicalDevice getPhysicalDevice() const;
     VkDevice getLogicalDevice() const;
-    VkQueue getGraphicsQueue() const;
-    VkQueue getPresentQueue() const;
 
 private:
     void pickPhysicalDevice(const VkInstance& instance, VkSurfaceKHR surface);

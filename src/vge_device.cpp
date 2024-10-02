@@ -11,9 +11,10 @@ namespace vge
 VgeDevice::VgeDevice(
     const VkInstance& instance,
     VkSurfaceKHR surface,
-    VgeValidationLayers& validationLayers)
-    : m_enableValidationLayers(validationLayers.areValidationLayersEnabled())
-    , m_validationLayers(validationLayers.getValidationLayers())
+    bool enableValidationLayers,
+    const std::vector<const char*> validationLayers)
+    : m_enableValidationLayers{ enableValidationLayers }
+    , m_validationLayers{ validationLayers }
 {
     std::cout << "VgeDevice Constructor: Starting device creation process.\n";
     std::cout << "VgeDevice Constructor: Picking physical device and creating "
@@ -181,16 +182,6 @@ VkPhysicalDevice VgeDevice::getPhysicalDevice() const
 VkDevice VgeDevice::getLogicalDevice() const
 {
     return m_logicalDevice;
-}
-
-VkQueue VgeDevice::getGraphicsQueue() const
-{
-    return m_graphicsQueue;
-}
-
-VkQueue VgeDevice::getPresentQueue() const
-{
-    return m_presentQueue;
 }
 
 } // namespace vge
