@@ -4,7 +4,7 @@
 namespace vge
 {
 
-VgeWindow::VgeWindow(int width, int height, std::string name)
+VgeWindow::VgeWindow(int width, int height, const std::string& name)
     : m_width{ width }
     , m_height{ height }
     , m_name{ name }

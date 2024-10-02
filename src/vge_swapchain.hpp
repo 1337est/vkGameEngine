@@ -1,6 +1,5 @@
 #pragma once
 #include "vge_queue_families.hpp"
-#include "vge_window.hpp"
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <vulkan/vulkan.h>
