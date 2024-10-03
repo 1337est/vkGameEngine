@@ -7,20 +7,19 @@
 namespace vge
 {
 VgeQueueFamilies::VgeQueueFamilies(
-    const VkPhysicalDevice& device,
+    const VkPhysicalDevice& physicalDevice,
     VkSurfaceKHR surface)
 {
-    std::cout << "VgeQueueFamilies Constructor: Finding queue families."
-              << std::endl;
-    findQueueFamilies(device, surface);
-    std::cout << "VgeQueueFamilies Constructor: Queue families found. "
-              << "Graphics Family: "
+    std::cout << "START: VgeQueueFamilies Constructor\n";
+    findQueueFamilies(physicalDevice, surface);
+    std::cout << "\tQueue families found.\n\tGraphics Family: "
               << (m_graphicsFamilyHasValue ? std::to_string(m_graphicsFamily)
                                            : "None")
-              << ", Present Family: "
+              << "\n\tPresent Family: "
               << (m_presentFamilyHasValue ? std::to_string(m_presentFamily)
                                           : "None")
-              << std::endl;
+              << "\n";
+    std::cout << "END: VgeQueueFamilies Constructor\n\n";
 }
 
 bool VgeQueueFamilies::isComplete() const
@@ -39,12 +38,12 @@ uint32_t VgeQueueFamilies::getPresentFamily() const
 }
 
 void VgeQueueFamilies::findQueueFamilies(
-    const VkPhysicalDevice& device,
+    const VkPhysicalDevice& physicalDevice,
     VkSurfaceKHR surface)
 {
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(
-        device,
+        physicalDevice,
         &queueFamilyCount,
         nullptr);
 
@@ -55,7 +54,7 @@ void VgeQueueFamilies::findQueueFamilies(
 
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(
-        device,
+        physicalDevice,
         &queueFamilyCount,
         queueFamilies.data());
 
@@ -74,7 +73,7 @@ void VgeQueueFamilies::findQueueFamilies(
         // check if queue supports presentation to the surface
         VkBool32 presentSupport = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(
-            device,
+            physicalDevice,
             i,
             surface,
             &presentSupport);

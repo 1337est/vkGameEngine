@@ -9,22 +9,19 @@ VgeWindow::VgeWindow(int width, int height, const std::string& name)
     , m_height{ height }
     , m_name{ name }
 {
-    std::cout << "VgeWindow Constructor: Initializing window..." << std::endl;
+    std::cout << "START: VgeWindow Constructor\n";
     initWindow();
-    std::cout << "VgeWindow Constructor: "
-              << "\nWindow created with dimensions: " << m_width << "x"
-              << m_height << "\nWindow name: " << m_name << std::endl;
+    std::cout << "\tWindow initialized.\n";
+    std::cout << "END: VgeWindow Constructor\n\n";
 }
 
 VgeWindow::~VgeWindow()
 {
-    std::cout << "VgeWindow Destructor: Destroying window named: " << m_name
-              << " with dimensions: " << m_width << "x" << m_height
-              << std::endl;
+    std::cout << "START: VgeWindow Destructor\n";
     glfwDestroyWindow(m_window);
     glfwTerminate();
-    std::cout << "VgeWindow Destructor: Window destruction complete."
-              << std::endl;
+    std::cout << "\tWindow destroyed.\n";
+    std::cout << "END: VgeWindow Destructor\n\n";
 }
 
 void VgeWindow::initWindow()

@@ -1,5 +1,4 @@
 #pragma once
-#include "vge_queue_families.hpp"
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <vulkan/vulkan.h>
@@ -15,7 +14,8 @@ public:
         VkDevice logicalDevice,
         GLFWwindow* window,
         VkSurfaceKHR surface,
-        const VgeQueueFamilies& queueFamilies);
+        uint32_t graphicsFamily,
+        uint32_t presentFamily);
     ~VgeSwapChain();
 
     VgeSwapChain(const VgeSwapChain&) = delete;
@@ -42,7 +42,8 @@ private:
     VkDevice m_logicalDevice;
     GLFWwindow* m_window;
     VkSurfaceKHR m_surface;
-    const VgeQueueFamilies& m_queueFamilies;
+    uint32_t m_graphicsFamily;
+    uint32_t m_presentFamily;
 
     VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
     std::vector<VkImage> m_swapChainImages;

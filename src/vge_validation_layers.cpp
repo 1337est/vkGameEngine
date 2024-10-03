@@ -1,9 +1,6 @@
 #include "vge_validation_layers.hpp"
-#include <cstdint>
 #include <cstring>
-#include <ios>
 #include <iostream>
-#include <string>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
@@ -18,8 +15,10 @@ VgeValidationLayers::VgeValidationLayers()
     : m_enableValidationLayers{ true }
 #endif
 {
-    std::cout << "VgeValidationLayers Constructor. Validation layers enabled: "
-              << std::boolalpha << m_enableValidationLayers << "\n";
+    std::cout << "START: VgeValidationLayers Constructor\n";
+    std::cout << "\tValidation layers enabled: " << std::boolalpha
+              << m_enableValidationLayers << "\n";
+    std::cout << "END: VgeValidationLayers Constructor\n\n";
 }
 
 void VgeValidationLayers::setupDebugMessenger(VkInstance instance)

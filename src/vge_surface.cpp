@@ -9,21 +9,21 @@ VgeSurface::VgeSurface(VkInstance instance, GLFWwindow* window)
     : m_instance{ instance }
     , m_window{ window }
 {
-    std::cout << "VgeSurface Constructor: Initializing surface creation.\n"
-              << "Using Vulkan instance and window context.\n";
+    std::cout << "START: VgeSurface Constructor\n";
     createSurface(instance, window);
-    std::cout << "VgeSurface Constructor: Surface successfully created.\n";
+    std::cout << "\tVulkan Surface created.\n";
+    std::cout << "END: VgeSurface Constructor\n\n";
 }
 
 VgeSurface::~VgeSurface()
 {
+    std::cout << "START: VgeSurface Destructor\n";
     if (m_surface != VK_NULL_HANDLE)
     {
-        std::cout << "VgeSurface Destructor: Destroying surface." << std::endl;
         vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
-        std::cout << "VgeSurface Destructor: Surface destruction complete."
-                  << std::endl;
+        std::cout << "\tVulkan Surface destroyed.\n";
     }
+    std::cout << "END: VgeSurface Destructor\n\n";
 }
 
 void VgeSurface::createSurface(VkInstance instance, GLFWwindow* window)

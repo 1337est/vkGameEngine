@@ -7,7 +7,9 @@ class VgeQueueFamilies
 {
 public:
     VgeQueueFamilies() = default;
-    VgeQueueFamilies(const VkPhysicalDevice& device, VkSurfaceKHR surface);
+    VgeQueueFamilies(
+        const VkPhysicalDevice& physicalDevice,
+        VkSurfaceKHR surface);
 
     // Not copyable or movable
     VgeQueueFamilies(const VgeQueueFamilies&) = delete;
@@ -22,7 +24,7 @@ public:
 
 private:
     void findQueueFamilies(
-        const VkPhysicalDevice& device,
+        const VkPhysicalDevice& physicalDevice,
         VkSurfaceKHR surface);
 
     uint32_t m_graphicsFamily = UINT32_MAX;

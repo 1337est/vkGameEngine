@@ -10,32 +10,32 @@ VgeSwapChain::VgeSwapChain(
     VkDevice logicalDevice,
     GLFWwindow* window,
     VkSurfaceKHR surface,
-    const VgeQueueFamilies& queueFamilies)
+    uint32_t graphicsFamily,
+    uint32_t presentFamily)
     : m_physicalDevice{ physicalDevice }
     , m_logicalDevice{ logicalDevice }
     , m_window{ window }
     , m_surface{ surface }
-    , m_queueFamilies{ queueFamilies }
+    , m_graphicsFamily{ graphicsFamily }
+    , m_presentFamily{ presentFamily }
 {
-    std::cout << "VgeSwapChain Constructor: Initializing swap chain.\n"
-              << "Physical Device: " << physicalDevice
-              << ", Device: " << logicalDevice
-              << "\nWindow and surface contexts provided." << std::endl;
+    std::cout << "START: VgeSwapChain Constructor\n";
     querySwapChainSupport();
+    std::cout << "\tQuery swap chain support.\n";
     createSwapChain();
-    std::cout << "VgeSwapChain Constructor: Swap chain successfully created.\n";
+    std::cout << "\tSwap chain created.\n";
+    std::cout << "END: VgeSwapChain Constructor\n\n";
 }
 
 VgeSwapChain::~VgeSwapChain()
 {
+    std::cout << "START: VgeSwapChain Destructor\n";
     if (m_swapChain != VK_NULL_HANDLE)
     {
-        std::cout << "VgeSwapChain Destructor: Destroying swap chain."
-                  << std::endl;
         vkDestroySwapchainKHR(m_logicalDevice, m_swapChain, nullptr);
-        std::cout << "VgeSwapChain Destructor: Swap chain destruction complete."
-                  << std::endl;
+        std::cout << "\tSwap chain destroyed.\n";
     }
+    std::cout << "END: VgeSwapChain Destructor\n\n";
 }
 
 void VgeSwapChain::querySwapChainSupport()
@@ -110,11 +110,9 @@ void VgeSwapChain::createSwapChain()
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
     // Specify the queue family indices
-    uint32_t queueFamilyIndices[] = { m_queueFamilies.getGraphicsFamily(),
-                                      m_queueFamilies.getPresentFamily() };
+    uint32_t queueFamilyIndices[] = { m_graphicsFamily, m_presentFamily };
 
-    if (m_queueFamilies.getGraphicsFamily() !=
-        m_queueFamilies.getPresentFamily())
+    if (m_graphicsFamily != m_presentFamily)
     {
         createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
         createInfo.queueFamilyIndexCount = 2;

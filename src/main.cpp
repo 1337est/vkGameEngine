@@ -9,7 +9,6 @@ int main()
 
     try
     {
-
         std::cout << "Starting Vulkan Game Engine Application..."
                   << std::endl; // Log start message
 

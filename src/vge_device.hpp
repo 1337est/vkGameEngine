@@ -26,9 +26,14 @@ public:
 
 private:
     void pickPhysicalDevice(const VkInstance& instance, VkSurfaceKHR surface);
-    void createLogicalDevice(VkSurfaceKHR surface);
-    bool isDeviceSuitable(const VkPhysicalDevice& device, VkSurfaceKHR surface);
-    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+    void createLogicalDevice(
+        VkSurfaceKHR surface,
+        bool enableValidationLayers,
+        std::vector<const char*> validationLayers);
+    bool isDeviceSuitable(
+        const VkPhysicalDevice& physicalDevice,
+        VkSurfaceKHR surface);
+    bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
 
     // Device handles
     VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
@@ -39,13 +44,10 @@ private:
     VkQueue m_presentQueue = VK_NULL_HANDLE;
 
     // Properties and features
-    VkPhysicalDeviceProperties m_deviceProperties;
+    VkPhysicalDeviceProperties m_physicalDeviceProperties;
 
     const std::vector<const char*> m_deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
-
-    bool m_enableValidationLayers = false;
-    std::vector<const char*> m_validationLayers;
 };
 } // namespace vge

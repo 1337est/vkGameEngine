@@ -7,32 +7,28 @@ namespace vge
 {
 VgeInstance::VgeInstance()
 {
-    std::cout << "VgeInstance Constructor: Creating Vulkan instance.\n";
+    std::cout << "START: VgeInstance Constructor\n";
     createInstance();
+    std::cout << "\tInstance created\n";
     m_validationLayers.setupDebugMessenger(m_instance);
-    std::cout << "VgeInstance Constructor: Vulkan instance created.\n";
+    std::cout << "\tDebug messenger setup completed\n";
+    std::cout << "END: VgeInstance Constructor\n\n";
 }
 
 VgeInstance::~VgeInstance()
 {
-    std::cout << "VgeInstance Destructor: Starting cleanup of Vulkan instance "
-                 "resources.\n";
-
+    std::cout << "START: VgeInstance Destructor\n";
     // Validation layers cleanup happens first
-    std::cout << "Destroying Vulkan Debug Messenger.\n";
     m_validationLayers.cleanup(m_instance);
-    std::cout << "Vulkan Debug Messenger destroyed.\n";
+    std::cout << "\tVulkan Debug Messenger destroyed.\n";
 
     if (m_instance != VK_NULL_HANDLE)
     {
-        std::cout << "Destroying Vulkan Instance.\n";
         vkDestroyInstance(m_instance, nullptr);
         m_instance = VK_NULL_HANDLE;
-
-        std::cout << "Vulkan Instance destroyed.\n";
+        std::cout << "\tVulkan Instance destroyed.\n";
     }
-
-    std::cout << "VgeInstance Destructor: Cleanup complete.\n";
+    std::cout << "END: VgeInstance Destructor\n\n";
 }
 
 void VgeInstance::createInstance()
