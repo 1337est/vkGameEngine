@@ -23,17 +23,22 @@ public:
 
     VkPhysicalDevice getPhysicalDevice() const;
     VkDevice getLogicalDevice() const;
+    bool isComplete() const;
+    uint32_t getGraphicsFamily() const;
+    uint32_t getPresentFamily() const;
 
 private:
     void pickPhysicalDevice(const VkInstance& instance, VkSurfaceKHR surface);
-    void createLogicalDevice(
-        VkSurfaceKHR surface,
-        bool enableValidationLayers,
-        std::vector<const char*> validationLayers);
     bool isDeviceSuitable(
         const VkPhysicalDevice& physicalDevice,
         VkSurfaceKHR surface);
+    void findQueueFamilies(
+        const VkPhysicalDevice& physicalDevice,
+        VkSurfaceKHR surface);
     bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
+    void createLogicalDevice(
+        bool enableValidationLayers,
+        std::vector<const char*> validationLayers);
 
     // Device handles
     VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
@@ -42,10 +47,15 @@ private:
     // Queue handles
     VkQueue m_graphicsQueue = VK_NULL_HANDLE;
     VkQueue m_presentQueue = VK_NULL_HANDLE;
+    uint32_t m_graphicsFamily = UINT32_MAX;
+    uint32_t m_presentFamily = UINT32_MAX;
+    bool m_graphicsFamilyHasValue = false;
+    bool m_presentFamilyHasValue = false;
 
     // Properties and features
     VkPhysicalDeviceProperties m_physicalDeviceProperties;
 
+    // Extensions
     const std::vector<const char*> m_deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };

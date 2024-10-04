@@ -25,10 +25,9 @@ public:
 private:
     VgeWindow m_vgeWindow;
     VgeInstance m_vgeInstance;
-    VgeSurface m_vgeSurface;
     VgeValidationLayers m_vgeValidationLayers;
+    VgeSurface m_vgeSurface;
     VgeDevice m_vgeDevice;
-    VgeQueueFamilies m_vgeQueueFamilies;
     VgeSwapChain m_vgeSwapChain;
     VgePipeline m_vgePipeline;
 };
