@@ -21,9 +21,9 @@ VgeSwapChain::VgeSwapChain(
 {
     std::cout << "START: VgeSwapChain Constructor\n";
     querySwapChainSupport();
-    std::cout << "\tQuery swap chain support.\n";
+    std::cout << "Query swap chain support.\n";
     createSwapChain();
-    std::cout << "\tSwap chain created.\n";
+    std::cout << "Swap chain created.\n";
     std::cout << "END: VgeSwapChain Constructor\n\n";
 }
 
@@ -33,7 +33,7 @@ VgeSwapChain::~VgeSwapChain()
     if (m_swapChain != VK_NULL_HANDLE)
     {
         vkDestroySwapchainKHR(m_logicalDevice, m_swapChain, nullptr);
-        std::cout << "\tSwap chain destroyed.\n";
+        std::cout << "Swap chain destroyed.\n";
     }
     std::cout << "END: VgeSwapChain Destructor\n\n";
 }

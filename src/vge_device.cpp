@@ -15,9 +15,9 @@ VgeDevice::VgeDevice(
 {
     std::cout << "START: VgeDevice Constructor\n";
     pickPhysicalDevice(instance, surface);
-    std::cout << "\tPhysical device selected.\n";
+    std::cout << "Physical device selected.\n";
     createLogicalDevice(enableValidationLayers, validationLayers);
-    std::cout << "\tLogical device created.\n";
+    std::cout << "Logical device created.\n";
     std::cout << "END: VgeDevice Constructor\n\n";
 }
 
@@ -25,7 +25,7 @@ VgeDevice::~VgeDevice()
 {
     std::cout << "START: VgeDevice Destructor\n";
     vkDestroyDevice(m_logicalDevice, nullptr);
-    std::cout << "\tLogical device destroyed.\n";
+    std::cout << "Logical device destroyed.\n";
     std::cout << "END: VgeDevice Destructor\n\n";
 }
 

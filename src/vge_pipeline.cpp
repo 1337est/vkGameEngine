@@ -12,9 +12,9 @@ VgePipeline::VgePipeline(
     : m_vertFilePath{ vertFilepath }
     , m_fragFilePath{ fragFilePath }
 {
-    std::cout << "START: VgePipeline Constructor";
+    std::cout << "START: VgePipeline Constructor\n";
     createGraphicsPipeline(vertFilepath, fragFilePath);
-    std::cout << "\tGraphics pipeline created.\n";
+    std::cout << "Graphics pipeline created.\n";
     std::cout << "END: VgePipeline Constructor\n\n";
 }
 
