@@ -2,10 +2,8 @@
 #include "vge_device.hpp"
 #include "vge_instance.hpp"
 #include "vge_pipeline.hpp"
-#include "vge_queue_families.hpp"
 #include "vge_surface.hpp"
 #include "vge_swapchain.hpp"
-#include "vge_validation_layers.hpp"
 #include "vge_window.hpp"
 
 namespace vge
