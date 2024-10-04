@@ -138,7 +138,7 @@ IndentWidth:     4
 IndentWrappedFunctionNames: false
 InsertBraces:    false
 InsertNewlineAtEOF: false
-InsertTrailingCommas: None
+InsertTrailingCommas: Wrapped
 IntegerLiteralSeparator:
   Binary:          4
   BinaryMinDigits: 0
