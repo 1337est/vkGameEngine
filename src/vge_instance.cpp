@@ -76,6 +76,32 @@ void VgeInstance::createInstance()
     hasGlfwRequiredInstanceExtensions();
 }
 
+bool VgeInstance::checkValidationLayerSupport() const
+{
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    for (const char* layerName : m_validationLayers) {
+        bool layerFound = false;
+
+        for (const VkLayerProperties& layerProperties : availableLayers) {
+            if (strcmp(layerName, layerProperties.layerName) == 0) {
+                layerFound = true;
+                break;
+            }
+        }
+
+        if (!layerFound) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 std::vector<const char*> VgeInstance::getRequiredExtensions()
 {
     uint32_t glfwExtensionCount = 0;
@@ -104,14 +130,14 @@ void VgeInstance::hasGlfwRequiredInstanceExtensions()
         &extensionCount,
         extensions.data());
 
-    std::cout << "available extensions:\n";
+    std::cout << "available instance extensions:\n";
     std::unordered_set<std::string> available;
     for (const VkExtensionProperties& extension : extensions) {
         std::cout << "\t" << extension.extensionName << '\n';
         available.insert(extension.extensionName);
     }
 
-    std::cout << "required extensions:\n";
+    std::cout << "required instance extensions:\n";
     std::vector<const char*> requiredExtensions = getRequiredExtensions();
     for (const char* const& required : requiredExtensions) {
         std::cout << "\t" << required << '\n';
@@ -119,11 +145,6 @@ void VgeInstance::hasGlfwRequiredInstanceExtensions()
             throw std::runtime_error("Missing required glfw extension");
         }
     }
-}
-
-VkInstance VgeInstance::getInstance() const
-{
-    return m_instance;
 }
 
 void VgeInstance::setupDebugMessenger()
@@ -214,32 +235,6 @@ VkResult VgeInstance::createDebugUtilsMessengerEXT(
     }
 }
 
-bool VgeInstance::checkValidationLayerSupport() const
-{
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    for (const char* layerName : m_validationLayers) {
-        bool layerFound = false;
-
-        for (const VkLayerProperties& layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
-                layerFound = true;
-                break;
-            }
-        }
-
-        if (!layerFound) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 void VgeInstance::destroyDebugUtilsMessengerEXT(
     const VkInstance& instance,
     VkDebugUtilsMessengerEXT debugMessenger,
@@ -251,6 +246,11 @@ void VgeInstance::destroyDebugUtilsMessengerEXT(
     if (func != nullptr) {
         func(instance, debugMessenger, pAllocator);
     }
+}
+
+VkInstance VgeInstance::getInstance() const
+{
+    return m_instance;
 }
 
 bool VgeInstance::areValidationLayersEnabled() const

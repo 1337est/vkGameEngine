@@ -7,21 +7,21 @@ namespace vge {
 
 class VgeWindow {
 public:
-    VgeWindow(int width, int height, const std::string& name);
+    VgeWindow(int width, int height, const std::string& title);
     ~VgeWindow();
 
     VgeWindow(const VgeWindow&) = delete;
     VgeWindow& operator=(const VgeWindow&) = delete;
 
     bool shouldClose() const;
-    GLFWwindow* getGLFWwindow() const;
+    GLFWwindow* getWindow() const;
 
 private:
     void initWindow();
 
     int m_width;
     int m_height;
-    std::string m_name;
+    std::string m_title;
 
     GLFWwindow* m_window;
 };

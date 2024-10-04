@@ -1,11 +1,10 @@
 #include "vge_app.hpp"
-#include <iostream>
 
 namespace vge {
 VgeApp::VgeApp()
     : m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" }
     , m_vgeInstance{}
-    , m_vgeSurface{ m_vgeInstance.getInstance(), m_vgeWindow.getGLFWwindow() }
+    , m_vgeSurface{ m_vgeInstance.getInstance(), m_vgeWindow.getWindow() }
     , m_vgeDevice{ m_vgeInstance.getInstance(),
                    m_vgeSurface.getSurface(),
                    m_vgeInstance.areValidationLayersEnabled(),
@@ -15,7 +14,7 @@ VgeApp::VgeApp()
                       m_vgeDevice.getGraphicsFamily(),
                       m_vgeDevice.getPresentFamily(),
                       m_vgeDevice.getLogicalDevice(),
-                      m_vgeWindow.getGLFWwindow() }
+                      m_vgeWindow.getWindow() }
     , m_vgePipeline{ "build/shaders/shader.vert.spv",
                      "build/shaders/shader.frag.spv" }
 {}

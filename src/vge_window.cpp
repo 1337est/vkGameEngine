@@ -2,10 +2,10 @@
 
 namespace vge {
 
-VgeWindow::VgeWindow(int width, int height, const std::string& name)
+VgeWindow::VgeWindow(int width, int height, const std::string& title)
     : m_width{ width }
     , m_height{ height }
-    , m_name{ name }
+    , m_title{ title }
 {
     initWindow();
 }
@@ -23,7 +23,7 @@ void VgeWindow::initWindow()
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     m_window =
-        glfwCreateWindow(m_width, m_height, m_name.c_str(), nullptr, nullptr);
+        glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
 }
 
 bool VgeWindow::shouldClose() const
@@ -31,7 +31,7 @@ bool VgeWindow::shouldClose() const
     return glfwWindowShouldClose(m_window);
 }
 
-GLFWwindow* VgeWindow::getGLFWwindow() const
+GLFWwindow* VgeWindow::getWindow() const
 {
     return m_window;
 }

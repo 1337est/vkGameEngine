@@ -1,6 +1,8 @@
 #include "vge_device.hpp"
 #include <iostream>
 #include <set>
+#include <string>
+#include <unordered_set>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
@@ -138,9 +140,26 @@ bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice)
         &extensionCount,
         availableExtensions.data());
 
+    std::cout << "available device extensions:\n";
+    std::unordered_set<std::string> available;
+    for (const VkExtensionProperties& extension : availableExtensions) {
+        std::cout << "\t" << extension.extensionName << '\n';
+        available.insert(extension.extensionName);
+    }
+
+    std::cout << "required device extensions:\n";
     std::set<std::string> requiredExtensions(
         m_deviceExtensions.begin(),
         m_deviceExtensions.end());
+    for (const std::string& required : requiredExtensions) {
+        std::cout << "\t" << required;
+        if (available.find(required) != available.end()) {
+            std::cout << " (FOUND)\n";
+        }
+        else {
+            std::cout << " (MISSING)\n";
+        }
+    }
 
     for (const VkExtensionProperties& extension : availableExtensions) {
         requiredExtensions.erase(extension.extensionName);
