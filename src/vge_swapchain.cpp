@@ -10,13 +10,13 @@ VgeSwapChain::VgeSwapChain(
     uint32_t graphicsFamily,
     uint32_t presentFamily,
     VkDevice logicalDevice,
-    GLFWwindow* window) :
-    m_physicalDevice{ physicalDevice },
-    m_surface{ surface },
-    m_graphicsFamily{ graphicsFamily },
-    m_presentFamily{ presentFamily },
-    m_logicalDevice{ logicalDevice },
-    m_window{ window }
+    GLFWwindow* window)
+    : m_physicalDevice{ physicalDevice }
+    , m_surface{ surface }
+    , m_graphicsFamily{ graphicsFamily }
+    , m_presentFamily{ presentFamily }
+    , m_logicalDevice{ logicalDevice }
+    , m_window{ window }
 {
     std::cout << "START: VgeSwapChain Constructor\n";
     querySwapChainSupport();

@@ -7,36 +7,26 @@
 namespace vge {
 VgeInstance::VgeInstance()
 #ifdef NDEBUG
-    :
-    m_enableValidationLayers{ false }
+    : m_enableValidationLayers{ false }
 #else
-    :
-    m_enableValidationLayers{ true }
+    : m_enableValidationLayers{ true }
 #endif
 {
-    std::cout << "START: VgeInstance Constructor\n";
     createInstance();
-    std::cout << "Instance created\n";
     setupDebugMessenger();
-    std::cout << "Debug messenger setup completed\n";
-    std::cout << "END: VgeInstance Constructor\n\n";
 }
 
 VgeInstance::~VgeInstance()
 {
-    std::cout << "START: VgeInstance Destructor\n";
     // Validation layers cleanup happens first
     if (m_enableValidationLayers) {
         destroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
     }
-    std::cout << "Vulkan Debug Messenger destroyed.\n";
 
     if (m_instance != VK_NULL_HANDLE) {
         vkDestroyInstance(m_instance, nullptr);
         m_instance = VK_NULL_HANDLE;
-        std::cout << "Vulkan Instance destroyed.\n";
     }
-    std::cout << "END: VgeInstance Destructor\n\n";
 }
 
 void VgeInstance::createInstance()

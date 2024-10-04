@@ -7,9 +7,9 @@
 namespace vge {
 VgePipeline::VgePipeline(
     const std::string& vertFilepath,
-    const std::string& fragFilePath) :
-    m_vertFilePath{ vertFilepath },
-    m_fragFilePath{ fragFilePath }
+    const std::string& fragFilePath)
+    : m_vertFilePath{ vertFilepath }
+    , m_fragFilePath{ fragFilePath }
 {
     std::cout << "START: VgePipeline Constructor\n";
     createGraphicsPipeline(vertFilepath, fragFilePath);

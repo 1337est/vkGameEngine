@@ -12,20 +12,13 @@ VgeDevice::VgeDevice(
     bool enableValidationLayers,
     const std::vector<const char*> validationLayers)
 {
-    std::cout << "START: VgeDevice Constructor\n";
     pickPhysicalDevice(instance, surface);
-    std::cout << "Physical device selected.\n";
     createLogicalDevice(enableValidationLayers, validationLayers);
-    std::cout << "Logical device created.\n";
-    std::cout << "END: VgeDevice Constructor\n\n";
 }
 
 VgeDevice::~VgeDevice()
 {
-    std::cout << "START: VgeDevice Destructor\n";
     vkDestroyDevice(m_logicalDevice, nullptr);
-    std::cout << "Logical device destroyed.\n";
-    std::cout << "END: VgeDevice Destructor\n\n";
 }
 
 void VgeDevice::pickPhysicalDevice(
