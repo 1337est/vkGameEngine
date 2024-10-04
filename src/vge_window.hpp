@@ -21,10 +21,11 @@ public:
 private:
     void initWindow();
 
-    GLFWwindow* m_window;
     int m_width;
     int m_height;
     std::string m_name;
+
+    GLFWwindow* m_window;
 };
 
 } // namespace vge

@@ -19,8 +19,9 @@ public:
 private:
     void createSurface(VkInstance instance, GLFWwindow* window);
 
-    VkSurfaceKHR m_surface = VK_NULL_HANDLE;
     VkInstance m_instance;
     GLFWwindow* m_window;
+
+    VkSurfaceKHR m_surface = VK_NULL_HANDLE;
 };
 } // namespace vge

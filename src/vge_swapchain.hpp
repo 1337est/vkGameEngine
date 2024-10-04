@@ -11,11 +11,11 @@ class VgeSwapChain
 public:
     VgeSwapChain(
         VkPhysicalDevice physicalDevice,
-        VkDevice logicalDevice,
-        GLFWwindow* window,
         VkSurfaceKHR surface,
         uint32_t graphicsFamily,
-        uint32_t presentFamily);
+        uint32_t presentFamily,
+        VkDevice logicalDevice,
+        GLFWwindow* window);
     ~VgeSwapChain();
 
     VgeSwapChain(const VgeSwapChain&) = delete;
@@ -34,16 +34,18 @@ private:
         const std::vector<VkPresentModeKHR>& availablePresentModes);
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
-    VkSurfaceCapabilitiesKHR m_surfaceCapabilities{};
     std::vector<VkSurfaceFormatKHR> m_surfaceFormats{};
     std::vector<VkPresentModeKHR> m_presentModes{};
+    VkSurfaceCapabilitiesKHR m_surfaceCapabilities{};
 
     VkPhysicalDevice m_physicalDevice;
-    VkDevice m_logicalDevice;
-    GLFWwindow* m_window;
     VkSurfaceKHR m_surface;
+
     uint32_t m_graphicsFamily;
     uint32_t m_presentFamily;
+    VkDevice m_logicalDevice;
+
+    GLFWwindow* m_window;
 
     VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
     std::vector<VkImage> m_swapChainImages;

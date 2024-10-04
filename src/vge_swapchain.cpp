@@ -7,17 +7,17 @@ namespace vge
 {
 VgeSwapChain::VgeSwapChain(
     VkPhysicalDevice physicalDevice,
-    VkDevice logicalDevice,
-    GLFWwindow* window,
     VkSurfaceKHR surface,
     uint32_t graphicsFamily,
-    uint32_t presentFamily)
+    uint32_t presentFamily,
+    VkDevice logicalDevice,
+    GLFWwindow* window)
     : m_physicalDevice{ physicalDevice }
-    , m_logicalDevice{ logicalDevice }
-    , m_window{ window }
     , m_surface{ surface }
     , m_graphicsFamily{ graphicsFamily }
     , m_presentFamily{ presentFamily }
+    , m_logicalDevice{ logicalDevice }
+    , m_window{ window }
 {
     std::cout << "START: VgeSwapChain Constructor\n";
     querySwapChainSupport();

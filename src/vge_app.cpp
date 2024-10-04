@@ -3,22 +3,35 @@
 
 namespace vge
 {
-VgeApp::VgeApp()
-    : m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" }
-    , m_vgeInstance{}
-    , m_vgeSurface{ m_vgeInstance.getInstance(), m_vgeWindow.getGLFWwindow() }
-    , m_vgeDevice{ m_vgeInstance.getInstance(),
-                   m_vgeSurface.getSurface(),
-                   m_vgeInstance.areValidationLayersEnabled(),
-                   m_vgeInstance.getValidationLayers() }
-    , m_vgeSwapChain{ m_vgeDevice.getPhysicalDevice(),
-                      m_vgeDevice.getLogicalDevice(),
-                      m_vgeWindow.getGLFWwindow(),
-                      m_vgeSurface.getSurface(),
-                      m_vgeDevice.getGraphicsFamily(),
-                      m_vgeDevice.getPresentFamily() }
-    , m_vgePipeline{ "build/shaders/shader.vert.spv",
-                     "build/shaders/shader.frag.spv" }
+VgeApp::VgeApp() :
+    m_vgeWindow{
+        WINDOW_WIDTH,
+        WINDOW_HEIGHT,
+        "Hello Vulkan!",
+    },
+    m_vgeInstance{},
+    m_vgeSurface{
+        m_vgeInstance.getInstance(),
+        m_vgeWindow.getGLFWwindow(),
+    },
+    m_vgeDevice{
+        m_vgeInstance.getInstance(),
+        m_vgeSurface.getSurface(),
+        m_vgeInstance.areValidationLayersEnabled(),
+        m_vgeInstance.getValidationLayers(),
+    },
+    m_vgeSwapChain{
+        m_vgeDevice.getPhysicalDevice(),
+        m_vgeSurface.getSurface(),
+        m_vgeDevice.getGraphicsFamily(),
+        m_vgeDevice.getPresentFamily(),
+        m_vgeDevice.getLogicalDevice(),
+        m_vgeWindow.getGLFWwindow(),
+    },
+    m_vgePipeline{
+        "build/shaders/shader.vert.spv",
+        "build/shaders/shader.frag.spv",
+    }
 {
 }
 
