@@ -111,7 +111,8 @@ void VgeSwapChain::createSwapChain()
         createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
         createInfo.queueFamilyIndexCount = 2;
         createInfo.pQueueFamilyIndices = queueFamilyIndices;
-    } else {
+    }
+    else {
         createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
         createInfo.queueFamilyIndexCount = 0; // Optional
     }
@@ -169,7 +170,8 @@ VkExtent2D VgeSwapChain::chooseSwapExtent(
         std::numeric_limits<uint32_t>::max()) {
         return capabilities
             .currentExtent; // Return the current extent if it's valid
-    } else {
+    }
+    else {
         VkExtent2D actualExtent = m_windowExtent;
         actualExtent.width = std::max(
             capabilities.minImageExtent.width,

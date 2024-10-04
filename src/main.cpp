@@ -12,7 +12,8 @@ int main()
                   << std::endl; // Log start message
 
         app.run();
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
     }

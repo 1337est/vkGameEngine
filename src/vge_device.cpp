@@ -191,7 +191,8 @@ void VgeDevice::createLogicalDevice(
         createInfo.enabledLayerCount =
             static_cast<uint32_t>(validationLayers.size());
         createInfo.ppEnabledLayerNames = validationLayers.data();
-    } else {
+    }
+    else {
         createInfo.enabledLayerCount = 0;
     }
 

@@ -73,10 +73,10 @@ BraceWrapping:
   AfterObjCDeclaration: false
   AfterStruct:     true
   AfterUnion:      true
-  BeforeCatch:     false
-  BeforeElse:      false
-  BeforeLambdaBody: false
-  BeforeWhile:     false
+  BeforeCatch:     true
+  BeforeElse:      true
+  BeforeLambdaBody: true
+  BeforeWhile:     true
   IndentBraces:    false
   SplitEmptyFunction: false
   SplitEmptyRecord: false

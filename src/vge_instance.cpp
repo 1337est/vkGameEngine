@@ -73,7 +73,8 @@ void VgeInstance::createInstance()
         populateDebugMessengerCreateInfo(debugCreateInfo);
         createInfo.pNext =
             (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
-    } else {
+    }
+    else {
         createInfo.enabledLayerCount = 0;
         createInfo.pNext = nullptr;
     }
@@ -179,19 +180,23 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VgeInstance::debugCallback(
     // Check the message type and construct appropriate messages
     if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT) {
         formattedMessage = "General: ";
-    } else if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT) {
+    }
+    else if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT) {
         formattedMessage = "Validation: ";
-    } else if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT) {
+    }
+    else if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT) {
         formattedMessage = "Performance: ";
     }
 
     // Append the severity level
     if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
         formattedMessage += "Error: ";
-    } else if (
+    }
+    else if (
         messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
         formattedMessage += "Warning: ";
-    } else {
+    }
+    else {
         formattedMessage += "Info: ";
     }
 
@@ -213,7 +218,8 @@ VkResult VgeInstance::createDebugUtilsMessengerEXT(
             vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
         return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-    } else {
+    }
+    else {
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 }
