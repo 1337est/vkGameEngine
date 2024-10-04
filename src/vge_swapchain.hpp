@@ -5,10 +5,10 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
-class VgeSwapChain
-{
+class VgeSwapChain {
 public:
-    VgeSwapChain(VkPhysicalDevice physicalDevice,
+    VgeSwapChain(
+        VkPhysicalDevice physicalDevice,
         VkSurfaceKHR surface,
         uint32_t graphicsFamily,
         uint32_t presentFamily,

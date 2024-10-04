@@ -17,8 +17,7 @@ VgeSurface::VgeSurface(VkInstance instance, GLFWwindow* window) :
 VgeSurface::~VgeSurface()
 {
     std::cout << "START: VgeSurface Destructor\n";
-    if (m_surface != VK_NULL_HANDLE)
-    {
+    if (m_surface != VK_NULL_HANDLE) {
         vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
         std::cout << "Vulkan Surface destroyed.\n";
     }
@@ -28,8 +27,7 @@ VgeSurface::~VgeSurface()
 void VgeSurface::createSurface(VkInstance instance, GLFWwindow* window)
 {
     if (glfwCreateWindowSurface(instance, window, nullptr, &m_surface) !=
-        VK_SUCCESS)
-    {
+        VK_SUCCESS) {
         throw std::runtime_error("Failed to create window surface!");
     }
 }

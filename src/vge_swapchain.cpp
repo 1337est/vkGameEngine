@@ -4,7 +4,8 @@
 #include <stdexcept>
 
 namespace vge {
-VgeSwapChain::VgeSwapChain(VkPhysicalDevice physicalDevice,
+VgeSwapChain::VgeSwapChain(
+    VkPhysicalDevice physicalDevice,
     VkSurfaceKHR surface,
     uint32_t graphicsFamily,
     uint32_t presentFamily,
@@ -28,8 +29,7 @@ VgeSwapChain::VgeSwapChain(VkPhysicalDevice physicalDevice,
 VgeSwapChain::~VgeSwapChain()
 {
     std::cout << "START: VgeSwapChain Destructor\n";
-    if (m_swapChain != VK_NULL_HANDLE)
-    {
+    if (m_swapChain != VK_NULL_HANDLE) {
         vkDestroySwapchainKHR(m_logicalDevice, m_swapChain, nullptr);
         std::cout << "Swap chain destroyed.\n";
     }
@@ -39,21 +39,23 @@ VgeSwapChain::~VgeSwapChain()
 void VgeSwapChain::querySwapChainSupport()
 {
     // Query surface capabilities
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_physicalDevice,
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+        m_physicalDevice,
         m_surface,
         &m_surfaceCapabilities);
 
     // Query surface formats
     uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice,
+    vkGetPhysicalDeviceSurfaceFormatsKHR(
+        m_physicalDevice,
         m_surface,
         &formatCount,
         nullptr);
 
-    if (formatCount != 0)
-    {
+    if (formatCount != 0) {
         m_surfaceFormats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice,
+        vkGetPhysicalDeviceSurfaceFormatsKHR(
+            m_physicalDevice,
             m_surface,
             &formatCount,
             m_surfaceFormats.data());
@@ -61,15 +63,16 @@ void VgeSwapChain::querySwapChainSupport()
 
     // Query present modes
     uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice,
+    vkGetPhysicalDeviceSurfacePresentModesKHR(
+        m_physicalDevice,
         m_surface,
         &presentModeCount,
         nullptr);
 
-    if (presentModeCount != 0)
-    {
+    if (presentModeCount != 0) {
         m_presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice,
+        vkGetPhysicalDeviceSurfacePresentModesKHR(
+            m_physicalDevice,
             m_surface,
             &presentModeCount,
             m_presentModes.data());
@@ -86,8 +89,7 @@ void VgeSwapChain::createSwapChain()
     // Calculate the number of images in the swap chain
     uint32_t imageCount = m_surfaceCapabilities.minImageCount + 1;
     if (m_surfaceCapabilities.maxImageCount > 0 &&
-        imageCount > m_surfaceCapabilities.maxImageCount)
-    {
+        imageCount > m_surfaceCapabilities.maxImageCount) {
         imageCount = m_surfaceCapabilities.maxImageCount;
     }
 
@@ -105,14 +107,11 @@ void VgeSwapChain::createSwapChain()
     // Specify the queue family indices
     uint32_t queueFamilyIndices[] = { m_graphicsFamily, m_presentFamily };
 
-    if (m_graphicsFamily != m_presentFamily)
-    {
+    if (m_graphicsFamily != m_presentFamily) {
         createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
         createInfo.queueFamilyIndexCount = 2;
         createInfo.pQueueFamilyIndices = queueFamilyIndices;
-    }
-    else
-    {
+    } else {
         createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
         createInfo.queueFamilyIndexCount = 0; // Optional
     }
@@ -123,23 +122,25 @@ void VgeSwapChain::createSwapChain()
     createInfo.clipped = VK_TRUE;
     createInfo.oldSwapchain = VK_NULL_HANDLE; // For now, no previous swapchain
 
-    if (vkCreateSwapchainKHR(m_logicalDevice,
+    if (vkCreateSwapchainKHR(
+            m_logicalDevice,
             &createInfo,
             nullptr,
-            &m_swapChain) != VK_SUCCESS)
-    {
+            &m_swapChain) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create swap chain!");
     }
 
     // Store the swap chain images
     uint32_t swapChainImageCount;
-    vkGetSwapchainImagesKHR(m_logicalDevice,
+    vkGetSwapchainImagesKHR(
+        m_logicalDevice,
         m_swapChain,
         &swapChainImageCount,
         nullptr); // First call to get the count
 
     m_swapChainImages.resize(swapChainImageCount);
-    vkGetSwapchainImagesKHR(m_logicalDevice,
+    vkGetSwapchainImagesKHR(
+        m_logicalDevice,
         m_swapChain,
         &swapChainImageCount,
         m_swapChainImages.data());
@@ -150,11 +151,9 @@ void VgeSwapChain::createSwapChain()
 VkSurfaceFormatKHR VgeSwapChain::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR>& availableFormats)
 {
-    for (const VkSurfaceFormatKHR& availableFormat : availableFormats)
-    {
+    for (const VkSurfaceFormatKHR& availableFormat : availableFormats) {
         if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
-            availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-        {
+            availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return availableFormat;
         }
     }
@@ -167,17 +166,16 @@ VkExtent2D VgeSwapChain::chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR& capabilities)
 {
     if (capabilities.currentExtent.width !=
-        std::numeric_limits<uint32_t>::max())
-    {
+        std::numeric_limits<uint32_t>::max()) {
         return capabilities
             .currentExtent; // Return the current extent if it's valid
-    }
-    else
-    {
+    } else {
         VkExtent2D actualExtent = m_windowExtent;
-        actualExtent.width = std::max(capabilities.minImageExtent.width,
+        actualExtent.width = std::max(
+            capabilities.minImageExtent.width,
             std::min(capabilities.maxImageExtent.width, actualExtent.width));
-        actualExtent.height = std::max(capabilities.minImageExtent.height,
+        actualExtent.height = std::max(
+            capabilities.minImageExtent.height,
             std::min(capabilities.maxImageExtent.height, actualExtent.height));
 
         return actualExtent; // Return the calculated extent
@@ -187,10 +185,8 @@ VkExtent2D VgeSwapChain::chooseSwapExtent(
 VkPresentModeKHR VgeSwapChain::chooseSwapPresentMode(
     const std::vector<VkPresentModeKHR>& availablePresentModes)
 {
-    for (const VkPresentModeKHR& availablePresentMode : availablePresentModes)
-    {
-        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
-        {
+    for (const VkPresentModeKHR& availablePresentMode : availablePresentModes) {
+        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
             std::cout << "Present mode: Mailbox" << std::endl;
             return availablePresentMode;
         }

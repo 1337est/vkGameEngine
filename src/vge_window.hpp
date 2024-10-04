@@ -5,8 +5,7 @@
 
 namespace vge {
 
-class VgeWindow
-{
+class VgeWindow {
 public:
     VgeWindow(int width, int height, const std::string& name);
     ~VgeWindow();

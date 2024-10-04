@@ -8,8 +8,7 @@
 
 namespace vge {
 
-class VgeApp
-{
+class VgeApp {
 public:
     // windows width/height
     static constexpr int WINDOW_WIDTH = 800;

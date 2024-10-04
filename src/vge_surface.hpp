@@ -4,8 +4,7 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
-class VgeSurface
-{
+class VgeSurface {
 public:
     VgeSurface(VkInstance instance, GLFWwindow* window);
     ~VgeSurface();

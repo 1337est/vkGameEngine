@@ -4,10 +4,10 @@
 
 namespace vge {
 
-class VgePipeline
-{
+class VgePipeline {
 public:
-    VgePipeline(const std::string& vertFilepath,
+    VgePipeline(
+        const std::string& vertFilepath,
         const std::string& fragFilePath);
 
     const std::string& getVertFilePath() const;
@@ -16,7 +16,8 @@ public:
 private:
     static std::vector<char> readShaderFile(const std::string& filepath);
 
-    void createGraphicsPipeline(const std::string& vertFilepath,
+    void createGraphicsPipeline(
+        const std::string& vertFilepath,
         const std::string& fragFilePath);
 
     const std::string& m_vertFilePath;

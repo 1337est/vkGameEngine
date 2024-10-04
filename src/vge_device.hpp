@@ -4,10 +4,10 @@
 
 namespace vge {
 
-class VgeDevice
-{
+class VgeDevice {
 public:
-    VgeDevice(const VkInstance& instance,
+    VgeDevice(
+        const VkInstance& instance,
         VkSurfaceKHR surface,
         bool enableValidationLayers,
         const std::vector<const char*> validationLayers);
@@ -27,12 +27,15 @@ public:
 
 private:
     void pickPhysicalDevice(const VkInstance& instance, VkSurfaceKHR surface);
-    bool isDeviceSuitable(const VkPhysicalDevice& physicalDevice,
+    bool isDeviceSuitable(
+        const VkPhysicalDevice& physicalDevice,
         VkSurfaceKHR surface);
-    void findQueueFamilies(const VkPhysicalDevice& physicalDevice,
+    void findQueueFamilies(
+        const VkPhysicalDevice& physicalDevice,
         VkSurfaceKHR surface);
     bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
-    void createLogicalDevice(bool enableValidationLayers,
+    void createLogicalDevice(
+        bool enableValidationLayers,
         std::vector<const char*> validationLayers);
 
     // Device handles

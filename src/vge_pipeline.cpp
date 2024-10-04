@@ -5,7 +5,8 @@
 #include <vector>
 
 namespace vge {
-VgePipeline::VgePipeline(const std::string& vertFilepath,
+VgePipeline::VgePipeline(
+    const std::string& vertFilepath,
     const std::string& fragFilePath) :
     m_vertFilePath{ vertFilepath },
     m_fragFilePath{ fragFilePath }
@@ -34,8 +35,7 @@ std::vector<char> VgePipeline::readShaderFile(const std::string& filepath)
     // bitwise OR operator| combines both modes: open at end and read binary
     std::ifstream file{ filepath, std::ios::ate | std::ios::binary };
 
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         throw std::runtime_error("failed to open file: " + filepath);
     }
 
@@ -53,7 +53,8 @@ std::vector<char> VgePipeline::readShaderFile(const std::string& filepath)
     return buffer;
 }
 
-void VgePipeline::createGraphicsPipeline(const std::string& vertFilepath,
+void VgePipeline::createGraphicsPipeline(
+    const std::string& vertFilepath,
     const std::string& fragFilePath)
 {
     // read binary shader files
