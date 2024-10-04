@@ -3,8 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-namespace vge
-{
+namespace vge {
 
 class VgeWindow
 {

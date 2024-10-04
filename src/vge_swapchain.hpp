@@ -4,13 +4,11 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
-namespace vge
-{
+namespace vge {
 class VgeSwapChain
 {
 public:
-    VgeSwapChain(
-        VkPhysicalDevice physicalDevice,
+    VgeSwapChain(VkPhysicalDevice physicalDevice,
         VkSurfaceKHR surface,
         uint32_t graphicsFamily,
         uint32_t presentFamily,

@@ -3,8 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
-namespace vge
-{
+namespace vge {
 class VgeSurface
 {
 public:

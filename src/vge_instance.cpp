@@ -4,13 +4,14 @@
 #include <iostream>
 #include <unordered_set>
 
-namespace vge
-{
+namespace vge {
 VgeInstance::VgeInstance()
 #ifdef NDEBUG
-    : m_enableValidationLayers{ false }
+    :
+    m_enableValidationLayers{ false }
 #else
-    : m_enableValidationLayers{ true }
+    :
+    m_enableValidationLayers{ true }
 #endif
 {
     std::cout << "START: VgeInstance Constructor\n";
@@ -98,8 +99,7 @@ std::vector<const char*> VgeInstance::getRequiredExtensions()
 
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    std::vector<const char*> extensions(
-        glfwExtensions,
+    std::vector<const char*> extensions(glfwExtensions,
         glfwExtensions + glfwExtensionCount);
 
     if (areValidationLayersEnabled())
@@ -115,8 +115,7 @@ void VgeInstance::hasGlfwRequiredInstanceExtensions()
     uint32_t extensionCount = 0;
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
     std::vector<VkExtensionProperties> extensions(extensionCount);
-    vkEnumerateInstanceExtensionProperties(
-        nullptr,
+    vkEnumerateInstanceExtensionProperties(nullptr,
         &extensionCount,
         extensions.data());
 
@@ -153,8 +152,7 @@ void VgeInstance::setupDebugMessenger()
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
     populateDebugMessengerCreateInfo(createInfo);
 
-    if (createDebugUtilsMessengerEXT(
-            m_instance,
+    if (createDebugUtilsMessengerEXT(m_instance,
             &createInfo,
             nullptr,
             &m_debugMessenger) != VK_SUCCESS)
@@ -222,15 +220,14 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VgeInstance::debugCallback(
     return VK_FALSE;
 }
 
-VkResult VgeInstance::createDebugUtilsMessengerEXT(
-    const VkInstance& instance,
+VkResult VgeInstance::createDebugUtilsMessengerEXT(const VkInstance& instance,
     const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
     const VkAllocationCallbacks* pAllocator,
     VkDebugUtilsMessengerEXT* pDebugMessenger)
 {
     PFN_vkCreateDebugUtilsMessengerEXT func =
-        (PFN_vkCreateDebugUtilsMessengerEXT)
-            vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+        (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance,
+            "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr)
     {
         return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
@@ -271,14 +268,13 @@ bool VgeInstance::checkValidationLayerSupport() const
     return true;
 }
 
-void VgeInstance::destroyDebugUtilsMessengerEXT(
-    const VkInstance& instance,
+void VgeInstance::destroyDebugUtilsMessengerEXT(const VkInstance& instance,
     VkDebugUtilsMessengerEXT debugMessenger,
     const VkAllocationCallbacks* pAllocator)
 {
     PFN_vkDestroyDebugUtilsMessengerEXT func =
-        (PFN_vkDestroyDebugUtilsMessengerEXT)
-            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+        (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance,
+            "vkDestroyDebugUtilsMessengerEXT");
     if (func != nullptr)
     {
         func(instance, debugMessenger, pAllocator);

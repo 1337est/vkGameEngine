@@ -2,12 +2,11 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace vge
-{
+namespace vge {
 
-VgeSurface::VgeSurface(VkInstance instance, GLFWwindow* window)
-    : m_instance{ instance }
-    , m_window{ window }
+VgeSurface::VgeSurface(VkInstance instance, GLFWwindow* window) :
+    m_instance{ instance },
+    m_window{ window }
 {
     std::cout << "START: VgeSurface Constructor\n";
     createSurface(instance, window);

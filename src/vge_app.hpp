@@ -6,8 +6,7 @@
 #include "vge_swapchain.hpp"
 #include "vge_window.hpp"
 
-namespace vge
-{
+namespace vge {
 
 class VgeApp
 {

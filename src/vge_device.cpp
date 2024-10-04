@@ -4,11 +4,9 @@
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
-namespace vge
-{
+namespace vge {
 
-VgeDevice::VgeDevice(
-    const VkInstance& instance,
+VgeDevice::VgeDevice(const VkInstance& instance,
     VkSurfaceKHR surface,
     bool enableValidationLayers,
     const std::vector<const char*> validationLayers)
@@ -29,8 +27,7 @@ VgeDevice::~VgeDevice()
     std::cout << "END: VgeDevice Destructor\n\n";
 }
 
-void VgeDevice::pickPhysicalDevice(
-    const VkInstance& instance,
+void VgeDevice::pickPhysicalDevice(const VkInstance& instance,
     VkSurfaceKHR surface)
 {
     uint32_t physicalDeviceCount = 0;
@@ -42,8 +39,7 @@ void VgeDevice::pickPhysicalDevice(
     std::cout << "Device count: " << physicalDeviceCount << std::endl;
 
     std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
-    vkEnumeratePhysicalDevices(
-        instance,
+    vkEnumeratePhysicalDevices(instance,
         &physicalDeviceCount,
         physicalDevices.data());
 
@@ -61,15 +57,13 @@ void VgeDevice::pickPhysicalDevice(
         throw std::runtime_error("failed to find a suitable GPU!");
     }
 
-    vkGetPhysicalDeviceProperties(
-        m_physicalDevice,
+    vkGetPhysicalDeviceProperties(m_physicalDevice,
         &m_physicalDeviceProperties);
     std::cout << "physical device: " << m_physicalDeviceProperties.deviceName
               << std::endl;
 }
 
-bool VgeDevice::isDeviceSuitable(
-    const VkPhysicalDevice& physicalDevice,
+bool VgeDevice::isDeviceSuitable(const VkPhysicalDevice& physicalDevice,
     VkSurfaceKHR surface)
 {
     findQueueFamilies(physicalDevice, surface);
@@ -78,13 +72,11 @@ bool VgeDevice::isDeviceSuitable(
     return isComplete() && extensionsSupported;
 }
 
-void VgeDevice::findQueueFamilies(
-    const VkPhysicalDevice& physicalDevice,
+void VgeDevice::findQueueFamilies(const VkPhysicalDevice& physicalDevice,
     VkSurfaceKHR surface)
 {
     uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(
-        physicalDevice,
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice,
         &queueFamilyCount,
         nullptr);
 
@@ -94,8 +86,7 @@ void VgeDevice::findQueueFamilies(
     }
 
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(
-        physicalDevice,
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice,
         &queueFamilyCount,
         queueFamilies.data());
 
@@ -113,8 +104,7 @@ void VgeDevice::findQueueFamilies(
 
         // check if queue supports presentation to the surface
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(
-            physicalDevice,
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice,
             i,
             surface,
             &presentSupport);
@@ -144,21 +134,18 @@ void VgeDevice::findQueueFamilies(
 bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice)
 {
     uint32_t extensionCount;
-    vkEnumerateDeviceExtensionProperties(
-        physicalDevice,
+    vkEnumerateDeviceExtensionProperties(physicalDevice,
         nullptr,
         &extensionCount,
         nullptr);
 
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(
-        physicalDevice,
+    vkEnumerateDeviceExtensionProperties(physicalDevice,
         nullptr,
         &extensionCount,
         availableExtensions.data());
 
-    std::set<std::string> requiredExtensions(
-        m_deviceExtensions.begin(),
+    std::set<std::string> requiredExtensions(m_deviceExtensions.begin(),
         m_deviceExtensions.end());
 
     for (const VkExtensionProperties& extension : availableExtensions)
@@ -169,13 +156,12 @@ bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice)
     return requiredExtensions.empty();
 }
 
-void VgeDevice::createLogicalDevice(
-    bool enableValidationLayers,
+void VgeDevice::createLogicalDevice(bool enableValidationLayers,
     std::vector<const char*> validationLayers)
 {
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
     std::set<uint32_t> uniqueQueueFamilies = { getGraphicsFamily(),
-                                               getPresentFamily() };
+        getPresentFamily() };
 
     float queuePriority = 1.0f;
     for (uint32_t queueFamily : uniqueQueueFamilies)
@@ -212,8 +198,7 @@ void VgeDevice::createLogicalDevice(
         createInfo.enabledLayerCount = 0;
     }
 
-    if (vkCreateDevice(
-            m_physicalDevice,
+    if (vkCreateDevice(m_physicalDevice,
             &createInfo,
             nullptr,
             &m_logicalDevice) != VK_SUCCESS)

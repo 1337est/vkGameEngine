@@ -1,13 +1,12 @@
 #include "vge_window.hpp"
 #include <iostream>
 
-namespace vge
-{
+namespace vge {
 
-VgeWindow::VgeWindow(int width, int height, const std::string& name)
-    : m_width{ width }
-    , m_height{ height }
-    , m_name{ name }
+VgeWindow::VgeWindow(int width, int height, const std::string& name) :
+    m_width{ width },
+    m_height{ height },
+    m_name{ name }
 {
     std::cout << "START: VgeWindow Constructor\n";
     initWindow();
