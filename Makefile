@@ -29,7 +29,7 @@ INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 # Compiler flags
-CXXFLAGS := -ggdb -std=c++17 -pedantic -Wall -Wextra -Werror
+CXXFLAGS := -ggdb -std=c++20 -pedantic -Wall -Wextra -Werror
 CPPFLAGS := $(INC_FLAGS) -MMD -MP
 
 # Linker flags (including GLFW, Vulkan, and other libraries)

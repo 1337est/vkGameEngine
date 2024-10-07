@@ -31,30 +31,31 @@ VgeSwapChain::~VgeSwapChain()
 
 void VgeSwapChain::querySwapChainSupport()
 {
-    // Query surface capabilities
+    // Assigns surface capabilities to m_surfaceCapabilities
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
         m_physicalDevice,
         m_surface,
         &m_surfaceCapabilities);
 
-    // Query surface formats
-    uint32_t formatCount;
+    // 1st retrieves supported surface formats
+    uint32_t surfaceFormatCount;
     vkGetPhysicalDeviceSurfaceFormatsKHR(
         m_physicalDevice,
         m_surface,
-        &formatCount,
+        &surfaceFormatCount,
         nullptr);
 
-    if (formatCount != 0) {
-        m_surfaceFormats.resize(formatCount);
+    // assign m_surfaceFormats with a list of available formats
+    if (surfaceFormatCount != 0) {
+        m_surfaceFormats.resize(surfaceFormatCount);
         vkGetPhysicalDeviceSurfaceFormatsKHR(
             m_physicalDevice,
             m_surface,
-            &formatCount,
+            &surfaceFormatCount,
             m_surfaceFormats.data());
     }
 
-    // Query present modes
+    // 1st retrieves supported present modes
     uint32_t presentModeCount;
     vkGetPhysicalDeviceSurfacePresentModesKHR(
         m_physicalDevice,
@@ -62,6 +63,7 @@ void VgeSwapChain::querySwapChainSupport()
         &presentModeCount,
         nullptr);
 
+    // assign m_presentModes with a list of available present modes
     if (presentModeCount != 0) {
         m_presentModes.resize(presentModeCount);
         vkGetPhysicalDeviceSurfacePresentModesKHR(
@@ -87,53 +89,56 @@ void VgeSwapChain::createSwapChain()
         imageCount = m_surfaceCapabilities.maxImageCount;
     }
 
-    // Create swap chain
-    VkSwapchainCreateInfoKHR createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    createInfo.surface = m_surface;
-    createInfo.minImageCount = imageCount;
-    createInfo.imageFormat = surfaceFormat.format;
-    createInfo.imageColorSpace = surfaceFormat.colorSpace;
-    createInfo.imageExtent = extent;
-    createInfo.imageArrayLayers = 1;
-    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-
     // Specify the queue family indices
     uint32_t queueFamilyIndices[] = { m_graphicsFamily, m_presentFamily };
 
-    if (m_graphicsFamily != m_presentFamily) {
-        createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-        createInfo.queueFamilyIndexCount = 2;
-        createInfo.pQueueFamilyIndices = queueFamilyIndices;
-    }
-    else {
-        createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        createInfo.queueFamilyIndexCount = 0; // Optional
-    }
+    // Create swap chain
+    VkSwapchainCreateInfoKHR swapchainCreateInfo{
+        .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+        .pNext = nullptr,
+        .flags = 0,
+        .surface = m_surface,
+        .minImageCount = imageCount,
+        .imageFormat = surfaceFormat.format,
+        .imageColorSpace = surfaceFormat.colorSpace,
+        .imageExtent = extent,
+        .imageArrayLayers = 1,
+        .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+        .imageSharingMode = (m_graphicsFamily != m_presentFamily)
+                                ? VK_SHARING_MODE_CONCURRENT
+                                : VK_SHARING_MODE_EXCLUSIVE,
+        .queueFamilyIndexCount = (m_graphicsFamily != m_presentFamily)
+                                     ? static_cast<uint32_t>(2)
+                                     : static_cast<uint32_t>(0),
+        .pQueueFamilyIndices = (m_graphicsFamily != m_presentFamily)
+                                   ? queueFamilyIndices
+                                   : nullptr,
+        .preTransform = m_surfaceCapabilities.currentTransform,
+        .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+        .presentMode = presentMode,
+        .clipped = VK_TRUE,
+        .oldSwapchain = VK_NULL_HANDLE
+    };
 
-    createInfo.preTransform = m_surfaceCapabilities.currentTransform;
-    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-    createInfo.presentMode = presentMode;
-    createInfo.clipped = VK_TRUE;
-    createInfo.oldSwapchain = VK_NULL_HANDLE; // For now, no previous swapchain
-
+    // stores swapchain inside m_swapChain
     if (vkCreateSwapchainKHR(
             m_logicalDevice,
-            &createInfo,
+            &swapchainCreateInfo,
             nullptr,
             &m_swapChain) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create swap chain!");
     }
 
-    // Store the swap chain images
+    // Retrieves count of swap chain images
     uint32_t swapChainImageCount;
     vkGetSwapchainImagesKHR(
         m_logicalDevice,
         m_swapChain,
         &swapChainImageCount,
-        nullptr); // First call to get the count
+        nullptr);
 
+    // assign m_swapChainImages with a list of available swapchain images
     m_swapChainImages.resize(swapChainImageCount);
     vkGetSwapchainImagesKHR(
         m_logicalDevice,
@@ -159,28 +164,6 @@ VkSurfaceFormatKHR VgeSwapChain::chooseSwapSurfaceFormat(
                                 // preferred format is not found
 }
 
-VkExtent2D VgeSwapChain::chooseSwapExtent(
-    const VkSurfaceCapabilitiesKHR& capabilities)
-{
-    if (capabilities.currentExtent.width !=
-        std::numeric_limits<uint32_t>::max())
-    {
-        return capabilities
-            .currentExtent; // Return the current extent if it's valid
-    }
-    else {
-        VkExtent2D actualExtent = m_windowExtent;
-        actualExtent.width = std::max(
-            capabilities.minImageExtent.width,
-            std::min(capabilities.maxImageExtent.width, actualExtent.width));
-        actualExtent.height = std::max(
-            capabilities.minImageExtent.height,
-            std::min(capabilities.maxImageExtent.height, actualExtent.height));
-
-        return actualExtent; // Return the calculated extent
-    }
-}
-
 VkPresentModeKHR VgeSwapChain::chooseSwapPresentMode(
     const std::vector<VkPresentModeKHR>& availablePresentModes)
 {
@@ -193,6 +176,32 @@ VkPresentModeKHR VgeSwapChain::chooseSwapPresentMode(
 
     std::cout << "Present mode: V-Sync" << std::endl;
     return VK_PRESENT_MODE_FIFO_KHR;
+}
+
+VkExtent2D VgeSwapChain::chooseSwapExtent(
+    const VkSurfaceCapabilitiesKHR& surfaceCapabilities)
+{
+    if (surfaceCapabilities.currentExtent.width !=
+        std::numeric_limits<uint32_t>::max())
+    {
+        return surfaceCapabilities
+            .currentExtent; // Return the current extent if it's valid
+    }
+    else {
+        VkExtent2D actualExtent = m_windowExtent;
+        actualExtent.width = std::max(
+            surfaceCapabilities.minImageExtent.width,
+            std::min(
+                surfaceCapabilities.maxImageExtent.width,
+                actualExtent.width));
+        actualExtent.height = std::max(
+            surfaceCapabilities.minImageExtent.height,
+            std::min(
+                surfaceCapabilities.maxImageExtent.height,
+                actualExtent.height));
+
+        return actualExtent; // Return the calculated extent
+    }
 }
 
 VkSwapchainKHR VgeSwapChain::getSwapChain() const
