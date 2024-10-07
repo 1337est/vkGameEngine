@@ -93,7 +93,8 @@ void VgeDevice::findQueueFamilies(
 
         // check if queue support graphics operations
         if (queueFamily.queueCount > 0 &&
-            queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        {
             m_graphicsFamily = i;
             m_graphicsFamilyHasValue = true;
         }
@@ -212,7 +213,8 @@ void VgeDevice::createLogicalDevice(
             m_physicalDevice,
             &createInfo,
             nullptr,
-            &m_logicalDevice) != VK_SUCCESS) {
+            &m_logicalDevice) != VK_SUCCESS)
+    {
         throw std::runtime_error("failed to create logical device!");
     }
 

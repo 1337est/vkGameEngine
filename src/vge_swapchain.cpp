@@ -82,7 +82,8 @@ void VgeSwapChain::createSwapChain()
     // Calculate the number of images in the swap chain
     uint32_t imageCount = m_surfaceCapabilities.minImageCount + 1;
     if (m_surfaceCapabilities.maxImageCount > 0 &&
-        imageCount > m_surfaceCapabilities.maxImageCount) {
+        imageCount > m_surfaceCapabilities.maxImageCount)
+    {
         imageCount = m_surfaceCapabilities.maxImageCount;
     }
 
@@ -120,7 +121,8 @@ void VgeSwapChain::createSwapChain()
             m_logicalDevice,
             &createInfo,
             nullptr,
-            &m_swapChain) != VK_SUCCESS) {
+            &m_swapChain) != VK_SUCCESS)
+    {
         throw std::runtime_error("Failed to create swap chain!");
     }
 
@@ -147,7 +149,8 @@ VkSurfaceFormatKHR VgeSwapChain::chooseSwapSurfaceFormat(
 {
     for (const VkSurfaceFormatKHR& availableFormat : availableFormats) {
         if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
-            availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+            availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+        {
             return availableFormat;
         }
     }
@@ -160,7 +163,8 @@ VkExtent2D VgeSwapChain::chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR& capabilities)
 {
     if (capabilities.currentExtent.width !=
-        std::numeric_limits<uint32_t>::max()) {
+        std::numeric_limits<uint32_t>::max())
+    {
         return capabilities
             .currentExtent; // Return the current extent if it's valid
     }

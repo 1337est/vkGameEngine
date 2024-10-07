@@ -76,7 +76,8 @@ void VgeInstance::createInstance()
 
     // Stores the instance inside m_instance with the struct creation info
     if (vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance) !=
-        VK_SUCCESS) {
+        VK_SUCCESS)
+    {
         throw std::runtime_error("failed to create instance!");
     }
 
@@ -161,7 +162,8 @@ void VgeInstance::setupDebugMessenger()
             m_instance,
             &m_debugCreateInfo,
             nullptr,
-            &m_debugMessenger) != VK_SUCCESS) {
+            &m_debugMessenger) != VK_SUCCESS)
+    {
         throw std::runtime_error("failed to set up debug messenger!");
     }
 }
@@ -207,8 +209,8 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VgeInstance::debugCallback(
     if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
         formattedMessage += "Error: ";
     }
-    else if (
-        messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+    else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+    {
         formattedMessage += "Warning: ";
     }
     else {
