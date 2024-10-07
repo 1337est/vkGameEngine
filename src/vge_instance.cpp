@@ -41,26 +41,28 @@ void VgeInstance::createInstance()
 
     // Provides app and engine info the the Vulkan implementation
     VkApplicationInfo appInfo = {
-        VK_STRUCTURE_TYPE_APPLICATION_INFO, // sType
-        nullptr,                            // pNext (no additional structures)
-        "Vulkan Game Engine",               // pApplicationName
-        VK_MAKE_VERSION(1, 0, 0),           // applicationVersion
-        "Vulkan Game Engine",               // pEngineName
-        VK_MAKE_VERSION(1, 0, 0),           // engineVersion
-        VK_API_VERSION_1_0                  // apiVersion
+        .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO, // sType
+        .pNext = nullptr, // pNext (no additional structures)
+        .pApplicationName = "Vulkan Game Engine",       // pApplicationName
+        .applicationVersion = VK_MAKE_VERSION(1, 0, 0), // applicationVersion
+        .pEngineName = "Vulkan Game Engine",            // pEngineName
+        .engineVersion = VK_MAKE_VERSION(1, 0, 0),      // engineVersion
+        .apiVersion = VK_API_VERSION_1_0                // apiVersion
     };
 
     // Provides details for the Vulkan Instance
     VkInstanceCreateInfo instanceCreateInfo = {
-        VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, // sType
-        nullptr,  // pNext (set conditionally later)
-        0,        // flags
-        &appInfo, // pApplicationInfo
-        0,        // enabledLayerCount (set conditionally later)
-        nullptr,  // ppEnabledLayerNames (set conditionally later)
-        static_cast<uint32_t>(
+        .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, // sType
+        .pNext = nullptr,             // pNext (set conditionally later)
+        .flags = 0,                   // flags
+        .pApplicationInfo = &appInfo, // pApplicationInfo
+        .enabledLayerCount = 0, // enabledLayerCount (set conditionally later)
+        .ppEnabledLayerNames =
+            nullptr, // ppEnabledLayerNames (set conditionally later)
+        .enabledExtensionCount = static_cast<uint32_t>(
             m_requiredExtensions.size()), // enabledExtensionCount
-        m_requiredExtensions.data()       // ppEnabledExtensionNames
+        .ppEnabledExtensionNames =
+            m_requiredExtensions.data() // ppEnabledExtensionNames
     };
 
     // Sets instance info depending if validation layers are available
