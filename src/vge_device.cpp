@@ -1,6 +1,7 @@
 #include "vge_device.hpp"
 #include <iostream>
 #include <set>
+#include <stdexcept>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -42,7 +43,7 @@ void VgeDevice::pickPhysicalDevice(
 
     for (const VkPhysicalDevice& physicalDevice : physicalDevices) {
         if (isDeviceSuitable(physicalDevice, surface)) {
-            m_physicalDevice = physicalDevice;
+            m_physicalDevice = physicalDevice; // set physical device var
             break;
         }
     }
@@ -134,48 +135,46 @@ bool VgeDevice::checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice)
         &extensionCount,
         nullptr);
 
-    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    std::vector<VkExtensionProperties> extensions(extensionCount);
     vkEnumerateDeviceExtensionProperties(
         physicalDevice,
         nullptr,
         &extensionCount,
-        availableExtensions.data());
+        extensions.data());
 
-    std::cout << "available device extensions:\n";
+    std::cout << "Available device extensions:\n";
     std::unordered_set<std::string> available;
-    for (const VkExtensionProperties& extension : availableExtensions) {
-        std::cout << "\t" << extension.extensionName << '\n';
+    for (const VkExtensionProperties& extension : extensions) {
+        std::cout << "\tDevice: " << extension.extensionName << '\n';
         available.insert(extension.extensionName);
     }
 
-    std::cout << "required device extensions:\n";
-    std::set<std::string> requiredExtensions(
-        m_deviceExtensions.begin(),
-        m_deviceExtensions.end());
-    for (const std::string& required : requiredExtensions) {
-        std::cout << "\t" << required;
+    std::cout << "Required device extensions:\n";
+    bool allExtensionsSupported = true;
+    std::vector<const char*> missingExtensions;
+
+    for (const char* const& required : m_requiredExtensions) {
+        std::cout << "\tDevice: " << required;
         if (available.find(required) != available.end()) {
             std::cout << " (FOUND)\n";
         }
         else {
             std::cout << " (MISSING)\n";
+            missingExtensions.push_back(required);
+            allExtensionsSupported = false;
+            throw std::runtime_error("Missing required device extensions");
         }
     }
-
-    for (const VkExtensionProperties& extension : availableExtensions) {
-        requiredExtensions.erase(extension.extensionName);
-    }
-
-    return requiredExtensions.empty();
+    return allExtensionsSupported;
 }
 
 void VgeDevice::createLogicalDevice(
     bool enableValidationLayers,
     std::vector<const char*> validationLayers)
 {
-    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-    std::set<uint32_t> uniqueQueueFamilies = { getGraphicsFamily(),
-                                               getPresentFamily() };
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfoArray;
+    std::set<uint32_t> uniqueQueueFamilies = { m_graphicsFamily,
+                                               m_presentFamily };
 
     float queuePriority = 1.0f;
     for (uint32_t queueFamily : uniqueQueueFamilies) {
@@ -184,42 +183,38 @@ void VgeDevice::createLogicalDevice(
         queueCreateInfo.queueFamilyIndex = queueFamily;
         queueCreateInfo.queueCount = 1;
         queueCreateInfo.pQueuePriorities = &queuePriority;
-        queueCreateInfos.push_back(queueCreateInfo);
+        queueCreateInfoArray.push_back(queueCreateInfo);
     }
 
-    VkPhysicalDeviceFeatures deviceFeatures = {};
-    deviceFeatures.samplerAnisotropy = VK_TRUE; // Enable any required features
+    VkPhysicalDeviceFeatures physicalDeviceFeatures = {};
+    physicalDeviceFeatures.samplerAnisotropy =
+        VK_TRUE; // Enable any required features
 
-    VkDeviceCreateInfo createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.queueCreateInfoCount =
-        static_cast<uint32_t>(queueCreateInfos.size());
-    createInfo.pQueueCreateInfos = queueCreateInfos.data();
-    createInfo.pEnabledFeatures = &deviceFeatures;
-    createInfo.enabledExtensionCount =
-        static_cast<uint32_t>(m_deviceExtensions.size());
-    createInfo.ppEnabledExtensionNames = m_deviceExtensions.data();
-
-    if (enableValidationLayers) {
-        createInfo.enabledLayerCount =
-            static_cast<uint32_t>(validationLayers.size());
-        createInfo.ppEnabledLayerNames = validationLayers.data();
-    }
-    else {
-        createInfo.enabledLayerCount = 0;
-    }
+    VkDeviceCreateInfo deviceCreateInfo = {
+        VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+        nullptr,
+        {},
+        static_cast<uint32_t>(queueCreateInfoArray.size()),
+        queueCreateInfoArray.data(),
+        enableValidationLayers ? static_cast<uint32_t>(validationLayers.size())
+                               : 0,
+        enableValidationLayers ? validationLayers.data() : nullptr,
+        static_cast<uint32_t>(m_requiredExtensions.size()),
+        m_requiredExtensions.data(),
+        &physicalDeviceFeatures
+    };
 
     if (vkCreateDevice(
             m_physicalDevice,
-            &createInfo,
+            &deviceCreateInfo,
             nullptr,
             &m_logicalDevice) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create logical device!");
     }
 
-    vkGetDeviceQueue(m_logicalDevice, getGraphicsFamily(), 0, &m_graphicsQueue);
-    vkGetDeviceQueue(m_logicalDevice, getPresentFamily(), 0, &m_presentQueue);
+    vkGetDeviceQueue(m_logicalDevice, m_graphicsFamily, 0, &m_graphicsQueue);
+    vkGetDeviceQueue(m_logicalDevice, m_presentFamily, 0, &m_presentQueue);
 }
 
 bool VgeDevice::isComplete() const

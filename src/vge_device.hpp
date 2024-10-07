@@ -54,7 +54,7 @@ private:
     VkPhysicalDeviceProperties m_physicalDeviceProperties;
 
     // Extensions
-    const std::vector<const char*> m_deviceExtensions = {
+    const std::vector<const char*> m_requiredExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 };
