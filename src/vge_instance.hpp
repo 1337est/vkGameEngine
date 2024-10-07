@@ -14,14 +14,14 @@ public:
 
     bool areValidationLayersEnabled() const;
     const std::vector<const char*>& getValidationLayers() const;
-    bool checkValidationLayerSupport() const;
 
     VkInstance getInstance() const;
 
 private:
     void createInstance();
+    void checkValidationLayerSupport();
     void hasGlfwRequiredInstanceExtensions();
-    std::vector<const char*> getRequiredExtensions();
+    void setRequiredExtensions();
 
     void setupDebugMessenger();
     void populateDebugMessengerCreateInfo(
@@ -47,6 +47,11 @@ private:
     const std::vector<const char*> m_validationLayers = {
         "VK_LAYER_KHRONOS_validation"
     };
+    bool m_validationLayerSupported;
+
+    std::vector<const char*> m_requiredExtensions;
+
     VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
+    VkDebugUtilsMessengerCreateInfoEXT m_debugCreateInfo;
 };
 } // namespace vge

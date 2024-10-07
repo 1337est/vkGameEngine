@@ -12,6 +12,8 @@ VgeInstance::VgeInstance()
     : m_enableValidationLayers{ true }
 #endif
 {
+    setRequiredExtensions();
+    checkValidationLayerSupport();
     createInstance();
     setupDebugMessenger();
 }
@@ -31,58 +33,65 @@ VgeInstance::~VgeInstance()
 
 void VgeInstance::createInstance()
 {
-    if (areValidationLayersEnabled() && !checkValidationLayerSupport()) {
+    // Check if validation layers are enabled/supported
+    if (m_enableValidationLayers && !m_validationLayerSupported) {
         throw std::runtime_error(
             "validation layers requested, but not available!");
     }
 
-    VkApplicationInfo appInfo = {};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Vulkan Game Engine";
-    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.pEngineName = "Vulkan Game Engine";
-    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+    // Provides app and engine info the the Vulkan implementation
+    VkApplicationInfo appInfo = {
+        VK_STRUCTURE_TYPE_APPLICATION_INFO, // sType
+        nullptr,                            // pNext (no additional structures)
+        "Vulkan Game Engine",               // pApplicationName
+        VK_MAKE_VERSION(1, 0, 0),           // applicationVersion
+        "Vulkan Game Engine",               // pEngineName
+        VK_MAKE_VERSION(1, 0, 0),           // engineVersion
+        VK_API_VERSION_1_0                  // apiVersion
+    };
 
-    VkInstanceCreateInfo createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    createInfo.pApplicationInfo = &appInfo;
+    // Provides details for the Vulkan Instance
+    VkInstanceCreateInfo instanceCreateInfo = {
+        VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, // sType
+        nullptr,  // pNext (set conditionally later)
+        0,        // flags
+        &appInfo, // pApplicationInfo
+        0,        // enabledLayerCount (set conditionally later)
+        nullptr,  // ppEnabledLayerNames (set conditionally later)
+        static_cast<uint32_t>(
+            m_requiredExtensions.size()), // enabledExtensionCount
+        m_requiredExtensions.data()       // ppEnabledExtensionNames
+    };
 
-    std::vector<const char*> extensions = getRequiredExtensions();
-    createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-    createInfo.ppEnabledExtensionNames = extensions.data();
-
-    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-
-    // Configure enabled layers
+    // Sets instance info depending if validation layers are available
     if (m_enableValidationLayers) {
-        createInfo.enabledLayerCount =
+        instanceCreateInfo.enabledLayerCount =
             static_cast<uint32_t>(m_validationLayers.size());
-        createInfo.ppEnabledLayerNames = m_validationLayers.data();
+        instanceCreateInfo.ppEnabledLayerNames = m_validationLayers.data();
 
-        populateDebugMessengerCreateInfo(debugCreateInfo);
-        createInfo.pNext =
-            (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
-    }
-    else {
-        createInfo.enabledLayerCount = 0;
-        createInfo.pNext = nullptr;
+        populateDebugMessengerCreateInfo(m_debugCreateInfo);
+        instanceCreateInfo.pNext =
+            (VkDebugUtilsMessengerCreateInfoEXT*)&m_debugCreateInfo;
     }
 
-    if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS) {
+    // Stores the instance inside m_instance with the struct creation info
+    if (vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance) !=
+        VK_SUCCESS) {
         throw std::runtime_error("failed to create instance!");
     }
 
     hasGlfwRequiredInstanceExtensions();
 }
 
-bool VgeInstance::checkValidationLayerSupport() const
+void VgeInstance::checkValidationLayerSupport()
 {
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
     std::vector<VkLayerProperties> availableLayers(layerCount);
     vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    m_validationLayerSupported = true;
 
     for (const char* layerName : m_validationLayers) {
         bool layerFound = false;
@@ -95,29 +104,26 @@ bool VgeInstance::checkValidationLayerSupport() const
         }
 
         if (!layerFound) {
-            return false;
+            m_validationLayerSupported = false;
+            return;
         }
     }
-
-    return true;
 }
 
-std::vector<const char*> VgeInstance::getRequiredExtensions()
+void VgeInstance::setRequiredExtensions()
 {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
 
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    std::vector<const char*> extensions(
+    m_requiredExtensions = std::vector<const char*>(
         glfwExtensions,
         glfwExtensions + glfwExtensionCount);
 
-    if (areValidationLayersEnabled()) {
-        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    if (m_enableValidationLayers) {
+        m_requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
-
-    return extensions;
 }
 
 void VgeInstance::hasGlfwRequiredInstanceExtensions()
@@ -130,17 +136,16 @@ void VgeInstance::hasGlfwRequiredInstanceExtensions()
         &extensionCount,
         extensions.data());
 
-    std::cout << "available instance extensions:\n";
+    std::cout << "Available instance extensions:\n";
     std::unordered_set<std::string> available;
     for (const VkExtensionProperties& extension : extensions) {
-        std::cout << "\t" << extension.extensionName << '\n';
+        std::cout << "\tInstance: " << extension.extensionName << '\n';
         available.insert(extension.extensionName);
     }
 
-    std::cout << "required instance extensions:\n";
-    std::vector<const char*> requiredExtensions = getRequiredExtensions();
-    for (const char* const& required : requiredExtensions) {
-        std::cout << "\t" << required << '\n';
+    std::cout << "Required instance extensions:\n";
+    for (const char* const& required : m_requiredExtensions) {
+        std::cout << "\tInstance: " << required << '\n';
         if (available.find(required) == available.end()) {
             throw std::runtime_error("Missing required glfw extension");
         }
@@ -152,12 +157,9 @@ void VgeInstance::setupDebugMessenger()
     if (!m_enableValidationLayers)
         return;
 
-    VkDebugUtilsMessengerCreateInfoEXT createInfo;
-    populateDebugMessengerCreateInfo(createInfo);
-
     if (createDebugUtilsMessengerEXT(
             m_instance,
-            &createInfo,
+            &m_debugCreateInfo,
             nullptr,
             &m_debugMessenger) != VK_SUCCESS) {
         throw std::runtime_error("failed to set up debug messenger!");
@@ -165,18 +167,20 @@ void VgeInstance::setupDebugMessenger()
 }
 
 void VgeInstance::populateDebugMessengerCreateInfo(
-    VkDebugUtilsMessengerCreateInfoEXT& createInfo)
+    VkDebugUtilsMessengerCreateInfoEXT& debugCreateInfo)
 {
-    createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    createInfo.messageSeverity =
+    debugCreateInfo = {};
+    debugCreateInfo.sType =
+        VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    debugCreateInfo.messageSeverity =
         VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
         VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-                             VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-                             VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-    createInfo.pfnUserCallback = debugCallback;
-    createInfo.pUserData = nullptr; // Optional
+    debugCreateInfo.messageType =
+        VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+        VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+        VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    debugCreateInfo.pfnUserCallback = debugCallback;
+    debugCreateInfo.pUserData = nullptr; // Optional
 }
 
 // TODO: Add color codes for messages?
