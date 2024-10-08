@@ -12,23 +12,22 @@ public:
     VgeInstance(const VgeInstance&) = delete;
     VgeInstance& operator=(const VgeInstance&) = delete;
 
-    bool areValidationLayersEnabled() const;
-    const std::vector<const char*>& getValidationLayers() const;
+    bool areVLayersEnabled() const;
+    const std::vector<const char*>& getVLayers() const;
 
     VkInstance getInstance() const;
 
 private:
-    void createInstance();
-    void checkValidationLayerSupport();
-    void hasGlfwRequiredInstanceExtensions();
     void setRequiredExtensions();
-
+    void checkVLayerSupport();
+    void hasGlfwRequiredInstanceExtensions();
+    void createInstance();
     void setupDebugMessenger();
-    void populateDebugMessengerCreateInfo(
-        VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+
+    void populateDebugMessengerCI(VkDebugUtilsMessengerCreateInfoEXT& debugCI);
     VkResult createDebugUtilsMessengerEXT(
         const VkInstance& instance,
-        const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+        const VkDebugUtilsMessengerCreateInfoEXT* pDebugCI,
         const VkAllocationCallbacks* pAllocator,
         VkDebugUtilsMessengerEXT* pDebugMessenger);
     void destroyDebugUtilsMessengerEXT(
@@ -43,15 +42,15 @@ private:
 
     VkInstance m_instance = VK_NULL_HANDLE;
 
-    const bool m_enableValidationLayers;
-    const std::vector<const char*> m_validationLayers = {
+    const bool m_enableVLayers;
+    const std::vector<const char*> m_VLayers = {
         "VK_LAYER_KHRONOS_validation"
     };
-    bool m_validationLayerSupported;
+    bool m_VLayerSupport;
 
     std::vector<const char*> m_requiredExtensions;
 
     VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
-    VkDebugUtilsMessengerCreateInfoEXT m_debugCreateInfo;
+    VkDebugUtilsMessengerCreateInfoEXT m_debugCI;
 };
 } // namespace vge

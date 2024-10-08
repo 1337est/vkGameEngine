@@ -7,8 +7,8 @@ VgeApp::VgeApp()
     , m_vgeSurface{ m_vgeInstance.getInstance(), m_vgeWindow.getWindow() }
     , m_vgeDevice{ m_vgeInstance.getInstance(),
                    m_vgeSurface.getSurface(),
-                   m_vgeInstance.areValidationLayersEnabled(),
-                   m_vgeInstance.getValidationLayers() }
+                   m_vgeInstance.areVLayersEnabled(),
+                   m_vgeInstance.getVLayers() }
     , m_vgeSwapChain{ m_vgeDevice.getPhysicalDevice(),
                       m_vgeSurface.getSurface(),
                       m_vgeDevice.getGraphicsFamily(),

@@ -7,13 +7,16 @@
 namespace vge {
 VgeInstance::VgeInstance()
 #ifdef NDEBUG
-    : m_enableValidationLayers{ false }
+    : m_enableVLayers{ false }
 #else
-    : m_enableValidationLayers{ true }
+    : m_enableVLayers{ true }
 #endif
 {
+    // Prepatory functions before instance creation
     setRequiredExtensions();
-    checkValidationLayerSupport();
+    checkVLayerSupport();
+    hasGlfwRequiredInstanceExtensions();
+
     createInstance();
     setupDebugMessenger();
 }
@@ -21,95 +24,13 @@ VgeInstance::VgeInstance()
 VgeInstance::~VgeInstance()
 {
     // Validation layers cleanup happens first
-    if (m_enableValidationLayers) {
+    if (m_enableVLayers) {
         destroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
     }
 
     if (m_instance != VK_NULL_HANDLE) {
         vkDestroyInstance(m_instance, nullptr);
         m_instance = VK_NULL_HANDLE;
-    }
-}
-
-void VgeInstance::createInstance()
-{
-    // Check if validation layers are enabled/supported
-    if (m_enableValidationLayers && !m_validationLayerSupported) {
-        throw std::runtime_error(
-            "validation layers requested, but not available!");
-    }
-
-    // Provides app and engine info the the Vulkan implementation
-    VkApplicationInfo appInfo = {
-        .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO, // sType
-        .pNext = nullptr, // pNext (no additional structures)
-        .pApplicationName = "Vulkan Game Engine",       // pApplicationName
-        .applicationVersion = VK_MAKE_VERSION(1, 0, 0), // applicationVersion
-        .pEngineName = "Vulkan Game Engine",            // pEngineName
-        .engineVersion = VK_MAKE_VERSION(1, 0, 0),      // engineVersion
-        .apiVersion = VK_API_VERSION_1_0                // apiVersion
-    };
-
-    // Provides details for the Vulkan Instance
-    VkInstanceCreateInfo instanceCreateInfo = {
-        .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, // sType
-        .pNext = nullptr,             // pNext (set conditionally later)
-        .flags = 0,                   // flags
-        .pApplicationInfo = &appInfo, // pApplicationInfo
-        .enabledLayerCount = 0, // enabledLayerCount (set conditionally later)
-        .ppEnabledLayerNames =
-            nullptr, // ppEnabledLayerNames (set conditionally later)
-        .enabledExtensionCount = static_cast<uint32_t>(
-            m_requiredExtensions.size()), // enabledExtensionCount
-        .ppEnabledExtensionNames =
-            m_requiredExtensions.data() // ppEnabledExtensionNames
-    };
-
-    // Sets instance info depending if validation layers are available
-    if (m_enableValidationLayers) {
-        instanceCreateInfo.enabledLayerCount =
-            static_cast<uint32_t>(m_validationLayers.size());
-        instanceCreateInfo.ppEnabledLayerNames = m_validationLayers.data();
-
-        populateDebugMessengerCreateInfo(m_debugCreateInfo);
-        instanceCreateInfo.pNext =
-            (VkDebugUtilsMessengerCreateInfoEXT*)&m_debugCreateInfo;
-    }
-
-    // Stores the instance inside m_instance with the struct creation info
-    if (vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance) !=
-        VK_SUCCESS)
-    {
-        throw std::runtime_error("failed to create instance!");
-    }
-
-    hasGlfwRequiredInstanceExtensions();
-}
-
-void VgeInstance::checkValidationLayerSupport()
-{
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    m_validationLayerSupported = true;
-
-    for (const char* layerName : m_validationLayers) {
-        bool layerFound = false;
-
-        for (const VkLayerProperties& layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
-                layerFound = true;
-                break;
-            }
-        }
-
-        if (!layerFound) {
-            m_validationLayerSupported = false;
-            return;
-        }
     }
 }
 
@@ -124,8 +45,35 @@ void VgeInstance::setRequiredExtensions()
         glfwExtensions,
         glfwExtensions + glfwExtensionCount);
 
-    if (m_enableValidationLayers) {
+    if (m_enableVLayers) {
         m_requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    }
+}
+
+void VgeInstance::checkVLayerSupport()
+{
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    m_VLayerSupport = true;
+
+    for (const char* layerName : m_VLayers) {
+        bool layerFound = false;
+
+        for (const VkLayerProperties& layerProperties : availableLayers) {
+            if (strcmp(layerName, layerProperties.layerName) == 0) {
+                layerFound = true;
+                break;
+            }
+        }
+
+        if (!layerFound) {
+            m_VLayerSupport = false;
+            return;
+        }
     }
 }
 
@@ -155,14 +103,63 @@ void VgeInstance::hasGlfwRequiredInstanceExtensions()
     }
 }
 
+void VgeInstance::createInstance()
+{
+    // Check if validation layers are enabled/supported
+    if (m_enableVLayers && !m_VLayerSupport) {
+        throw std::runtime_error(
+            "validation layers requested, but not available!");
+    }
+
+    // Provides app and engine info the the Vulkan implementation
+    VkApplicationInfo appInfo = {
+        .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO, // sType
+        .pNext = nullptr, // pNext (no additional structures)
+        .pApplicationName = "Vulkan Game Engine",       // pApplicationName
+        .applicationVersion = VK_MAKE_VERSION(1, 0, 0), // applicationVersion
+        .pEngineName = "Vulkan Game Engine",            // pEngineName
+        .engineVersion = VK_MAKE_VERSION(1, 0, 0),      // engineVersion
+        .apiVersion = VK_API_VERSION_1_0                // apiVersion
+    };
+
+    // Provides details for the Vulkan Instance
+    VkInstanceCreateInfo instanceCI = {
+        .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, // sType
+        .pNext = nullptr,             // pNext (set conditionally later)
+        .flags = 0,                   // flags
+        .pApplicationInfo = &appInfo, // pApplicationInfo
+        .enabledLayerCount = 0, // enabledLayerCount (set conditionally later)
+        .ppEnabledLayerNames =
+            nullptr, // ppEnabledLayerNames (set conditionally later)
+        .enabledExtensionCount = static_cast<uint32_t>(
+            m_requiredExtensions.size()), // enabledExtensionCount
+        .ppEnabledExtensionNames =
+            m_requiredExtensions.data() // ppEnabledExtensionNames
+    };
+
+    // Sets instance info depending if validation layers are available
+    if (m_enableVLayers) {
+        instanceCI.enabledLayerCount = static_cast<uint32_t>(m_VLayers.size());
+        instanceCI.ppEnabledLayerNames = m_VLayers.data();
+
+        populateDebugMessengerCI(m_debugCI);
+        instanceCI.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&m_debugCI;
+    }
+
+    // Stores the instance inside m_instance with the struct creation info
+    if (vkCreateInstance(&instanceCI, nullptr, &m_instance) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create instance!");
+    }
+}
+
 void VgeInstance::setupDebugMessenger()
 {
-    if (!m_enableValidationLayers)
+    if (!m_enableVLayers)
         return;
 
     if (createDebugUtilsMessengerEXT(
             m_instance,
-            &m_debugCreateInfo,
+            &m_debugCI,
             nullptr,
             &m_debugMessenger) != VK_SUCCESS)
     {
@@ -170,21 +167,18 @@ void VgeInstance::setupDebugMessenger()
     }
 }
 
-void VgeInstance::populateDebugMessengerCreateInfo(
-    VkDebugUtilsMessengerCreateInfoEXT& debugCreateInfo)
+void VgeInstance::populateDebugMessengerCI(
+    VkDebugUtilsMessengerCreateInfoEXT& debugCI)
 {
-    debugCreateInfo = {};
-    debugCreateInfo.sType =
-        VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    debugCreateInfo.messageSeverity =
-        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-        VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-    debugCreateInfo.messageType =
-        VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-        VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-        VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-    debugCreateInfo.pfnUserCallback = debugCallback;
-    debugCreateInfo.pUserData = nullptr; // Optional
+    debugCI = {};
+    debugCI.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    debugCI.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                              VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    debugCI.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                          VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+                          VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    debugCI.pfnUserCallback = debugCallback;
+    debugCI.pUserData = nullptr; // Optional
 }
 
 // TODO: Add color codes for messages?
@@ -228,7 +222,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VgeInstance::debugCallback(
 
 VkResult VgeInstance::createDebugUtilsMessengerEXT(
     const VkInstance& instance,
-    const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+    const VkDebugUtilsMessengerCreateInfoEXT* pDebugCI,
     const VkAllocationCallbacks* pAllocator,
     VkDebugUtilsMessengerEXT* pDebugMessenger)
 {
@@ -236,7 +230,7 @@ VkResult VgeInstance::createDebugUtilsMessengerEXT(
         (PFN_vkCreateDebugUtilsMessengerEXT)
             vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
-        return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+        return func(instance, pDebugCI, pAllocator, pDebugMessenger);
     }
     else {
         return VK_ERROR_EXTENSION_NOT_PRESENT;
@@ -261,14 +255,14 @@ VkInstance VgeInstance::getInstance() const
     return m_instance;
 }
 
-bool VgeInstance::areValidationLayersEnabled() const
+bool VgeInstance::areVLayersEnabled() const
 {
-    return m_enableValidationLayers;
+    return m_enableVLayers;
 }
 
-const std::vector<const char*>& VgeInstance::getValidationLayers() const
+const std::vector<const char*>& VgeInstance::getVLayers() const
 {
-    return m_validationLayers;
+    return m_VLayers;
 }
 
 } // namespace vge
