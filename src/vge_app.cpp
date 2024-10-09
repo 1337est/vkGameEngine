@@ -9,7 +9,7 @@ VgeApp::VgeApp()
                    m_vgeSurface.getSurface(),
                    m_vgeInstance.areVLayersEnabled(),
                    m_vgeInstance.getVLayers() }
-    , m_vgeSwapChain{ m_vgeDevice.getPDevice(),       m_vgeSurface.getSurface(), m_vgeDevice.getGraphicsFamily(),
+    , m_vgeSwapchain{ m_vgeDevice.getPDevice(),       m_vgeSurface.getSurface(), m_vgeDevice.getGraphicsFamily(),
                       m_vgeDevice.getPresentFamily(), m_vgeDevice.getLDevice(),  m_vgeWindow.getWindow() }
     , m_vgePipeline{ "build/shaders/shader.vert.spv", "build/shaders/shader.frag.spv" }
 {}

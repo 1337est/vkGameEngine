@@ -23,7 +23,7 @@ private:
     VgeInstance m_vgeInstance;
     VgeSurface m_vgeSurface;
     VgeDevice m_vgeDevice;
-    VgeSwapChain m_vgeSwapChain;
+    VgeSwapchain m_vgeSwapchain;
     VgePipeline m_vgePipeline;
 };
 

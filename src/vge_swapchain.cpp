@@ -4,32 +4,33 @@
 #include <stdexcept>
 
 namespace vge {
-VgeSwapChain::VgeSwapChain(
+VgeSwapchain::VgeSwapchain(
     VkPhysicalDevice pDevice,
     VkSurfaceKHR surface,
-    uint32_t gFamily,
-    uint32_t pFamily,
+    uint32_t graphicsFamily,
+    uint32_t presentFamily,
     VkDevice lDevice,
     GLFWwindow* window)
     : m_pDevice{ pDevice }
     , m_surface{ surface }
-    , m_gFamily{ gFamily }
-    , m_pFamily{ pFamily }
+    , m_graphicsFamily{ graphicsFamily }
+    , m_presentFamily{ presentFamily }
     , m_lDevice{ lDevice }
     , m_window{ window }
 {
-    querySwapChainSupport();
-    createSwapChain();
+    querySwapchainSupport();
+
+    createSwapchain();
 }
 
-VgeSwapChain::~VgeSwapChain()
+VgeSwapchain::~VgeSwapchain()
 {
-    if (m_swapChain != VK_NULL_HANDLE) {
-        vkDestroySwapchainKHR(m_lDevice, m_swapChain, nullptr);
+    if (m_swapchain != VK_NULL_HANDLE) {
+        vkDestroySwapchainKHR(m_lDevice, m_swapchain, nullptr);
     }
 }
 
-void VgeSwapChain::querySwapChainSupport()
+void VgeSwapchain::querySwapchainSupport()
 {
     // Assigns surface capabilities to m_surfaceCapabilities
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_pDevice, m_surface, &m_surfaceCaps);
@@ -55,7 +56,7 @@ void VgeSwapChain::querySwapChainSupport()
     }
 }
 
-void VgeSwapChain::createSwapChain()
+void VgeSwapchain::createSwapchain()
 {
     VkSurfaceFormatKHR surfaceFormat = chooseSurfaceFormat(m_surfaceFormats);
     VkPresentModeKHR presentMode = choosePresentMode(m_presentModes);
@@ -68,7 +69,10 @@ void VgeSwapChain::createSwapChain()
     }
 
     // Specify the queue family indices
-    uint32_t queueFamilyIndices[] = { m_gFamily, m_pFamily };
+    uint32_t queueFamilyIndices[] = {
+        m_graphicsFamily,
+        m_presentFamily,
+    };
 
     // Create swap chain
     VkSwapchainCreateInfoKHR swapchainCI{
@@ -82,9 +86,11 @@ void VgeSwapChain::createSwapChain()
         .imageExtent = extent,
         .imageArrayLayers = 1,
         .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-        .imageSharingMode = (m_gFamily != m_pFamily) ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE,
-        .queueFamilyIndexCount = (m_gFamily != m_pFamily) ? static_cast<uint32_t>(2) : static_cast<uint32_t>(0),
-        .pQueueFamilyIndices = (m_gFamily != m_pFamily) ? queueFamilyIndices : nullptr,
+        .imageSharingMode =
+            (m_graphicsFamily != m_presentFamily) ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE,
+        .queueFamilyIndexCount =
+            (m_graphicsFamily != m_presentFamily) ? static_cast<uint32_t>(2) : static_cast<uint32_t>(0),
+        .pQueueFamilyIndices = (m_graphicsFamily != m_presentFamily) ? queueFamilyIndices : nullptr,
         .preTransform = m_surfaceCaps.currentTransform,
         .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
         .presentMode = presentMode,
@@ -92,23 +98,23 @@ void VgeSwapChain::createSwapChain()
         .oldSwapchain = VK_NULL_HANDLE
     };
 
-    // stores swapchain inside m_swapChain
-    if (vkCreateSwapchainKHR(m_lDevice, &swapchainCI, nullptr, &m_swapChain) != VK_SUCCESS) {
+    // stores swapchain inside m_swapchain
+    if (vkCreateSwapchainKHR(m_lDevice, &swapchainCI, nullptr, &m_swapchain) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create swap chain!");
     }
 
     // Retrieves count of swap chain images
-    uint32_t swapChainImageCount;
-    vkGetSwapchainImagesKHR(m_lDevice, m_swapChain, &swapChainImageCount, nullptr);
+    uint32_t swapchainImageCount;
+    vkGetSwapchainImagesKHR(m_lDevice, m_swapchain, &swapchainImageCount, nullptr);
 
-    // assign m_swapChainImages with a list of available swapchain images
-    m_swapChainImages.resize(swapChainImageCount);
-    vkGetSwapchainImagesKHR(m_lDevice, m_swapChain, &swapChainImageCount, m_swapChainImages.data());
-    m_swapChainImageFormat = surfaceFormat.format;
-    m_swapChainExtent = extent;
+    // assign m_swapchainImages with a list of available swapchain images
+    m_swapchainImages.resize(swapchainImageCount);
+    vkGetSwapchainImagesKHR(m_lDevice, m_swapchain, &swapchainImageCount, m_swapchainImages.data());
+    m_swapchainImageFormat = surfaceFormat.format;
+    m_swapchainExtent = extent;
 }
 
-VkSurfaceFormatKHR VgeSwapChain::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& surfaceFormats)
+VkSurfaceFormatKHR VgeSwapchain::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& surfaceFormats)
 {
     for (const VkSurfaceFormatKHR& availableFormat : surfaceFormats) {
         if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
@@ -122,7 +128,7 @@ VkSurfaceFormatKHR VgeSwapChain::chooseSurfaceFormat(const std::vector<VkSurface
                               // preferred format is not found
 }
 
-VkPresentModeKHR VgeSwapChain::choosePresentMode(const std::vector<VkPresentModeKHR>& presentModes)
+VkPresentModeKHR VgeSwapchain::choosePresentMode(const std::vector<VkPresentModeKHR>& presentModes)
 {
     for (const VkPresentModeKHR& availablePresentMode : presentModes) {
         if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
@@ -135,7 +141,7 @@ VkPresentModeKHR VgeSwapChain::choosePresentMode(const std::vector<VkPresentMode
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D VgeSwapChain::chooseExtent(const VkSurfaceCapabilitiesKHR& surfaceCaps)
+VkExtent2D VgeSwapchain::chooseExtent(const VkSurfaceCapabilitiesKHR& surfaceCaps)
 {
     if (surfaceCaps.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
         return surfaceCaps.currentExtent; // Return the current extent if it's valid
@@ -152,14 +158,14 @@ VkExtent2D VgeSwapChain::chooseExtent(const VkSurfaceCapabilitiesKHR& surfaceCap
     }
 }
 
-VkSwapchainKHR VgeSwapChain::getSwapChain() const
+VkSwapchainKHR VgeSwapchain::getSwapchain() const
 {
-    return m_swapChain;
+    return m_swapchain;
 }
 
-const std::vector<VkImage>& VgeSwapChain::getSwapChainImages() const
+const std::vector<VkImage>& VgeSwapchain::getSwapchainImages() const
 {
-    return m_swapChainImages;
+    return m_swapchainImages;
 }
 
 } // namespace vge

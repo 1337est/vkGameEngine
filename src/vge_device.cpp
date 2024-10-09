@@ -139,31 +139,39 @@ bool VgeDevice::checkDeviceExts(VkPhysicalDevice pDevice)
 void VgeDevice::createLDevice(bool enableVLayers, std::vector<const char*> vLayers)
 {
     std::vector<VkDeviceQueueCreateInfo> queueCIVector;
-    std::set<uint32_t> uniqueQueueFamilies = { m_graphicsFamily, m_presentFamily };
+    std::set<uint32_t> uniqueQueueFamilies = {
+        m_graphicsFamily,
+        m_presentFamily,
+    };
 
     float queuePriority = 1.0f;
     for (uint32_t queueFamily : uniqueQueueFamilies) {
-        VkDeviceQueueCreateInfo queueCI = {};
-        queueCI.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-        queueCI.queueFamilyIndex = queueFamily;
-        queueCI.queueCount = 1;
-        queueCI.pQueuePriorities = &queuePriority;
+        VkDeviceQueueCreateInfo queueCI = {
+            .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .queueFamilyIndex = queueFamily,
+            .queueCount = 1,
+            .pQueuePriorities = &queuePriority,
+        };
         queueCIVector.push_back(queueCI);
     }
 
     VkPhysicalDeviceFeatures pDeviceFeatures = {};
     pDeviceFeatures.samplerAnisotropy = VK_TRUE; // Enable any required features
 
-    VkDeviceCreateInfo deviceCI = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-                                    nullptr,
-                                    {},
-                                    static_cast<uint32_t>(queueCIVector.size()),
-                                    queueCIVector.data(),
-                                    enableVLayers ? static_cast<uint32_t>(vLayers.size()) : 0,
-                                    enableVLayers ? vLayers.data() : nullptr,
-                                    static_cast<uint32_t>(m_requiredExts.size()),
-                                    m_requiredExts.data(),
-                                    &pDeviceFeatures };
+    VkDeviceCreateInfo deviceCI = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .queueCreateInfoCount = static_cast<uint32_t>(queueCIVector.size()),
+        .pQueueCreateInfos = queueCIVector.data(),
+        .enabledLayerCount = enableVLayers ? static_cast<uint32_t>(vLayers.size()) : 0,
+        .ppEnabledLayerNames = enableVLayers ? vLayers.data() : nullptr,
+        .enabledExtensionCount = static_cast<uint32_t>(m_requiredExts.size()),
+        .ppEnabledExtensionNames = m_requiredExts.data(),
+        .pEnabledFeatures = &pDeviceFeatures,
+    };
 
     if (vkCreateDevice(m_pDevice, &deviceCI, nullptr, &m_lDevice) != VK_SUCCESS) {
         throw std::runtime_error("failed to create logical device!");

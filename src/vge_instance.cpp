@@ -113,7 +113,7 @@ void VgeInstance::createInstance()
         .applicationVersion = VK_MAKE_VERSION(1, 0, 0), // applicationVersion
         .pEngineName = "Vulkan Game Engine",            // pEngineName
         .engineVersion = VK_MAKE_VERSION(1, 0, 0),      // engineVersion
-        .apiVersion = VK_API_VERSION_1_0                // apiVersion
+        .apiVersion = VK_API_VERSION_1_0,               // apiVersion
     };
 
     // Provides details for the Vulkan Instance
@@ -125,7 +125,7 @@ void VgeInstance::createInstance()
         .enabledLayerCount = 0,                          // enabledLayerCount (set conditionally later)
         .ppEnabledLayerNames = nullptr,                  // ppEnabledLayerNames (set conditionally later)
         .enabledExtensionCount = static_cast<uint32_t>(m_requiredExts.size()), // enabledExtensionCount
-        .ppEnabledExtensionNames = m_requiredExts.data()                       // ppEnabledExtensionNames
+        .ppEnabledExtensionNames = m_requiredExts.data(),                      // ppEnabledExtensionNames
     };
 
     // Sets instance info depending if validation layers are available
@@ -155,14 +155,17 @@ void VgeInstance::setupDebugMessenger()
 
 void VgeInstance::populateDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& debugCI)
 {
-    debugCI = {};
-    debugCI.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    debugCI.messageSeverity =
-        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-    debugCI.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-                          VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-    debugCI.pfnUserCallback = debugCallback;
-    debugCI.pUserData = nullptr; // Optional
+    debugCI = {
+        .sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
+        .pNext = nullptr,
+        .flags = 0,
+        .messageSeverity =
+            VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
+        .messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+                       VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
+        .pfnUserCallback = debugCallback,
+        .pUserData = nullptr, // Optional
+    };
 }
 
 // TODO: Add color codes for messages?

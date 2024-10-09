@@ -5,26 +5,26 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
-class VgeSwapChain {
+class VgeSwapchain {
 public:
-    VgeSwapChain(
+    VgeSwapchain(
         VkPhysicalDevice pDevice,
         VkSurfaceKHR surface,
-        uint32_t gFamily,
-        uint32_t pFamily,
+        uint32_t graphicsFamily,
+        uint32_t presentFamily,
         VkDevice lDevice,
         GLFWwindow* window);
-    ~VgeSwapChain();
+    ~VgeSwapchain();
 
-    VgeSwapChain(const VgeSwapChain&) = delete;
-    VgeSwapChain& operator=(const VgeSwapChain&) = delete;
+    VgeSwapchain(const VgeSwapchain&) = delete;
+    VgeSwapchain& operator=(const VgeSwapchain&) = delete;
 
-    VkSwapchainKHR getSwapChain() const;
-    const std::vector<VkImage>& getSwapChainImages() const;
+    VkSwapchainKHR getSwapchain() const;
+    const std::vector<VkImage>& getSwapchainImages() const;
 
 private:
-    void createSwapChain();
-    void querySwapChainSupport();
+    void createSwapchain();
+    void querySwapchainSupport();
 
     VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& surfaceFormats);
     VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR>& presentModes);
@@ -37,16 +37,16 @@ private:
     VkPhysicalDevice m_pDevice;
     VkSurfaceKHR m_surface;
 
-    uint32_t m_gFamily;
-    uint32_t m_pFamily;
+    uint32_t m_graphicsFamily;
+    uint32_t m_presentFamily;
     VkDevice m_lDevice;
 
     GLFWwindow* m_window;
 
-    VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
-    std::vector<VkImage> m_swapChainImages;
-    VkFormat m_swapChainImageFormat;
-    VkExtent2D m_swapChainExtent;
+    VkSwapchainKHR m_swapchain = VK_NULL_HANDLE;
+    std::vector<VkImage> m_swapchainImages;
+    VkFormat m_swapchainImageFormat;
+    VkExtent2D m_swapchainExtent;
     VkExtent2D m_windowExtent;
 };
 } // namespace vge
