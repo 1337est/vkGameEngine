@@ -13,9 +13,9 @@ VgeInstance::VgeInstance()
 #endif
 {
     // Prepatory functions before instance creation
-    setRequiredExtensions();
+    setRequiredExts();
     checkVLayerSupport();
-    hasGlfwRequiredInstanceExtensions();
+    hasRequiredInstanceExts();
 
     createInstance();
     setupDebugMessenger();
@@ -25,7 +25,7 @@ VgeInstance::~VgeInstance()
 {
     // Validation layers cleanup happens first
     if (m_enableVLayers) {
-        destroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
+        destroyDebugMessenger(m_instance, m_debugMessenger, nullptr);
     }
 
     if (m_instance != VK_NULL_HANDLE) {
@@ -34,19 +34,18 @@ VgeInstance::~VgeInstance()
     }
 }
 
-void VgeInstance::setRequiredExtensions()
+void VgeInstance::setRequiredExts()
 {
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
+    uint32_t glfwExtCount = 0;
+    const char** glfwExts;
 
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    glfwExts = glfwGetRequiredInstanceExtensions(&glfwExtCount);
 
-    m_requiredExtensions = std::vector<const char*>(
-        glfwExtensions,
-        glfwExtensions + glfwExtensionCount);
+    m_requiredExts =
+        std::vector<const char*>(glfwExts, glfwExts + glfwExtCount);
 
     if (m_enableVLayers) {
-        m_requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        m_requiredExts.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
 }
 
@@ -63,8 +62,8 @@ void VgeInstance::checkVLayerSupport()
     for (const char* layerName : m_VLayers) {
         bool layerFound = false;
 
-        for (const VkLayerProperties& layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
+        for (const VkLayerProperties& layerProps : availableLayers) {
+            if (strcmp(layerName, layerProps.layerName) == 0) {
                 layerFound = true;
                 break;
             }
@@ -77,25 +76,22 @@ void VgeInstance::checkVLayerSupport()
     }
 }
 
-void VgeInstance::hasGlfwRequiredInstanceExtensions()
+void VgeInstance::hasRequiredInstanceExts()
 {
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-    std::vector<VkExtensionProperties> extensions(extensionCount);
-    vkEnumerateInstanceExtensionProperties(
-        nullptr,
-        &extensionCount,
-        extensions.data());
+    uint32_t extCount = 0;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extCount, nullptr);
+    std::vector<VkExtensionProperties> exts(extCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &extCount, exts.data());
 
     std::cout << "Available instance extensions:\n";
     std::unordered_set<std::string> available;
-    for (const VkExtensionProperties& extension : extensions) {
-        std::cout << "\tInstance: " << extension.extensionName << '\n';
-        available.insert(extension.extensionName);
+    for (const VkExtensionProperties& ext : exts) {
+        std::cout << "\tInstance: " << ext.extensionName << '\n';
+        available.insert(ext.extensionName);
     }
 
     std::cout << "Required instance extensions:\n";
-    for (const char* const& required : m_requiredExtensions) {
+    for (const char* const& required : m_requiredExts) {
         std::cout << "\tInstance: " << required << '\n';
         if (available.find(required) == available.end()) {
             throw std::runtime_error("Missing required glfw extension");
@@ -132,9 +128,9 @@ void VgeInstance::createInstance()
         .ppEnabledLayerNames =
             nullptr, // ppEnabledLayerNames (set conditionally later)
         .enabledExtensionCount = static_cast<uint32_t>(
-            m_requiredExtensions.size()), // enabledExtensionCount
+            m_requiredExts.size()), // enabledExtensionCount
         .ppEnabledExtensionNames =
-            m_requiredExtensions.data() // ppEnabledExtensionNames
+            m_requiredExts.data() // ppEnabledExtensionNames
     };
 
     // Sets instance info depending if validation layers are available
@@ -142,7 +138,7 @@ void VgeInstance::createInstance()
         instanceCI.enabledLayerCount = static_cast<uint32_t>(m_VLayers.size());
         instanceCI.ppEnabledLayerNames = m_VLayers.data();
 
-        populateDebugMessengerCI(m_debugCI);
+        populateDebugMessenger(m_debugCI);
         instanceCI.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&m_debugCI;
     }
 
@@ -157,7 +153,7 @@ void VgeInstance::setupDebugMessenger()
     if (!m_enableVLayers)
         return;
 
-    if (createDebugUtilsMessengerEXT(
+    if (createDebugMessenger(
             m_instance,
             &m_debugCI,
             nullptr,
@@ -167,7 +163,7 @@ void VgeInstance::setupDebugMessenger()
     }
 }
 
-void VgeInstance::populateDebugMessengerCI(
+void VgeInstance::populateDebugMessenger(
     VkDebugUtilsMessengerCreateInfoEXT& debugCI)
 {
     debugCI = {};
@@ -220,9 +216,9 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VgeInstance::debugCallback(
     return VK_FALSE;
 }
 
-VkResult VgeInstance::createDebugUtilsMessengerEXT(
+VkResult VgeInstance::createDebugMessenger(
     const VkInstance& instance,
-    const VkDebugUtilsMessengerCreateInfoEXT* pDebugCI,
+    const VkDebugUtilsMessengerCreateInfoEXT* pDebugCInfo,
     const VkAllocationCallbacks* pAllocator,
     VkDebugUtilsMessengerEXT* pDebugMessenger)
 {
@@ -230,14 +226,14 @@ VkResult VgeInstance::createDebugUtilsMessengerEXT(
         (PFN_vkCreateDebugUtilsMessengerEXT)
             vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
-        return func(instance, pDebugCI, pAllocator, pDebugMessenger);
+        return func(instance, pDebugCInfo, pAllocator, pDebugMessenger);
     }
     else {
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 }
 
-void VgeInstance::destroyDebugUtilsMessengerEXT(
+void VgeInstance::destroyDebugMessenger(
     const VkInstance& instance,
     VkDebugUtilsMessengerEXT debugMessenger,
     const VkAllocationCallbacks* pAllocator)

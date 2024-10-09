@@ -8,11 +8,11 @@ namespace vge {
 class VgeSwapChain {
 public:
     VgeSwapChain(
-        VkPhysicalDevice physicalDevice,
+        VkPhysicalDevice pDevice,
         VkSurfaceKHR surface,
-        uint32_t graphicsFamily,
-        uint32_t presentFamily,
-        VkDevice logicalDevice,
+        uint32_t gFamily,
+        uint32_t pFamily,
+        VkDevice lDevice,
         GLFWwindow* window);
     ~VgeSwapChain();
 
@@ -27,21 +27,21 @@ private:
     void querySwapChainSupport();
 
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-        const std::vector<VkSurfaceFormatKHR>& availableFormats);
+        const std::vector<VkSurfaceFormatKHR>& surfaceFormats);
     VkPresentModeKHR chooseSwapPresentMode(
-        const std::vector<VkPresentModeKHR>& availablePresentModes);
-    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+        const std::vector<VkPresentModeKHR>& presentModes);
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCaps);
 
     std::vector<VkSurfaceFormatKHR> m_surfaceFormats{};
     std::vector<VkPresentModeKHR> m_presentModes{};
-    VkSurfaceCapabilitiesKHR m_surfaceCapabilities{};
+    VkSurfaceCapabilitiesKHR m_surfaceCaps{};
 
-    VkPhysicalDevice m_physicalDevice;
+    VkPhysicalDevice m_pDevice;
     VkSurfaceKHR m_surface;
 
-    uint32_t m_graphicsFamily;
-    uint32_t m_presentFamily;
-    VkDevice m_logicalDevice;
+    uint32_t m_gFamily;
+    uint32_t m_pFamily;
+    VkDevice m_lDevice;
 
     GLFWwindow* m_window;
 

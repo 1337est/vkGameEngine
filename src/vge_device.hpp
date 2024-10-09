@@ -9,8 +9,8 @@ public:
     VgeDevice(
         const VkInstance& instance,
         VkSurfaceKHR surface,
-        bool enableValidationLayers,
-        const std::vector<const char*> validationLayers);
+        bool enableVLayers,
+        const std::vector<const char*> vLayers);
     ~VgeDevice();
 
     // Not copyable or movable
@@ -19,42 +19,40 @@ public:
     VgeDevice(VgeDevice&&) = delete;
     VgeDevice& operator=(VgeDevice&&) = delete;
 
-    VkPhysicalDevice getPhysicalDevice() const;
-    VkDevice getLogicalDevice() const;
+    VkPhysicalDevice getPDevice() const;
+    VkDevice getLDevice() const;
     bool isComplete() const;
-    uint32_t getGraphicsFamily() const;
-    uint32_t getPresentFamily() const;
+    uint32_t getGFamily() const;
+    uint32_t getPFamily() const;
 
 private:
-    void pickPhysicalDevice(const VkInstance& instance, VkSurfaceKHR surface);
-    bool isDeviceSuitable(
-        const VkPhysicalDevice& physicalDevice,
+    void pickPDevice(const VkInstance& instance, VkSurfaceKHR surface);
+    bool isPDeviceSuitable(
+        const VkPhysicalDevice& pDevice,
         VkSurfaceKHR surface);
     void findQueueFamilies(
-        const VkPhysicalDevice& physicalDevice,
+        const VkPhysicalDevice& pDevice,
         VkSurfaceKHR surface);
-    bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
-    void createLogicalDevice(
-        bool enableValidationLayers,
-        std::vector<const char*> validationLayers);
+    bool checkDeviceExtsSupport(VkPhysicalDevice pDevice);
+    void createLDevice(bool enableVLayers, std::vector<const char*> vLayers);
 
     // Device handles
-    VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
-    VkDevice m_logicalDevice = VK_NULL_HANDLE;
+    VkPhysicalDevice m_pDevice = VK_NULL_HANDLE;
+    VkDevice m_lDevice = VK_NULL_HANDLE;
 
     // Queue handles
-    VkQueue m_graphicsQueue = VK_NULL_HANDLE;
-    VkQueue m_presentQueue = VK_NULL_HANDLE;
-    uint32_t m_graphicsFamily = UINT32_MAX;
-    uint32_t m_presentFamily = UINT32_MAX;
-    bool m_graphicsFamilyHasValue = false;
-    bool m_presentFamilyHasValue = false;
+    VkQueue m_gQueue = VK_NULL_HANDLE;
+    VkQueue m_pQueue = VK_NULL_HANDLE;
+    uint32_t m_gFamily = UINT32_MAX;
+    uint32_t m_pFamily = UINT32_MAX;
+    bool m_gFamilyHasValue = false;
+    bool m_pFamilyHasValue = false;
 
     // Properties and features
-    VkPhysicalDeviceProperties m_physicalDeviceProperties;
+    VkPhysicalDeviceProperties m_pDeviceProps;
 
     // Extensions
-    const std::vector<const char*> m_requiredExtensions = {
+    const std::vector<const char*> m_requiredExts = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 };

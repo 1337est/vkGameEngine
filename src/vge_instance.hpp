@@ -18,19 +18,19 @@ public:
     VkInstance getInstance() const;
 
 private:
-    void setRequiredExtensions();
+    void setRequiredExts();
     void checkVLayerSupport();
-    void hasGlfwRequiredInstanceExtensions();
+    void hasRequiredInstanceExts();
     void createInstance();
     void setupDebugMessenger();
 
-    void populateDebugMessengerCI(VkDebugUtilsMessengerCreateInfoEXT& debugCI);
-    VkResult createDebugUtilsMessengerEXT(
+    void populateDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& debugCI);
+    VkResult createDebugMessenger(
         const VkInstance& instance,
         const VkDebugUtilsMessengerCreateInfoEXT* pDebugCI,
         const VkAllocationCallbacks* pAllocator,
         VkDebugUtilsMessengerEXT* pDebugMessenger);
-    void destroyDebugUtilsMessengerEXT(
+    void destroyDebugMessenger(
         const VkInstance& instance,
         VkDebugUtilsMessengerEXT debugMessenger,
         const VkAllocationCallbacks* pAllocator);
@@ -48,7 +48,7 @@ private:
     };
     bool m_VLayerSupport;
 
-    std::vector<const char*> m_requiredExtensions;
+    std::vector<const char*> m_requiredExts;
 
     VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
     VkDebugUtilsMessengerCreateInfoEXT m_debugCI;
