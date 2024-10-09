@@ -22,14 +22,14 @@ public:
     VkPhysicalDevice getPDevice() const;
     VkDevice getLDevice() const;
     bool isComplete() const;
-    uint32_t getGFamily() const;
-    uint32_t getPFamily() const;
+    uint32_t getGraphicsFamily() const;
+    uint32_t getPresentFamily() const;
 
 private:
     void pickPDevice(const VkInstance& instance, VkSurfaceKHR surface);
     bool isPDeviceSuitable(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface);
     void findQueueFamilies(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface);
-    bool checkDeviceExtsSupport(VkPhysicalDevice pDevice);
+    bool checkDeviceExts(VkPhysicalDevice pDevice);
     void createLDevice(bool enableVLayers, std::vector<const char*> vLayers);
 
     // Device handles
@@ -37,12 +37,12 @@ private:
     VkDevice m_lDevice = VK_NULL_HANDLE;
 
     // Queue handles
-    VkQueue m_gQueue = VK_NULL_HANDLE;
-    VkQueue m_pQueue = VK_NULL_HANDLE;
-    uint32_t m_gFamily = UINT32_MAX;
-    uint32_t m_pFamily = UINT32_MAX;
-    bool m_gFamilyHasValue = false;
-    bool m_pFamilyHasValue = false;
+    VkQueue m_graphicsQueue = VK_NULL_HANDLE;
+    VkQueue m_presentQueue = VK_NULL_HANDLE;
+    uint32_t m_graphicsFamily = UINT32_MAX;
+    uint32_t m_presentFamily = UINT32_MAX;
+    bool m_graphicsFamilyHasValue = false;
+    bool m_presentFamilyHasValue = false;
 
     // Properties and features
     VkPhysicalDeviceProperties m_pDeviceProps;

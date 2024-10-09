@@ -54,7 +54,7 @@ void VgeDevice::pickPDevice(const VkInstance& instance, VkSurfaceKHR surface)
 bool VgeDevice::isPDeviceSuitable(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface)
 {
     findQueueFamilies(pDevice, surface);
-    bool extsSupported = checkDeviceExtsSupport(pDevice);
+    bool extsSupported = checkDeviceExts(pDevice);
 
     return isComplete() && extsSupported;
 }
@@ -76,16 +76,16 @@ void VgeDevice::findQueueFamilies(const VkPhysicalDevice& pDevice, VkSurfaceKHR 
 
         // check if queue support graphics operations
         if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            m_gFamily = i;
-            m_gFamilyHasValue = true;
+            m_graphicsFamily = i;
+            m_graphicsFamilyHasValue = true;
         }
 
         // check if queue supports presentation to the surface
         VkBool32 presentSupport = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, surface, &presentSupport);
         if (queueFamily.queueCount > 0 && presentSupport) {
-            m_pFamily = i;
-            m_pFamilyHasValue = true;
+            m_presentFamily = i;
+            m_presentFamilyHasValue = true;
         }
 
         if (isComplete()) {
@@ -94,15 +94,15 @@ void VgeDevice::findQueueFamilies(const VkPhysicalDevice& pDevice, VkSurfaceKHR 
     }
 
     // throw error if no families are found
-    if (!m_gFamilyHasValue) {
+    if (!m_graphicsFamilyHasValue) {
         throw std::runtime_error("Failed to find a graphics queue family.");
     }
-    if (!m_pFamilyHasValue) {
+    if (!m_presentFamilyHasValue) {
         throw std::runtime_error("Failed to find a presentation queue family.");
     }
 }
 
-bool VgeDevice::checkDeviceExtsSupport(VkPhysicalDevice pDevice)
+bool VgeDevice::checkDeviceExts(VkPhysicalDevice pDevice)
 {
     uint32_t extCount;
     vkEnumerateDeviceExtensionProperties(pDevice, nullptr, &extCount, nullptr);
@@ -139,7 +139,7 @@ bool VgeDevice::checkDeviceExtsSupport(VkPhysicalDevice pDevice)
 void VgeDevice::createLDevice(bool enableVLayers, std::vector<const char*> vLayers)
 {
     std::vector<VkDeviceQueueCreateInfo> queueCIVector;
-    std::set<uint32_t> uniqueQueueFamilies = { m_gFamily, m_pFamily };
+    std::set<uint32_t> uniqueQueueFamilies = { m_graphicsFamily, m_presentFamily };
 
     float queuePriority = 1.0f;
     for (uint32_t queueFamily : uniqueQueueFamilies) {
@@ -169,23 +169,23 @@ void VgeDevice::createLDevice(bool enableVLayers, std::vector<const char*> vLaye
         throw std::runtime_error("failed to create logical device!");
     }
 
-    vkGetDeviceQueue(m_lDevice, m_gFamily, 0, &m_gQueue);
-    vkGetDeviceQueue(m_lDevice, m_pFamily, 0, &m_pQueue);
+    vkGetDeviceQueue(m_lDevice, m_graphicsFamily, 0, &m_graphicsQueue);
+    vkGetDeviceQueue(m_lDevice, m_presentFamily, 0, &m_presentQueue);
 }
 
 bool VgeDevice::isComplete() const
 {
-    return m_gFamilyHasValue && m_pFamilyHasValue;
+    return m_graphicsFamilyHasValue && m_presentFamilyHasValue;
 }
 
-uint32_t VgeDevice::getGFamily() const
+uint32_t VgeDevice::getGraphicsFamily() const
 {
-    return m_gFamily;
+    return m_graphicsFamily;
 }
 
-uint32_t VgeDevice::getPFamily() const
+uint32_t VgeDevice::getPresentFamily() const
 {
-    return m_pFamily;
+    return m_presentFamily;
 }
 
 VkPhysicalDevice VgeDevice::getPDevice() const
