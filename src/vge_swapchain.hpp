@@ -31,18 +31,16 @@ private:
     VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR>& presentModes);
     VkExtent2D chooseExtent(const VkSurfaceCapabilitiesKHR& surfaceCaps);
 
-    std::vector<VkSurfaceFormatKHR> m_surfaceFormats{};
-    std::vector<VkPresentModeKHR> m_presentModes{};
-    VkSurfaceCapabilitiesKHR m_surfaceCaps{};
-
     VkPhysicalDevice m_pDevice;
     VkSurfaceKHR m_surface;
-
     uint32_t m_graphicsFamily;
     uint32_t m_presentFamily;
     VkDevice m_lDevice;
-
     GLFWwindow* m_window;
+
+    std::vector<VkSurfaceFormatKHR> m_surfaceFormats{};
+    std::vector<VkPresentModeKHR> m_presentModes{};
+    VkSurfaceCapabilitiesKHR m_surfaceCaps{};
 
     VkSwapchainKHR m_swapchain = VK_NULL_HANDLE;
     std::vector<VkImage> m_swapchainImages;

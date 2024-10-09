@@ -26,11 +26,16 @@ public:
     uint32_t getPresentFamily() const;
 
 private:
-    void pickPDevice(const VkInstance& instance, VkSurfaceKHR surface);
-    bool isPDeviceSuitable(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface);
-    void findQueueFamilies(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface);
+    void pickPDevice();
+    bool isPDeviceSuitable(const VkPhysicalDevice& pDevice);
+    void findQueueFamilies(const VkPhysicalDevice& pDevice);
     bool checkDeviceExts(VkPhysicalDevice pDevice);
-    void createLDevice(bool enableVLayers, std::vector<const char*> vLayers);
+    void createLDevice();
+
+    VkInstance m_instance;
+    VkSurfaceKHR m_surface;
+    bool m_enableVLayers;
+    std::vector<const char*> m_vLayers;
 
     // Device handles
     VkPhysicalDevice m_pDevice = VK_NULL_HANDLE;

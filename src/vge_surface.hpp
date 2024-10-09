@@ -15,7 +15,7 @@ public:
     VkSurfaceKHR getSurface() const;
 
 private:
-    void createSurface(VkInstance instance, GLFWwindow* window);
+    void createSurface();
 
     VkInstance m_instance;
     GLFWwindow* m_window;

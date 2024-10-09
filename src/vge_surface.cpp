@@ -7,7 +7,7 @@ VgeSurface::VgeSurface(VkInstance instance, GLFWwindow* window)
     : m_instance{ instance }
     , m_window{ window }
 {
-    createSurface(instance, window);
+    createSurface();
 }
 
 VgeSurface::~VgeSurface()
@@ -17,9 +17,9 @@ VgeSurface::~VgeSurface()
     }
 }
 
-void VgeSurface::createSurface(VkInstance instance, GLFWwindow* window)
+void VgeSurface::createSurface()
 {
-    if (glfwCreateWindowSurface(instance, window, nullptr, &m_surface) != VK_SUCCESS) {
+    if (glfwCreateWindowSurface(m_instance, m_window, nullptr, &m_surface) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create window surface!");
     }
 }

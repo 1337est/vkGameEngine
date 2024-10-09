@@ -14,9 +14,13 @@ VgeDevice::VgeDevice(
     VkSurfaceKHR surface,
     bool enableVLayers,
     const std::vector<const char*> vLayers)
+    : m_instance{ instance }
+    , m_surface{ surface }
+    , m_enableVLayers{ enableVLayers }
+    , m_vLayers{ vLayers }
 {
-    pickPDevice(instance, surface);
-    createLDevice(enableVLayers, vLayers);
+    pickPDevice();
+    createLDevice();
 }
 
 VgeDevice::~VgeDevice()
@@ -24,20 +28,20 @@ VgeDevice::~VgeDevice()
     vkDestroyDevice(m_lDevice, nullptr);
 }
 
-void VgeDevice::pickPDevice(const VkInstance& instance, VkSurfaceKHR surface)
+void VgeDevice::pickPDevice()
 {
     uint32_t pDeviceCount = 0;
-    vkEnumeratePhysicalDevices(instance, &pDeviceCount, nullptr);
+    vkEnumeratePhysicalDevices(m_instance, &pDeviceCount, nullptr);
     if (pDeviceCount == 0) {
         throw std::runtime_error("failed to find GPUs with Vulkan support!");
     }
     std::cout << "Device count: " << pDeviceCount << std::endl;
 
     std::vector<VkPhysicalDevice> pDevices(pDeviceCount);
-    vkEnumeratePhysicalDevices(instance, &pDeviceCount, pDevices.data());
+    vkEnumeratePhysicalDevices(m_instance, &pDeviceCount, pDevices.data());
 
     for (const VkPhysicalDevice& pDevice : pDevices) {
-        if (isPDeviceSuitable(pDevice, surface)) {
+        if (isPDeviceSuitable(pDevice)) {
             m_pDevice = pDevice; // set physical device var
             break;
         }
@@ -51,15 +55,15 @@ void VgeDevice::pickPDevice(const VkInstance& instance, VkSurfaceKHR surface)
     std::cout << "physical device: " << m_pDeviceProps.deviceName << std::endl;
 }
 
-bool VgeDevice::isPDeviceSuitable(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface)
+bool VgeDevice::isPDeviceSuitable(const VkPhysicalDevice& pDevice)
 {
-    findQueueFamilies(pDevice, surface);
+    findQueueFamilies(pDevice);
     bool extsSupported = checkDeviceExts(pDevice);
 
     return isComplete() && extsSupported;
 }
 
-void VgeDevice::findQueueFamilies(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface)
+void VgeDevice::findQueueFamilies(const VkPhysicalDevice& pDevice)
 {
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, nullptr);
@@ -82,7 +86,7 @@ void VgeDevice::findQueueFamilies(const VkPhysicalDevice& pDevice, VkSurfaceKHR 
 
         // check if queue supports presentation to the surface
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, surface, &presentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, m_surface, &presentSupport);
         if (queueFamily.queueCount > 0 && presentSupport) {
             m_presentFamily = i;
             m_presentFamilyHasValue = true;
@@ -136,7 +140,7 @@ bool VgeDevice::checkDeviceExts(VkPhysicalDevice pDevice)
     return allExtsSupported;
 }
 
-void VgeDevice::createLDevice(bool enableVLayers, std::vector<const char*> vLayers)
+void VgeDevice::createLDevice()
 {
     std::vector<VkDeviceQueueCreateInfo> queueCIVector;
     std::set<uint32_t> uniqueQueueFamilies = {
@@ -166,8 +170,8 @@ void VgeDevice::createLDevice(bool enableVLayers, std::vector<const char*> vLaye
         .flags = 0,
         .queueCreateInfoCount = static_cast<uint32_t>(queueCIVector.size()),
         .pQueueCreateInfos = queueCIVector.data(),
-        .enabledLayerCount = enableVLayers ? static_cast<uint32_t>(vLayers.size()) : 0,
-        .ppEnabledLayerNames = enableVLayers ? vLayers.data() : nullptr,
+        .enabledLayerCount = m_enableVLayers ? static_cast<uint32_t>(m_vLayers.size()) : 0,
+        .ppEnabledLayerNames = m_enableVLayers ? m_vLayers.data() : nullptr,
         .enabledExtensionCount = static_cast<uint32_t>(m_requiredExts.size()),
         .ppEnabledExtensionNames = m_requiredExts.data(),
         .pEnabledFeatures = &pDeviceFeatures,
