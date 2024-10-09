@@ -43,9 +43,7 @@ private:
     VkInstance m_instance = VK_NULL_HANDLE;
 
     const bool m_enableVLayers;
-    const std::vector<const char*> m_VLayers = {
-        "VK_LAYER_KHRONOS_validation"
-    };
+    const std::vector<const char*> m_VLayers = { "VK_LAYER_KHRONOS_validation" };
     bool m_VLayerSupport;
 
     std::vector<const char*> m_requiredExts;

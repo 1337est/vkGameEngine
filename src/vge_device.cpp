@@ -51,9 +51,7 @@ void VgeDevice::pickPDevice(const VkInstance& instance, VkSurfaceKHR surface)
     std::cout << "physical device: " << m_pDeviceProps.deviceName << std::endl;
 }
 
-bool VgeDevice::isPDeviceSuitable(
-    const VkPhysicalDevice& pDevice,
-    VkSurfaceKHR surface)
+bool VgeDevice::isPDeviceSuitable(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface)
 {
     findQueueFamilies(pDevice, surface);
     bool extsSupported = checkDeviceExtsSupport(pDevice);
@@ -61,44 +59,30 @@ bool VgeDevice::isPDeviceSuitable(
     return isComplete() && extsSupported;
 }
 
-void VgeDevice::findQueueFamilies(
-    const VkPhysicalDevice& pDevice,
-    VkSurfaceKHR surface)
+void VgeDevice::findQueueFamilies(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface)
 {
     uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(
-        pDevice,
-        &queueFamilyCount,
-        nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, nullptr);
 
     if (queueFamilyCount == 0) {
         throw std::runtime_error("Failed to find queue families.");
     }
 
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(
-        pDevice,
-        &queueFamilyCount,
-        queueFamilies.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, queueFamilies.data());
 
     for (uint32_t i = 0; i < queueFamilyCount; ++i) {
         const VkQueueFamilyProperties& queueFamily = queueFamilies[i];
 
         // check if queue support graphics operations
-        if (queueFamily.queueCount > 0 &&
-            queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-        {
+        if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             m_gFamily = i;
             m_gFamilyHasValue = true;
         }
 
         // check if queue supports presentation to the surface
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(
-            pDevice,
-            i,
-            surface,
-            &presentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, surface, &presentSupport);
         if (queueFamily.queueCount > 0 && presentSupport) {
             m_pFamily = i;
             m_pFamilyHasValue = true;
@@ -124,11 +108,7 @@ bool VgeDevice::checkDeviceExtsSupport(VkPhysicalDevice pDevice)
     vkEnumerateDeviceExtensionProperties(pDevice, nullptr, &extCount, nullptr);
 
     std::vector<VkExtensionProperties> exts(extCount);
-    vkEnumerateDeviceExtensionProperties(
-        pDevice,
-        nullptr,
-        &extCount,
-        exts.data());
+    vkEnumerateDeviceExtensionProperties(pDevice, nullptr, &extCount, exts.data());
 
     std::cout << "Available device extensions:\n";
     std::unordered_set<std::string> available;
@@ -156,9 +136,7 @@ bool VgeDevice::checkDeviceExtsSupport(VkPhysicalDevice pDevice)
     return allExtsSupported;
 }
 
-void VgeDevice::createLDevice(
-    bool enableVLayers,
-    std::vector<const char*> vLayers)
+void VgeDevice::createLDevice(bool enableVLayers, std::vector<const char*> vLayers)
 {
     std::vector<VkDeviceQueueCreateInfo> queueCIVector;
     std::set<uint32_t> uniqueQueueFamilies = { m_gFamily, m_pFamily };
@@ -176,21 +154,18 @@ void VgeDevice::createLDevice(
     VkPhysicalDeviceFeatures pDeviceFeatures = {};
     pDeviceFeatures.samplerAnisotropy = VK_TRUE; // Enable any required features
 
-    VkDeviceCreateInfo deviceCI = {
-        VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-        nullptr,
-        {},
-        static_cast<uint32_t>(queueCIVector.size()),
-        queueCIVector.data(),
-        enableVLayers ? static_cast<uint32_t>(vLayers.size()) : 0,
-        enableVLayers ? vLayers.data() : nullptr,
-        static_cast<uint32_t>(m_requiredExts.size()),
-        m_requiredExts.data(),
-        &pDeviceFeatures
-    };
+    VkDeviceCreateInfo deviceCI = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+                                    nullptr,
+                                    {},
+                                    static_cast<uint32_t>(queueCIVector.size()),
+                                    queueCIVector.data(),
+                                    enableVLayers ? static_cast<uint32_t>(vLayers.size()) : 0,
+                                    enableVLayers ? vLayers.data() : nullptr,
+                                    static_cast<uint32_t>(m_requiredExts.size()),
+                                    m_requiredExts.data(),
+                                    &pDeviceFeatures };
 
-    if (vkCreateDevice(m_pDevice, &deviceCI, nullptr, &m_lDevice) != VK_SUCCESS)
-    {
+    if (vkCreateDevice(m_pDevice, &deviceCI, nullptr, &m_lDevice) != VK_SUCCESS) {
         throw std::runtime_error("failed to create logical device!");
     }
 

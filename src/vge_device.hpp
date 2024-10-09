@@ -27,12 +27,8 @@ public:
 
 private:
     void pickPDevice(const VkInstance& instance, VkSurfaceKHR surface);
-    bool isPDeviceSuitable(
-        const VkPhysicalDevice& pDevice,
-        VkSurfaceKHR surface);
-    void findQueueFamilies(
-        const VkPhysicalDevice& pDevice,
-        VkSurfaceKHR surface);
+    bool isPDeviceSuitable(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface);
+    void findQueueFamilies(const VkPhysicalDevice& pDevice, VkSurfaceKHR surface);
     bool checkDeviceExtsSupport(VkPhysicalDevice pDevice);
     void createLDevice(bool enableVLayers, std::vector<const char*> vLayers);
 
@@ -52,8 +48,6 @@ private:
     VkPhysicalDeviceProperties m_pDeviceProps;
 
     // Extensions
-    const std::vector<const char*> m_requiredExts = {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME
-    };
+    const std::vector<const char*> m_requiredExts = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 };
 } // namespace vge

@@ -41,8 +41,7 @@ void VgeInstance::setRequiredExts()
 
     glfwExts = glfwGetRequiredInstanceExtensions(&glfwExtCount);
 
-    m_requiredExts =
-        std::vector<const char*>(glfwExts, glfwExts + glfwExtCount);
+    m_requiredExts = std::vector<const char*>(glfwExts, glfwExts + glfwExtCount);
 
     if (m_enableVLayers) {
         m_requiredExts.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -103,14 +102,13 @@ void VgeInstance::createInstance()
 {
     // Check if validation layers are enabled/supported
     if (m_enableVLayers && !m_VLayerSupport) {
-        throw std::runtime_error(
-            "validation layers requested, but not available!");
+        throw std::runtime_error("validation layers requested, but not available!");
     }
 
     // Provides app and engine info the the Vulkan implementation
     VkApplicationInfo appInfo = {
-        .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO, // sType
-        .pNext = nullptr, // pNext (no additional structures)
+        .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,    // sType
+        .pNext = nullptr,                               // pNext (no additional structures)
         .pApplicationName = "Vulkan Game Engine",       // pApplicationName
         .applicationVersion = VK_MAKE_VERSION(1, 0, 0), // applicationVersion
         .pEngineName = "Vulkan Game Engine",            // pEngineName
@@ -121,16 +119,13 @@ void VgeInstance::createInstance()
     // Provides details for the Vulkan Instance
     VkInstanceCreateInfo instanceCI = {
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, // sType
-        .pNext = nullptr,             // pNext (set conditionally later)
-        .flags = 0,                   // flags
-        .pApplicationInfo = &appInfo, // pApplicationInfo
-        .enabledLayerCount = 0, // enabledLayerCount (set conditionally later)
-        .ppEnabledLayerNames =
-            nullptr, // ppEnabledLayerNames (set conditionally later)
-        .enabledExtensionCount = static_cast<uint32_t>(
-            m_requiredExts.size()), // enabledExtensionCount
-        .ppEnabledExtensionNames =
-            m_requiredExts.data() // ppEnabledExtensionNames
+        .pNext = nullptr,                                // pNext (set conditionally later)
+        .flags = 0,                                      // flags
+        .pApplicationInfo = &appInfo,                    // pApplicationInfo
+        .enabledLayerCount = 0,                          // enabledLayerCount (set conditionally later)
+        .ppEnabledLayerNames = nullptr,                  // ppEnabledLayerNames (set conditionally later)
+        .enabledExtensionCount = static_cast<uint32_t>(m_requiredExts.size()), // enabledExtensionCount
+        .ppEnabledExtensionNames = m_requiredExts.data()                       // ppEnabledExtensionNames
     };
 
     // Sets instance info depending if validation layers are available
@@ -153,25 +148,18 @@ void VgeInstance::setupDebugMessenger()
     if (!m_enableVLayers)
         return;
 
-    if (createDebugMessenger(
-            m_instance,
-            &m_debugCI,
-            nullptr,
-            &m_debugMessenger) != VK_SUCCESS)
-    {
+    if (createDebugMessenger(m_instance, &m_debugCI, nullptr, &m_debugMessenger) != VK_SUCCESS) {
         throw std::runtime_error("failed to set up debug messenger!");
     }
 }
 
-void VgeInstance::populateDebugMessenger(
-    VkDebugUtilsMessengerCreateInfoEXT& debugCI)
+void VgeInstance::populateDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& debugCI)
 {
     debugCI = {};
     debugCI.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    debugCI.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-                              VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-    debugCI.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-                          VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+    debugCI.messageSeverity =
+        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    debugCI.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                           VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
     debugCI.pfnUserCallback = debugCallback;
     debugCI.pUserData = nullptr; // Optional
@@ -201,8 +189,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VgeInstance::debugCallback(
     if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
         formattedMessage += "Error: ";
     }
-    else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-    {
+    else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
         formattedMessage += "Warning: ";
     }
     else {
@@ -223,8 +210,7 @@ VkResult VgeInstance::createDebugMessenger(
     VkDebugUtilsMessengerEXT* pDebugMessenger)
 {
     PFN_vkCreateDebugUtilsMessengerEXT func =
-        (PFN_vkCreateDebugUtilsMessengerEXT)
-            vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+        (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
         return func(instance, pDebugCInfo, pAllocator, pDebugMessenger);
     }
@@ -239,8 +225,7 @@ void VgeInstance::destroyDebugMessenger(
     const VkAllocationCallbacks* pAllocator)
 {
     PFN_vkDestroyDebugUtilsMessengerEXT func =
-        (PFN_vkDestroyDebugUtilsMessengerEXT)
-            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+        (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
     if (func != nullptr) {
         func(instance, debugMessenger, pAllocator);
     }

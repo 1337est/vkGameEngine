@@ -5,9 +5,7 @@
 #include <vector>
 
 namespace vge {
-VgePipeline::VgePipeline(
-    const std::string& vertFilepath,
-    const std::string& fragFilePath)
+VgePipeline::VgePipeline(const std::string& vertFilepath, const std::string& fragFilePath)
     : m_vertFilePath{ vertFilepath }
     , m_fragFilePath{ fragFilePath }
 {
@@ -50,9 +48,7 @@ std::vector<char> VgePipeline::readShaderFile(const std::string& filepath)
     return buffer;
 }
 
-void VgePipeline::createGraphicsPipeline(
-    const std::string& vertFilepath,
-    const std::string& fragFilePath)
+void VgePipeline::createGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilePath)
 {
     // read binary shader files
     std::vector<char> vertCode = readShaderFile(vertFilepath);

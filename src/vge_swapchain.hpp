@@ -26,11 +26,9 @@ private:
     void createSwapChain();
     void querySwapChainSupport();
 
-    VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-        const std::vector<VkSurfaceFormatKHR>& surfaceFormats);
-    VkPresentModeKHR chooseSwapPresentMode(
-        const std::vector<VkPresentModeKHR>& presentModes);
-    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCaps);
+    VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& surfaceFormats);
+    VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR>& presentModes);
+    VkExtent2D chooseExtent(const VkSurfaceCapabilitiesKHR& surfaceCaps);
 
     std::vector<VkSurfaceFormatKHR> m_surfaceFormats{};
     std::vector<VkPresentModeKHR> m_presentModes{};
