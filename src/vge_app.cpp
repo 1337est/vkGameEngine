@@ -14,7 +14,7 @@ VgeApp::VgeApp()
     , m_vgeImageView{ m_vgeDevice.getLDevice(),
                       m_vgeSwapchain.getSwapchainImages(),
                       m_vgeSwapchain.getSwapchainImageFormat() }
-    , m_vgePipeline{ "build/shaders/shader.vert.spv", "build/shaders/shader.frag.spv" }
+    , m_vgePipeline{ m_vgeDevice.getLDevice(), "build/shaders/shader.vert.spv", "build/shaders/shader.frag.spv" }
 {}
 
 void VgeApp::run()
