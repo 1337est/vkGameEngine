@@ -168,4 +168,9 @@ const std::vector<VkImage>& VgeSwapchain::getSwapchainImages() const
     return m_swapchainImages;
 }
 
+VkFormat VgeSwapchain::getSwapchainImageFormat() const
+{
+    return m_swapchainImageFormat;
+}
+
 } // namespace vge

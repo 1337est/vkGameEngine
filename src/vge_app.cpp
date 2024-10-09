@@ -11,6 +11,9 @@ VgeApp::VgeApp()
                    m_vgeInstance.getVLayers() }
     , m_vgeSwapchain{ m_vgeDevice.getPDevice(),       m_vgeSurface.getSurface(), m_vgeDevice.getGraphicsFamily(),
                       m_vgeDevice.getPresentFamily(), m_vgeDevice.getLDevice(),  m_vgeWindow.getWindow() }
+    , m_vgeImageView{ m_vgeDevice.getLDevice(),
+                      m_vgeSwapchain.getSwapchainImages(),
+                      m_vgeSwapchain.getSwapchainImageFormat() }
     , m_vgePipeline{ "build/shaders/shader.vert.spv", "build/shaders/shader.frag.spv" }
 {}
 

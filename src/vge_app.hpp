@@ -1,5 +1,6 @@
 #pragma once
 #include "vge_device.hpp"
+#include "vge_image_views.hpp"
 #include "vge_instance.hpp"
 #include "vge_pipeline.hpp"
 #include "vge_surface.hpp"
@@ -24,6 +25,7 @@ private:
     VgeSurface m_vgeSurface;
     VgeDevice m_vgeDevice;
     VgeSwapchain m_vgeSwapchain;
+    VgeImageView m_vgeImageView;
     VgePipeline m_vgePipeline;
 };
 

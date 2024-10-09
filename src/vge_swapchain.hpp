@@ -21,6 +21,7 @@ public:
 
     VkSwapchainKHR getSwapchain() const;
     const std::vector<VkImage>& getSwapchainImages() const;
+    VkFormat getSwapchainImageFormat() const;
 
 private:
     void createSwapchain();
