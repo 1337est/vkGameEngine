@@ -3,6 +3,7 @@
 #include "vge_image_views.hpp"
 #include "vge_instance.hpp"
 #include "vge_pipeline.hpp"
+#include "vge_render_pass.hpp"
 #include "vge_surface.hpp"
 #include "vge_swapchain.hpp"
 #include "vge_window.hpp"
@@ -26,6 +27,7 @@ private:
     VgeDevice m_vgeDevice;
     VgeSwapchain m_vgeSwapchain;
     VgeImageView m_vgeImageView;
+    VgeRenderPass m_vgeRenderPass;
     VgePipeline m_vgePipeline;
 };
 
