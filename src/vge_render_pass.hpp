@@ -10,6 +10,8 @@ public:
     VgeRenderPass(const VgeRenderPass&) = delete;
     VgeRenderPass& operator=(const VgeRenderPass&) = delete;
 
+    VkRenderPass getRenderPass() const;
+
 private:
     void createRenderPass();
 

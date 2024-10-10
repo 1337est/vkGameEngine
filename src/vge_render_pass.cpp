@@ -49,4 +49,9 @@ void VgeRenderPass::createRenderPass()
         throw std::runtime_error("Failed to create render pass!");
     }
 }
+
+VkRenderPass VgeRenderPass::getRenderPass() const
+{
+    return m_renderPass;
+}
 } // namespace vge

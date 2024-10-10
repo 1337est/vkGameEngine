@@ -18,7 +18,8 @@ VgeApp::VgeApp()
     , m_vgePipeline{ m_vgeDevice.getLDevice(),
                      "build/shaders/shader.vert.spv",
                      "build/shaders/shader.frag.spv",
-                     m_vgeSwapchain.getSwapchainExtent() }
+                     m_vgeSwapchain.getSwapchainExtent(),
+                     m_vgeRenderPass.getRenderPass() }
 {}
 
 void VgeApp::run()

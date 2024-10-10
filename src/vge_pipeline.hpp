@@ -11,7 +11,8 @@ public:
         VkDevice lDevice,
         const std::string& vertFilepath,
         const std::string& fragFilePath,
-        VkExtent2D swapchainExtent);
+        VkExtent2D swapchainExtent,
+        VkRenderPass renderPass);
     ~VgePipeline();
     VgePipeline(const VgePipeline&) = delete;
     VgePipeline& operator=(const VgePipeline&) = delete;

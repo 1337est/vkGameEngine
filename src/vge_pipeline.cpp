@@ -10,11 +10,13 @@ VgePipeline::VgePipeline(
     VkDevice lDevice,
     const std::string& vertFilepath,
     const std::string& fragFilePath,
-    VkExtent2D swapchainExtent)
+    VkExtent2D swapchainExtent,
+    VkRenderPass renderPass)
     : m_lDevice{ lDevice }
     , m_vertFilePath{ vertFilepath }
     , m_fragFilePath{ fragFilePath }
     , m_swapchainExtent{ swapchainExtent }
+    , m_renderPass{ renderPass }
 {
     createGraphicsPipeline();
 }
@@ -23,8 +25,8 @@ VgePipeline::~VgePipeline()
 {
     vkDestroyShaderModule(m_lDevice, m_vertShaderModule, nullptr);
     vkDestroyShaderModule(m_lDevice, m_fragShaderModule, nullptr);
+    vkDestroyPipeline(m_lDevice, m_graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(m_lDevice, m_pipelineLayout, nullptr);
-    // vkDestroyPipeline(m_lDevice, m_graphicsPipeline, nullptr);
 }
 
 void VgePipeline::createGraphicsPipeline()
@@ -201,7 +203,6 @@ void VgePipeline::createGraphicsPipeline()
         throw std::runtime_error("Failed to create pipeline layout!");
     }
 
-    /*
     // Graphics pipeline info
     VkGraphicsPipelineCreateInfo graphicsPipelineCI{
         .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -215,7 +216,7 @@ void VgePipeline::createGraphicsPipeline()
         .pViewportState = &m_viewportStateCI,
         .pRasterizationState = &m_rasterizationStateCI,
         .pMultisampleState = &m_multisampleStateCI,
-        .pDepthStencilState = &m_depthStencilStateCI,
+        .pDepthStencilState = &m_depthStencilStateCI, // TODO: check if needs to be nullptr
         .pColorBlendState = &m_colorBlendStateCI,
         .pDynamicState = &m_dynamicStateCI,
         .layout = m_pipelineLayout,
@@ -231,7 +232,6 @@ void VgePipeline::createGraphicsPipeline()
     {
         throw std::runtime_error("Failed to create the graphics pipeline");
     }
-    */
 } // namespace vge
 
 std::vector<char> VgePipeline::readShaderFile(const std::string& filepath)
