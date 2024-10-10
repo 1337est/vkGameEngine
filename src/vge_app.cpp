@@ -20,6 +20,11 @@ VgeApp::VgeApp()
                      "build/shaders/shader.frag.spv",
                      m_vgeSwapchain.getSwapchainExtent(),
                      m_vgeRenderPass.getRenderPass() }
+    , m_vgeFramebuffer{ m_vgeDevice.getLDevice(),
+                        m_vgeImageView.getSwapchainImageViews(),
+                        m_vgeSwapchain.getSwapchainExtent(),
+                        m_vgeRenderPass.getRenderPass() }
+
 {}
 
 void VgeApp::run()

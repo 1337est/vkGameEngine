@@ -49,4 +49,9 @@ void VgeImageView::createImageViews()
         }
     }
 }
+
+std::vector<VkImageView> VgeImageView::getSwapchainImageViews()
+{
+    return m_swapchainImageViews;
+}
 } // namespace vge
