@@ -173,4 +173,8 @@ VkFormat VgeSwapchain::getSwapchainImageFormat() const
     return m_swapchainImageFormat;
 }
 
+VkExtent2D VgeSwapchain::getSwapchainExtent() const
+{
+    return m_swapchainExtent;
+}
 } // namespace vge
