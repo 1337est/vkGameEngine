@@ -11,7 +11,6 @@ public:
         VkDevice lDevice,
         const std::string& vertFilepath,
         const std::string& fragFilePath,
-        VkExtent2D swapchainExtent,
         VkRenderPass renderPass);
     ~VgePipeline();
     VgePipeline(const VgePipeline&) = delete;
@@ -28,7 +27,6 @@ private:
     VkDevice m_lDevice;
     const std::string& m_vertFilePath;
     const std::string& m_fragFilePath;
-    VkExtent2D m_swapchainExtent;
 
     VkShaderModule m_vertShaderModule;
     VkShaderModule m_fragShaderModule;
@@ -40,8 +38,6 @@ private:
     std::vector<VkVertexInputBindingDescription> m_vertexInputBindingDescriptions{};
     std::vector<VkVertexInputAttributeDescription> m_vertexInputAttributeDescriptions{};
     VkPipelineInputAssemblyStateCreateInfo m_inputAssemblyStateCI{};
-    VkViewport m_viewport{};
-    VkRect2D m_scissor{};
     VkPipelineViewportStateCreateInfo m_viewportStateCI{};
     VkPipelineRasterizationStateCreateInfo m_rasterizationStateCI{};
     VkPipelineMultisampleStateCreateInfo m_multisampleStateCI{};

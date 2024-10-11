@@ -1,4 +1,5 @@
 #pragma once
+#include "vge_command_pool.hpp"
 #include "vge_device.hpp"
 #include "vge_framebuffer.hpp"
 #include "vge_image_views.hpp"
@@ -31,6 +32,7 @@ private:
     VgeRenderPass m_vgeRenderPass;
     VgePipeline m_vgePipeline;
     VgeFramebuffer m_vgeFramebuffer;
+    VgeCommandPool m_vgeCommandPool;
 };
 
 } // namespace vge

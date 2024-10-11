@@ -18,12 +18,12 @@ VgeApp::VgeApp()
     , m_vgePipeline{ m_vgeDevice.getLDevice(),
                      "build/shaders/shader.vert.spv",
                      "build/shaders/shader.frag.spv",
-                     m_vgeSwapchain.getSwapchainExtent(),
                      m_vgeRenderPass.getRenderPass() }
     , m_vgeFramebuffer{ m_vgeDevice.getLDevice(),
                         m_vgeImageView.getSwapchainImageViews(),
                         m_vgeSwapchain.getSwapchainExtent(),
                         m_vgeRenderPass.getRenderPass() }
+    , m_vgeCommandPool{ m_vgeDevice.getLDevice(), m_vgeDevice.getGraphicsFamily() }
 
 {}
 

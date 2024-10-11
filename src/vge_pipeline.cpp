@@ -10,12 +10,10 @@ VgePipeline::VgePipeline(
     VkDevice lDevice,
     const std::string& vertFilepath,
     const std::string& fragFilePath,
-    VkExtent2D swapchainExtent,
     VkRenderPass renderPass)
     : m_lDevice{ lDevice }
     , m_vertFilePath{ vertFilepath }
     , m_fragFilePath{ fragFilePath }
-    , m_swapchainExtent{ swapchainExtent }
     , m_renderPass{ renderPass }
 {
     createGraphicsPipeline();
@@ -81,6 +79,7 @@ void VgePipeline::createGraphicsPipeline()
         .primitiveRestartEnable = VK_FALSE,
     };
 
+    /*
     m_viewport = {
         .x = 0.0f,
         .y = 0.0f,
@@ -94,6 +93,7 @@ void VgePipeline::createGraphicsPipeline()
         .offset = { 0, 0 },
         .extent = m_swapchainExtent,
     };
+    */
 
     // combine viewport and scissor
     m_viewportStateCI = {
@@ -101,9 +101,9 @@ void VgePipeline::createGraphicsPipeline()
         .pNext = nullptr,
         .flags = 0,
         .viewportCount = 1,
-        .pViewports = &m_viewport,
+        .pViewports = nullptr,
         .scissorCount = 1,
-        .pScissors = &m_scissor,
+        .pScissors = nullptr,
     };
 
     // Creates pixels for our topology
