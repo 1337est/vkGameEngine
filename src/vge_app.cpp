@@ -23,10 +23,13 @@ VgeApp::VgeApp()
                         m_vgeImageView.getSwapchainImageViews(),
                         m_vgeSwapchain.getSwapchainExtent(),
                         m_vgeRenderPass.getRenderPass() }
-    , m_vgeCommandPool{
-        m_vgeDevice.getLDevice(),           m_vgeDevice.getGraphicsFamily(),     m_vgeRenderPass.getRenderPass(),
-        m_vgeFramebuffer.getFramebuffers(), m_vgeSwapchain.getSwapchainExtent(), m_vgePipeline.getGraphicsPipeline()
-    }
+    , m_vgeCommandPool{ m_vgeDevice.getLDevice(),
+                        m_vgeDevice.getGraphicsFamily(),
+                        m_vgeRenderPass.getRenderPass(),
+                        m_vgeFramebuffer.getFramebuffers(),
+                        m_vgeSwapchain.getSwapchainExtent(),
+                        m_vgePipeline.getGraphicsPipeline() }
+    , m_vgeSyncObjects{ m_vgeDevice.getLDevice() }
 
 {}
 

@@ -8,6 +8,7 @@
 #include "vge_render_pass.hpp"
 #include "vge_surface.hpp"
 #include "vge_swapchain.hpp"
+#include "vge_sync_objects.hpp"
 #include "vge_window.hpp"
 
 namespace vge {
@@ -33,6 +34,7 @@ private:
     VgePipeline m_vgePipeline;
     VgeFramebuffer m_vgeFramebuffer;
     VgeCommandPool m_vgeCommandPool;
+    VgeSyncObjects m_vgeSyncObjects;
 };
 
 } // namespace vge
