@@ -44,8 +44,8 @@ void VgeFramebuffer::createFramebuffers()
     }
 }
 
-VkFramebuffer VgeFramebuffer::getFramebuffers(size_t index)
+std::vector<VkFramebuffer> VgeFramebuffer::getFramebuffers()
 {
-    return m_framebuffers[index];
+    return m_framebuffers;
 }
 } // namespace vge

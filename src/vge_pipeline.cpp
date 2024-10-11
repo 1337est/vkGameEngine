@@ -285,4 +285,8 @@ const std::string& VgePipeline::getFragFilePath() const
     return m_fragFilePath;
 }
 
+VkPipeline VgePipeline::getGraphicsPipeline() const
+{
+    return m_graphicsPipeline;
+}
 } // namespace vge

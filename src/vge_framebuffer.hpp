@@ -15,7 +15,7 @@ public:
     VgeFramebuffer(const VgeFramebuffer&) = delete;
     VgeFramebuffer& operator=(const VgeFramebuffer&) = delete;
 
-    VkFramebuffer getFramebuffers(size_t index);
+    std::vector<VkFramebuffer> getFramebuffers();
 
 private:
     void createFramebuffers();

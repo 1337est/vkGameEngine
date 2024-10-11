@@ -18,6 +18,7 @@ public:
 
     const std::string& getVertFilePath() const;
     const std::string& getFragFilePath() const;
+    VkPipeline getGraphicsPipeline() const;
 
 private:
     void createGraphicsPipeline();
