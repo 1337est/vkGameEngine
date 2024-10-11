@@ -11,13 +11,16 @@ public:
     VgeCommandPool& operator=(const VgeCommandPool&) = delete;
 
     VkCommandPool getCommandPool() const;
+    VkCommandBuffer getCommandBuffer() const;
 
 private:
     void createCommandPool();
+    void createCommandBuffer();
 
     VkDevice m_lDevice;
     uint32_t m_graphicsFamily;
 
     VkCommandPool m_commandPool;
+    VkCommandBuffer m_commandBuffer;
 };
 } // namespace vge
