@@ -10,6 +10,10 @@ public:
     VgeSyncObjects(const VgeSyncObjects&) = delete;
     VgeSyncObjects& operator=(const VgeSyncObjects&) = delete;
 
+    VkSemaphore getImageAvailableSemaphore() const;
+    VkSemaphore getRenderFinishedSemaphore() const;
+    VkFence getInFlightFence() const;
+
 private:
     void createSyncObjects();
 

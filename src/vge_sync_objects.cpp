@@ -31,4 +31,19 @@ void VgeSyncObjects::createSyncObjects()
         throw std::runtime_error("failed to create synchronization objects for a frame!");
     }
 }
+
+VkSemaphore VgeSyncObjects::getImageAvailableSemaphore() const
+{
+    return m_imageAvailableSemaphore;
+}
+
+VkSemaphore VgeSyncObjects::getRenderFinishedSemaphore() const
+{
+    return m_renderFinishedSemaphore;
+}
+
+VkFence VgeSyncObjects::getInFlightFence() const
+{
+    return m_inFlightFence;
+}
 } // namespace vge

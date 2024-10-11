@@ -210,4 +210,13 @@ VkDevice VgeDevice::getLDevice() const
     return m_lDevice;
 }
 
+VkQueue VgeDevice::getGraphicsQueue() const
+{
+    return m_graphicsQueue;
+}
+
+VkQueue VgeDevice::getPresentQueue() const
+{
+    return m_presentQueue;
+}
 } // namespace vge

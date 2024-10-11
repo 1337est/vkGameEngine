@@ -24,6 +24,8 @@ public:
     bool isComplete() const;
     uint32_t getGraphicsFamily() const;
     uint32_t getPresentFamily() const;
+    VkQueue getGraphicsQueue() const;
+    VkQueue getPresentQueue() const;
 
 private:
     void pickPDevice();

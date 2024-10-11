@@ -1,4 +1,7 @@
 #include "vge_app.hpp"
+#include <stdexcept>
+#include <utility>
+#include <vulkan/vulkan_core.h>
 
 namespace vge {
 VgeApp::VgeApp()
@@ -33,12 +36,69 @@ VgeApp::VgeApp()
 
 {}
 
-void VgeApp::run()
+void VgeApp::mainLoop()
 {
     // run until window closes
     while (!m_vgeWindow.shouldClose()) {
         glfwPollEvents(); // continuously processes and returns received events
+        drawFrame();
     }
+    vkDeviceWaitIdle(m_vgeDevice.getLDevice());
+}
+
+void VgeApp::drawFrame()
+{
+    VkDevice lDevice = m_vgeDevice.getLDevice();
+    VkFence inFlightFence = m_vgeSyncObjects.getInFlightFence();
+    VkSwapchainKHR swapchain = m_vgeSwapchain.getSwapchain();
+    VkSemaphore imageAvailableSemaphore = m_vgeSyncObjects.getImageAvailableSemaphore();
+    VkSemaphore renderFinishedSemaphore = m_vgeSyncObjects.getRenderFinishedSemaphore();
+    VkCommandBuffer commandBuffer = m_vgeCommandPool.getCommandBuffer();
+    VkQueue graphicsQueue = m_vgeDevice.getGraphicsQueue();
+    VkQueue presentQueue = m_vgeDevice.getPresentQueue();
+
+    vkWaitForFences(lDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
+    vkResetFences(lDevice, 1, &inFlightFence);
+
+    uint32_t imageIndex;
+    vkAcquireNextImageKHR(lDevice, swapchain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+    vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
+    m_vgeCommandPool.recordCommandBuffer(imageIndex);
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
+    VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores;
+    submitInfo.pWaitDstStageMask = waitStages;
+
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) {
+        throw std::runtime_error("failed to submit draw command buffer!");
+    }
+
+    VkPresentInfoKHR presentInfo{};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = { swapchain };
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+
+    presentInfo.pImageIndices = &imageIndex;
+
+    vkQueuePresentKHR(presentQueue, &presentInfo);
 }
 
 } // namespace vge

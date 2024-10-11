@@ -53,7 +53,7 @@ void VgeCommandPool::createCommandBuffer()
     }
 }
 
-void VgeCommandPool::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+void VgeCommandPool::recordCommandBuffer(uint32_t imageIndex)
 {
     VkCommandBufferBeginInfo commandBufferBeginInfo{
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
@@ -62,7 +62,7 @@ void VgeCommandPool::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
         .pInheritanceInfo = nullptr, // Optional
     };
 
-    if (vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo) != VK_SUCCESS) {
+    if (vkBeginCommandBuffer(m_commandBuffer, &commandBufferBeginInfo) != VK_SUCCESS) {
         throw std::runtime_error("failed to begin recording command buffer!");
     }
 
@@ -80,9 +80,9 @@ void VgeCommandPool::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
         .pClearValues = &clearColor,
     };
 
-    vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(m_commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+    vkCmdBindPipeline(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
 
     VkViewport viewport{
         .x = 0.0f,
@@ -93,20 +93,25 @@ void VgeCommandPool::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
         .maxDepth = 1.0f,
     };
 
-    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+    vkCmdSetViewport(m_commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor{
         .offset = { 0, 0 },
         .extent = m_swapchainExtent,
     };
-    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+    vkCmdSetScissor(m_commandBuffer, 0, 1, &scissor);
 
-    vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+    vkCmdDraw(m_commandBuffer, 3, 1, 0, 0);
 
-    vkCmdEndRenderPass(commandBuffer);
+    vkCmdEndRenderPass(m_commandBuffer);
 
-    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+    if (vkEndCommandBuffer(m_commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to record command buffer!");
     }
+}
+
+VkCommandBuffer VgeCommandPool::getCommandBuffer() const
+{
+    return m_commandBuffer;
 }
 } // namespace vge

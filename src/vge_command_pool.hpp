@@ -19,11 +19,11 @@ public:
 
     VkCommandPool getCommandPool() const;
     VkCommandBuffer getCommandBuffer() const;
+    void recordCommandBuffer(uint32_t imageIndex);
 
 private:
     void createCommandPool();
     void createCommandBuffer();
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
     VkDevice m_lDevice;
     uint32_t m_graphicsFamily;

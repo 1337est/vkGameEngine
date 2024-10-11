@@ -21,9 +21,11 @@ public:
 
     VgeApp();
 
-    void run();
+    void mainLoop();
 
 private:
+    void drawFrame();
+
     VgeWindow m_vgeWindow;
     VgeInstance m_vgeInstance;
     VgeSurface m_vgeSurface;
