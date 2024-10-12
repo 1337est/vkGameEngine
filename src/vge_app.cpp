@@ -50,19 +50,15 @@ void VgeApp::drawFrame()
 {
     VkDevice lDevice = m_vgeDevice.getLDevice();
     VkFence inFlightFence = m_vgeSyncObjects.getInFlightFence();
-    VkSwapchainKHR swapchain = m_vgeSwapchain.getSwapchain();
-    VkSemaphore imageAvailableSemaphore = m_vgeSyncObjects.getImageAvailableSemaphore();
-    VkSemaphore renderFinishedSemaphore = m_vgeSyncObjects.getRenderFinishedSemaphore();
-    VkCommandBuffer commandBuffer = m_vgeCommandPool.getCommandBuffer();
-    VkQueue graphicsQueue = m_vgeDevice.getGraphicsQueue();
-    VkQueue presentQueue = m_vgeDevice.getPresentQueue();
-
     vkWaitForFences(lDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
     vkResetFences(lDevice, 1, &inFlightFence);
 
+    VkSwapchainKHR swapchain = m_vgeSwapchain.getSwapchain();
+    VkSemaphore imageAvailableSemaphore = m_vgeSyncObjects.getImageAvailableSemaphore();
     uint32_t imageIndex;
     vkAcquireNextImageKHR(lDevice, swapchain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
+    VkCommandBuffer commandBuffer = m_vgeCommandPool.getCommandBuffer();
     vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
     m_vgeCommandPool.recordCommandBuffer(imageIndex);
 
@@ -78,10 +74,12 @@ void VgeApp::drawFrame()
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
+    VkSemaphore renderFinishedSemaphore = m_vgeSyncObjects.getRenderFinishedSemaphore();
     VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
+    VkQueue graphicsQueue = m_vgeDevice.getGraphicsQueue();
     if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) {
         throw std::runtime_error("failed to submit draw command buffer!");
     }
@@ -98,6 +96,7 @@ void VgeApp::drawFrame()
 
     presentInfo.pImageIndices = &imageIndex;
 
+    VkQueue presentQueue = m_vgeDevice.getPresentQueue();
     vkQueuePresentKHR(presentQueue, &presentInfo);
 }
 
