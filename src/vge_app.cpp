@@ -1,4 +1,5 @@
 #include "vge_app.hpp"
+#include "max_frames_in_flight.hpp"
 #include <exception>
 #include <stdexcept>
 #include <vulkan/vulkan_core.h>
@@ -55,30 +56,36 @@ void VgeApp::drawFrame()
     // This ensures that the GPU has completed processing of the last submitted frame
     // before proceeding with the next one.
     VkDevice lDevice = m_vgeDevice.getLDevice();
-    VkFence inFlightFence = m_vgeSyncObjects.getInFlightFence();
-    vkWaitForFences(lDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
-    vkResetFences(lDevice, 1, &inFlightFence);
+    std::vector<VkFence> inFlightFences = m_vgeSyncObjects.getInFlightFence();
+    vkWaitForFences(lDevice, 1, &inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
+    vkResetFences(lDevice, 1, &inFlightFences[m_currentFrame]);
 
     // Acquire the next image from the swapchain, waiting until it's available using the imageAvailableSemaphore.
     // The acquired image index will be used for rendering.
     VkSwapchainKHR swapchain = m_vgeSwapchain.getSwapchain();
-    VkSemaphore imageAvailableSemaphore = m_vgeSyncObjects.getImageAvailableSemaphore();
+    std::vector<VkSemaphore> imageAvailableSemaphores = m_vgeSyncObjects.getImageAvailableSemaphore();
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(lDevice, swapchain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+    vkAcquireNextImageKHR(
+        lDevice,
+        swapchain,
+        UINT64_MAX,
+        imageAvailableSemaphores[m_currentFrame],
+        VK_NULL_HANDLE,
+        &imageIndex);
 
     // Reset the command buffer so it can be reused for recording commands for the current frame.
     // This avoids creating new command buffers each frame, improving performance.
-    VkCommandBuffer commandBuffer = m_vgeCommandBuffer.getCommandBuffer();
-    vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
-    recordCommandBuffer(commandBuffer, imageIndex);
+    std::vector<VkCommandBuffer> commandBuffers = m_vgeCommandBuffer.getCommandBuffers();
+    vkResetCommandBuffer(commandBuffers[m_currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+    recordCommandBuffer(commandBuffers[m_currentFrame], imageIndex);
 
     // Submit the recorded command buffer to the graphics queue.
     // The queue will wait for the image to become available (via imageAvailableSemaphore),
     // execute the commands in the command buffer, and signal renderFinishedSemaphore upon completion.
-    VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
+    VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[m_currentFrame] };
     VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-    VkSemaphore renderFinishedSemaphore = m_vgeSyncObjects.getRenderFinishedSemaphore();
-    VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+    std::vector<VkSemaphore> renderFinishedSemaphores = m_vgeSyncObjects.getRenderFinishedSemaphore();
+    VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[m_currentFrame] };
     VkSubmitInfo submitInfo{
         .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
         .pNext = nullptr,
@@ -86,7 +93,7 @@ void VgeApp::drawFrame()
         .pWaitSemaphores = waitSemaphores,
         .pWaitDstStageMask = waitStages,
         .commandBufferCount = 1,
-        .pCommandBuffers = &commandBuffer,
+        .pCommandBuffers = &commandBuffers[m_currentFrame],
         .signalSemaphoreCount = 1,
         .pSignalSemaphores = signalSemaphores,
     };
@@ -94,7 +101,7 @@ void VgeApp::drawFrame()
     // Submit the command buffer to the graphics queue, using the inFlightFence to track when the work is done.
     // This fence will be used to synchronize with the CPU and ensure the command buffer is not reused prematurely.
     VkQueue graphicsQueue = m_vgeDevice.getGraphicsQueue();
-    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) {
+    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[m_currentFrame]) != VK_SUCCESS) {
         throw std::runtime_error("failed to submit draw command buffer!");
     }
 
@@ -115,6 +122,9 @@ void VgeApp::drawFrame()
     // Submit the present request to the presentation queue, displaying the rendered image to the screen.
     VkQueue presentQueue = m_vgeDevice.getPresentQueue();
     vkQueuePresentKHR(presentQueue, &presentInfo);
+
+    // iterate currentFrame
+    m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 void VgeApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)

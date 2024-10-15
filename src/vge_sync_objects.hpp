@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
@@ -10,17 +11,17 @@ public:
     VgeSyncObjects(const VgeSyncObjects&) = delete;
     VgeSyncObjects& operator=(const VgeSyncObjects&) = delete;
 
-    VkSemaphore getImageAvailableSemaphore() const;
-    VkSemaphore getRenderFinishedSemaphore() const;
-    VkFence getInFlightFence() const;
+    std::vector<VkSemaphore> getImageAvailableSemaphore() const;
+    std::vector<VkSemaphore> getRenderFinishedSemaphore() const;
+    std::vector<VkFence> getInFlightFence() const;
 
 private:
     void createSyncObjects();
 
     VkDevice m_lDevice;
 
-    VkSemaphore m_imageAvailableSemaphore;
-    VkSemaphore m_renderFinishedSemaphore;
-    VkFence m_inFlightFence;
+    std::vector<VkSemaphore> m_imageAvailableSemaphores;
+    std::vector<VkSemaphore> m_renderFinishedSemaphores;
+    std::vector<VkFence> m_inFlightFences;
 };
 } // namespace vge

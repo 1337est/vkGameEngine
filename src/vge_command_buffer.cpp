@@ -1,4 +1,5 @@
 #include "vge_command_buffer.hpp"
+#include "max_frames_in_flight.hpp"
 #include <stdexcept>
 
 namespace vge {
@@ -11,21 +12,22 @@ VgeCommandBuffer::VgeCommandBuffer(VkDevice lDevice, VkCommandPool commandPool)
 
 void VgeCommandBuffer::createCommandBuffer()
 {
+    m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
     VkCommandBufferAllocateInfo commandBufferAllocInfo{
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
         .pNext = nullptr,
         .commandPool = m_commandPool,
         .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-        .commandBufferCount = 1,
+        .commandBufferCount = (uint32_t)m_commandBuffers.size(),
     };
 
-    if (vkAllocateCommandBuffers(m_lDevice, &commandBufferAllocInfo, &m_commandBuffer) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(m_lDevice, &commandBufferAllocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate command buffers!");
     }
 }
 
-VkCommandBuffer VgeCommandBuffer::getCommandBuffer() const
+std::vector<VkCommandBuffer> VgeCommandBuffer::getCommandBuffers() const
 {
-    return m_commandBuffer;
+    return m_commandBuffers;
 }
 } // namespace vge

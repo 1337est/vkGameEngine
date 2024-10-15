@@ -40,6 +40,8 @@ private:
     VgeCommandPool m_vgeCommandPool;
     VgeCommandBuffer m_vgeCommandBuffer;
     VgeSyncObjects m_vgeSyncObjects;
+
+    uint32_t m_currentFrame = 0;
 };
 
 } // namespace vge

@@ -10,7 +10,7 @@ public:
     VgeCommandBuffer(const VgeCommandBuffer&) = delete;
     VgeCommandBuffer& operator=(const VgeCommandBuffer&) = delete;
 
-    VkCommandBuffer getCommandBuffer() const;
+    std::vector<VkCommandBuffer> getCommandBuffers() const;
 
 private:
     void createCommandBuffer();
@@ -18,6 +18,6 @@ private:
     VkDevice m_lDevice;
     VkCommandPool m_commandPool;
 
-    VkCommandBuffer m_commandBuffer;
+    std::vector<VkCommandBuffer> m_commandBuffers;
 };
 } // namespace vge
