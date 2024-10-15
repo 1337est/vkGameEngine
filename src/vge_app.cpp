@@ -1,6 +1,6 @@
 #include "vge_app.hpp"
+#include <exception>
 #include <stdexcept>
-#include <utility>
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
@@ -34,7 +34,14 @@ VgeApp::VgeApp()
                         m_vgePipeline.getGraphicsPipeline() }
     , m_vgeSyncObjects{ m_vgeDevice.getLDevice() }
 
-{}
+{
+    try {
+        mainLoop();
+    }
+    catch (const std::exception& e) {
+        throw; // Rethrow the exception to be caught in main.cpp
+    }
+}
 
 void VgeApp::mainLoop()
 {

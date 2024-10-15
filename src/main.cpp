@@ -5,10 +5,8 @@
 
 int main()
 {
-    vge::VgeApp app{};
-
     try {
-        app.mainLoop();
+        vge::VgeApp app{};
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
