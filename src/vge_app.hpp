@@ -1,4 +1,5 @@
 #pragma once
+#include "vge_command_buffer.hpp"
 #include "vge_command_pool.hpp"
 #include "vge_device.hpp"
 #include "vge_framebuffer.hpp"
@@ -25,6 +26,7 @@ public:
 
 private:
     void drawFrame();
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
     VgeWindow m_vgeWindow;
     VgeInstance m_vgeInstance;
@@ -36,6 +38,7 @@ private:
     VgePipeline m_vgePipeline;
     VgeFramebuffer m_vgeFramebuffer;
     VgeCommandPool m_vgeCommandPool;
+    VgeCommandBuffer m_vgeCommandBuffer;
     VgeSyncObjects m_vgeSyncObjects;
 };
 
