@@ -79,22 +79,6 @@ void VgePipeline::createGraphicsPipeline()
         .primitiveRestartEnable = VK_FALSE,
     };
 
-    /*
-    m_viewport = {
-        .x = 0.0f,
-        .y = 0.0f,
-        .width = (float)m_swapchainExtent.width,
-        .height = (float)m_swapchainExtent.height,
-        .minDepth = 0.0f,
-        .maxDepth = 1.0f,
-    };
-
-    m_scissor = {
-        .offset = { 0, 0 },
-        .extent = m_swapchainExtent,
-    };
-    */
-
     // combine viewport and scissor
     m_viewportStateCI = {
         .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
@@ -216,7 +200,7 @@ void VgePipeline::createGraphicsPipeline()
         .pViewportState = &m_viewportStateCI,
         .pRasterizationState = &m_rasterizationStateCI,
         .pMultisampleState = &m_multisampleStateCI,
-        .pDepthStencilState = &m_depthStencilStateCI, // TODO: check if needs to be nullptr
+        .pDepthStencilState = &m_depthStencilStateCI,
         .pColorBlendState = &m_colorBlendStateCI,
         .pDynamicState = &m_dynamicStateCI,
         .layout = m_pipelineLayout,

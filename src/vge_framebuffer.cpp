@@ -29,14 +29,17 @@ void VgeFramebuffer::createFramebuffers()
     for (size_t i = 0; i < m_swapchainImageViews.size(); i++) {
         VkImageView attachments[] = { m_swapchainImageViews[i] };
 
-        VkFramebufferCreateInfo framebufferInfo = {};
-        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        framebufferInfo.renderPass = m_renderPass;
-        framebufferInfo.attachmentCount = 1;
-        framebufferInfo.pAttachments = attachments;
-        framebufferInfo.width = m_swapchainExtent.width;
-        framebufferInfo.height = m_swapchainExtent.height;
-        framebufferInfo.layers = 1;
+        VkFramebufferCreateInfo framebufferInfo = {
+            .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .renderPass = m_renderPass,
+            .attachmentCount = 1,
+            .pAttachments = attachments,
+            .width = m_swapchainExtent.width,
+            .height = m_swapchainExtent.height,
+            .layers = 1,
+        };
 
         if (vkCreateFramebuffer(m_lDevice, &framebufferInfo, nullptr, &m_framebuffers[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create framebuffer!");

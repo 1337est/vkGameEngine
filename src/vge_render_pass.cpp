@@ -34,27 +34,39 @@ void VgeRenderPass::createRenderPass()
         .layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
     };
 
-    VkSubpassDescription subpass{};
-    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpass.colorAttachmentCount = 1;
-    subpass.pColorAttachments = &colorAttachmentRef;
+    VkSubpassDescription subpass{
+        .flags = 0, // default
+        .pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
+        .inputAttachmentCount = 0,    // default
+        .pInputAttachments = nullptr, // default
+        .colorAttachmentCount = 1,
+        .pColorAttachments = &colorAttachmentRef,
+        .pResolveAttachments = nullptr,     // default
+        .pDepthStencilAttachment = nullptr, // default
+        .preserveAttachmentCount = 0,       // default
+        .pPreserveAttachments = nullptr,    // default
+    };
+    VkSubpassDependency subpassDependency{
+        .srcSubpass = VK_SUBPASS_EXTERNAL,
+        .dstSubpass = 0,
+        .srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+        .dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+        .srcAccessMask = 0,
+        .dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+        .dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT,
+    };
 
-    VkSubpassDependency subpassDependency{};
-    subpassDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-    subpassDependency.dstSubpass = 0;
-    subpassDependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    subpassDependency.srcAccessMask = 0;
-    subpassDependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    subpassDependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-    VkRenderPassCreateInfo renderPassCI{};
-    renderPassCI.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    renderPassCI.attachmentCount = 1;
-    renderPassCI.pAttachments = &colorAttachment;
-    renderPassCI.subpassCount = 1;
-    renderPassCI.pSubpasses = &subpass;
-    renderPassCI.dependencyCount = 1;
-    renderPassCI.pDependencies = &subpassDependency;
+    VkRenderPassCreateInfo renderPassCI{
+        .sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .attachmentCount = 1,
+        .pAttachments = &colorAttachment,
+        .subpassCount = 1,
+        .pSubpasses = &subpass,
+        .dependencyCount = 1,
+        .pDependencies = &subpassDependency,
+    };
 
     if (vkCreateRenderPass(m_lDevice, &renderPassCI, nullptr, &m_renderPass) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create render pass!");

@@ -42,11 +42,13 @@ void VgeCommandPool::createCommandPool()
 
 void VgeCommandPool::createCommandBuffer()
 {
-    VkCommandBufferAllocateInfo commandBufferAllocInfo{};
-    commandBufferAllocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    commandBufferAllocInfo.commandPool = m_commandPool;
-    commandBufferAllocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    commandBufferAllocInfo.commandBufferCount = 1;
+    VkCommandBufferAllocateInfo commandBufferAllocInfo{
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+        .pNext = nullptr,
+        .commandPool = m_commandPool,
+        .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+        .commandBufferCount = 1,
+    };
 
     if (vkAllocateCommandBuffers(m_lDevice, &commandBufferAllocInfo, &m_commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate command buffers!");
