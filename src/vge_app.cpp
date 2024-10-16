@@ -13,7 +13,7 @@ VgeApp::VgeApp()
     : m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" }
     , m_vgeValidationLayers{}
     , m_vgeInstance{}
-    , m_vgeSurface{ m_vgeInstance.getInstance(), m_vgeWindow.getWindow() }
+    , m_vgeSurface{ m_vgeInstance, m_vgeWindow }
     , m_vgeDevice{ m_vgeInstance.getInstance(),
                    m_vgeSurface.getSurface(),
                    m_vgeValidationLayers.areVLayersEnabled(),

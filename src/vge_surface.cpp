@@ -3,9 +3,11 @@
 
 namespace vge {
 
-VgeSurface::VgeSurface(VkInstance instance, GLFWwindow* window)
-    : m_instance{ instance }
-    , m_window{ window }
+VgeSurface::VgeSurface(VgeInstance& vgeInstance, VgeWindow& vgeWindow)
+    : m_vgeInstance{ vgeInstance }
+    , m_vgeWindow{ vgeWindow }
+    , m_instance{ m_vgeInstance.getInstance() }
+    , m_window{ m_vgeWindow.getWindow() }
 {
     createSurface();
 }
