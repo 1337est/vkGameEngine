@@ -52,7 +52,7 @@ VgeApp::~VgeApp()
 void VgeApp::run()
 {
     std::vector<std::unique_ptr<VgeBuffer>> uboBuffers(VgeSwapChain::MAX_FRAMES_IN_FLIGHT);
-    for (int i = 0; i < uboBuffers.size(); i++) {
+    for (size_t i = 0; i < uboBuffers.size(); i++) {
         uboBuffers[i] = std::make_unique<VgeBuffer>(
             m_vgeDevice,
             sizeof(GlobalUbo),
@@ -68,7 +68,7 @@ void VgeApp::run()
             .build();
 
     std::vector<VkDescriptorSet> globalDescriptorSets(VgeSwapChain::MAX_FRAMES_IN_FLIGHT);
-    for (int i = 0; i < globalDescriptorSets.size(); i++) {
+    for (size_t i = 0; i < globalDescriptorSets.size(); i++) {
         VkDescriptorBufferInfo bufferInfo = uboBuffers[i]->descriptorInfo();
         VgeDescriptorWriter(*globalSetLayout, *m_globalPool)
             .writeBuffer(0, &bufferInfo)
@@ -180,7 +180,7 @@ void VgeApp::loadGameObjects()
         { 1.f, 1.f, 1.f }  //
     };
 
-    for (int i = 0; i < lightColors.size(); i++) {
+    for (size_t i = 0; i < lightColors.size(); i++) {
         VgeGameObject pointLight = VgeGameObject::makePointLight(0.2f);
         pointLight.m_color = lightColors[i];
         glm::mat<4, 4, float, (glm::qualifier)0U> rotateLight = glm::rotate(
