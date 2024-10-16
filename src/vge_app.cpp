@@ -16,9 +16,7 @@ VgeApp::VgeApp()
     , m_vgeSurface{ m_vgeInstance, m_vgeWindow }
     , m_vgeDevice{ m_vgeInstance, m_vgeSurface, m_vgeValidationLayers }
     , m_vgeSwapchain{ m_vgeDevice, m_vgeSurface, m_vgeWindow }
-    , m_vgeImageView{ m_vgeDevice.getLDevice(),
-                      m_vgeSwapchain.getSwapchainImages(),
-                      m_vgeSwapchain.getSwapchainImageFormat() }
+    , m_vgeImageView{ m_vgeDevice, m_vgeSwapchain }
     , m_vgeRenderPass(m_vgeDevice.getLDevice(), m_vgeSwapchain.getSwapchainImageFormat())
     , m_vgePipeline{ m_vgeDevice.getLDevice(),
                      "build/shaders/shader.vert.spv",
@@ -249,9 +247,7 @@ void VgeApp::recreateSwapchain()
     cleanupSwapchain();
 
     VgeSwapchain vgeSwapchain{ m_vgeDevice, m_vgeSurface, m_vgeWindow };
-    VgeImageView VgeImageView{ m_vgeDevice.getLDevice(),
-                               m_vgeSwapchain.getSwapchainImages(),
-                               m_vgeSwapchain.getSwapchainImageFormat() };
+    VgeImageView VgeImageView{ m_vgeDevice, m_vgeSwapchain };
     VgeFramebuffer vgeFramebuffer{ m_vgeDevice.getLDevice(),
                                    m_vgeImageView.getImageViews(),
                                    m_vgeSwapchain.getSwapchainExtent(),

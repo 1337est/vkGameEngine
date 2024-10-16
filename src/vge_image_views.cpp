@@ -3,13 +3,12 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
-VgeImageView::VgeImageView(
-    VkDevice lDevice,
-    std::vector<VkImage> swapchainImages,
-    VkFormat swapchainImageFormat)
-    : m_lDevice{ lDevice }
-    , m_swapchainImages{ swapchainImages }
-    , m_swapchainImageFormat{ swapchainImageFormat }
+VgeImageView::VgeImageView(VgeDevice& vgeDevice, VgeSwapchain& vgeSwapchain)
+    : m_vgeDevice{ vgeDevice }
+    , m_vgeSwapchain{ vgeSwapchain }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
+    , m_images{ m_vgeSwapchain.getSwapchainImages() }
+    , m_imageFormat{ m_vgeSwapchain.getSwapchainImageFormat() }
 {
     createImageViews();
 }
@@ -23,15 +22,15 @@ VgeImageView::~VgeImageView()
 
 void VgeImageView::createImageViews()
 {
-    m_imageViews.resize(m_swapchainImages.size());
-    for (size_t i = 0; i < m_swapchainImages.size(); i++) {
+    m_imageViews.resize(m_images.size());
+    for (size_t i = 0; i < m_images.size(); i++) {
         VkImageViewCreateInfo imageViewCI{
             .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
             .pNext = nullptr,
             .flags = 0,
-            .image = m_swapchainImages[i],
+            .image = m_images[i],
             .viewType = VK_IMAGE_VIEW_TYPE_2D,
-            .format = m_swapchainImageFormat,
+            .format = m_imageFormat,
             .components = {
                 .r = VK_COMPONENT_SWIZZLE_IDENTITY,
                 .g = VK_COMPONENT_SWIZZLE_IDENTITY,
