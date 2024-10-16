@@ -3,9 +3,11 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
-VgeRenderPass::VgeRenderPass(VkDevice lDevice, VkFormat swapchainImageFormat)
-    : m_lDevice{ lDevice }
-    , m_swapchainImageFormat{ swapchainImageFormat }
+VgeRenderPass::VgeRenderPass(VgeDevice& vgeDevice, VgeSwapchain& vgeSwapchain)
+    : m_vgeDevice{ vgeDevice }
+    , m_vgeSwapchain{ vgeSwapchain }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
+    , m_swapchainImageFormat{ m_vgeSwapchain.getSwapchainImageFormat() }
 {
     createRenderPass();
 }

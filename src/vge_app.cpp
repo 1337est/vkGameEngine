@@ -17,7 +17,7 @@ VgeApp::VgeApp()
     , m_vgeDevice{ m_vgeInstance, m_vgeSurface, m_vgeValidationLayers }
     , m_vgeSwapchain{ m_vgeDevice, m_vgeSurface, m_vgeWindow }
     , m_vgeImageView{ m_vgeDevice, m_vgeSwapchain }
-    , m_vgeRenderPass(m_vgeDevice.getLDevice(), m_vgeSwapchain.getSwapchainImageFormat())
+    , m_vgeRenderPass(m_vgeDevice, m_vgeSwapchain)
     , m_vgePipeline{ m_vgeDevice.getLDevice(),
                      "build/shaders/shader.vert.spv",
                      "build/shaders/shader.frag.spv",
