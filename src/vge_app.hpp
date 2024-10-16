@@ -28,6 +28,8 @@ public:
 private:
     void drawFrame();
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    void recreateSwapchain();
+    void cleanupSwapchain();
 
     VgeWindow m_vgeWindow;
     VgeValidationLayers m_vgeValidationLayers;

@@ -16,14 +16,14 @@ VgeImageView::VgeImageView(
 
 VgeImageView::~VgeImageView()
 {
-    for (VkImageView imageView : m_swapchainImageViews) {
+    for (VkImageView imageView : m_imageViews) {
         vkDestroyImageView(m_lDevice, imageView, nullptr);
     }
 }
 
 void VgeImageView::createImageViews()
 {
-    m_swapchainImageViews.resize(m_swapchainImages.size());
+    m_imageViews.resize(m_swapchainImages.size());
     for (size_t i = 0; i < m_swapchainImages.size(); i++) {
         VkImageViewCreateInfo imageViewCI{
             .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
@@ -47,16 +47,14 @@ void VgeImageView::createImageViews()
             },
         };
 
-        if (vkCreateImageView(m_lDevice, &imageViewCI, nullptr, &m_swapchainImageViews[i]) !=
-            VK_SUCCESS)
-        {
+        if (vkCreateImageView(m_lDevice, &imageViewCI, nullptr, &m_imageViews[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create image view!");
         }
     }
 }
 
-std::vector<VkImageView> VgeImageView::getSwapchainImageViews()
+std::vector<VkImageView> VgeImageView::getImageViews()
 {
-    return m_swapchainImageViews;
+    return m_imageViews;
 }
 } // namespace vge

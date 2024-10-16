@@ -7,7 +7,7 @@ namespace vge {
 
 class VgeInstance {
 public:
-    VgeInstance(VgeValidationLayers VgeValidationLayers);
+    VgeInstance(VgeValidationLayers vgeValidationLayers);
     ~VgeInstance();
 
     VgeInstance(const VgeInstance&) = delete;
@@ -39,7 +39,7 @@ private:
 
     VkInstance m_instance = VK_NULL_HANDLE;
 
-    VgeValidationLayers m_VgeValidationLayers;
+    VgeValidationLayers m_vgeValidationLayers;
     const bool m_enableVLayers;
     bool m_VLayerSupport;
     const std::vector<const char*> m_VLayers;

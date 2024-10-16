@@ -15,7 +15,7 @@ public:
     VgeImageView& operator=(const VgeImageView&) = delete;
 
     size_t getSwapchainImages();
-    std::vector<VkImageView> getSwapchainImageViews();
+    std::vector<VkImageView> getImageViews();
 
 private:
     void createImageViews();
@@ -24,6 +24,6 @@ private:
     std::vector<VkImage> m_swapchainImages;
     VkFormat m_swapchainImageFormat;
 
-    std::vector<VkImageView> m_swapchainImageViews; // yes
+    std::vector<VkImageView> m_imageViews; // yes
 };
 } // namespace vge

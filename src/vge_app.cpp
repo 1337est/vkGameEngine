@@ -1,5 +1,9 @@
 #include "vge_app.hpp"
 #include "max_frames_in_flight.hpp"
+#include "vge_framebuffer.hpp"
+#include "vge_image_views.hpp"
+#include "vge_swapchain.hpp"
+#include <GLFW/glfw3.h>
 #include <exception>
 #include <stdexcept>
 #include <vulkan/vulkan_core.h>
@@ -26,7 +30,7 @@ VgeApp::VgeApp()
                      "build/shaders/shader.frag.spv",
                      m_vgeRenderPass.getRenderPass() }
     , m_vgeFramebuffer{ m_vgeDevice.getLDevice(),
-                        m_vgeImageView.getSwapchainImageViews(),
+                        m_vgeImageView.getImageViews(),
                         m_vgeSwapchain.getSwapchainExtent(),
                         m_vgeRenderPass.getRenderPass() }
     , m_vgeCommandPool{ m_vgeDevice.getLDevice(), m_vgeDevice.getGraphicsFamily() }
@@ -60,7 +64,6 @@ void VgeApp::drawFrame()
     VkDevice lDevice = m_vgeDevice.getLDevice();
     std::vector<VkFence> inFlightFences = m_vgeSyncObjects.getInFlightFence();
     vkWaitForFences(lDevice, 1, &inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
-    vkResetFences(lDevice, 1, &inFlightFences[m_currentFrame]);
 
     // Acquire the next image from the swapchain, waiting until it's available
     // using the imageAvailableSemaphore. The acquired image index will be used
@@ -69,13 +72,23 @@ void VgeApp::drawFrame()
     std::vector<VkSemaphore> imageAvailableSemaphores =
         m_vgeSyncObjects.getImageAvailableSemaphore();
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(
+    VkResult result = vkAcquireNextImageKHR(
         lDevice,
         swapchain,
         UINT64_MAX,
         imageAvailableSemaphores[m_currentFrame],
         VK_NULL_HANDLE,
         &imageIndex);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        recreateSwapchain();
+        return;
+    }
+    else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        throw std::runtime_error("Failed to acquire swap chain image!");
+    }
+
+    // Only reset the fence if we are submitting work
+    vkResetFences(lDevice, 1, &inFlightFences[m_currentFrame]);
 
     // Reset the command buffer so it can be reused for recording commands for
     // the current frame. This avoids creating new command buffers each frame,
@@ -113,7 +126,7 @@ void VgeApp::drawFrame()
     VkQueue graphicsQueue = m_vgeDevice.getGraphicsQueue();
     if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[m_currentFrame]) != VK_SUCCESS)
     {
-        throw std::runtime_error("failed to submit draw command buffer!");
+        throw std::runtime_error("Failed to submit draw command buffer!");
     }
 
     // Present the rendered image to the swapchain. The present operation will
@@ -134,7 +147,13 @@ void VgeApp::drawFrame()
     // Submit the present request to the presentation queue, displaying the
     // rendered image to the screen.
     VkQueue presentQueue = m_vgeDevice.getPresentQueue();
-    vkQueuePresentKHR(presentQueue, &presentInfo);
+    result = vkQueuePresentKHR(presentQueue, &presentInfo);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        recreateSwapchain();
+    }
+    else if (result != VK_SUCCESS) {
+        throw std::runtime_error("Failed to present swap chain image!");
+    }
 
     // iterate currentFrame
     m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
@@ -219,6 +238,42 @@ void VgeApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to record command buffer!");
     }
+}
+
+void VgeApp::recreateSwapchain()
+{
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(m_vgeWindow.getWindow(), &width, &height);
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(m_vgeWindow.getWindow(), &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(m_vgeDevice.getLDevice());
+
+    cleanupSwapchain();
+
+    VgeSwapchain vgeSwapchain{ m_vgeDevice.getPDevice(),        m_vgeSurface.getSurface(),
+                               m_vgeDevice.getGraphicsFamily(), m_vgeDevice.getPresentFamily(),
+                               m_vgeDevice.getLDevice(),        m_vgeWindow.getWindow() };
+    VgeImageView VgeImageView{ m_vgeDevice.getLDevice(),
+                               m_vgeSwapchain.getSwapchainImages(),
+                               m_vgeSwapchain.getSwapchainImageFormat() };
+    VgeFramebuffer vgeFramebuffer{ m_vgeDevice.getLDevice(),
+                                   m_vgeImageView.getImageViews(),
+                                   m_vgeSwapchain.getSwapchainExtent(),
+                                   m_vgeRenderPass.getRenderPass() };
+}
+
+void VgeApp::cleanupSwapchain()
+{
+    for (auto framebuffer : m_vgeFramebuffer.getFramebuffers()) {
+        vkDestroyFramebuffer(m_vgeDevice.getLDevice(), framebuffer, nullptr);
+    }
+    for (auto imageView : m_vgeImageView.getImageViews()) {
+        vkDestroyImageView(m_vgeDevice.getLDevice(), imageView, nullptr);
+    }
+    vkDestroySwapchainKHR(m_vgeDevice.getLDevice(), m_vgeSwapchain.getSwapchain(), nullptr);
 }
 
 } // namespace vge

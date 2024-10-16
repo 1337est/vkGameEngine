@@ -5,11 +5,11 @@
 #include <unordered_set>
 
 namespace vge {
-VgeInstance::VgeInstance(VgeValidationLayers VgeValidationLayers)
-    : m_VgeValidationLayers{ VgeValidationLayers }
-    , m_enableVLayers{ VgeValidationLayers.areVLayersEnabled() }
-    , m_VLayerSupport{ VgeValidationLayers.areVLayersSupported() }
-    , m_VLayers{ VgeValidationLayers.getVLayers() }
+VgeInstance::VgeInstance(VgeValidationLayers vgeValidationLayers)
+    : m_vgeValidationLayers{ vgeValidationLayers }
+    , m_enableVLayers{ vgeValidationLayers.areVLayersEnabled() }
+    , m_VLayerSupport{ vgeValidationLayers.areVLayersSupported() }
+    , m_VLayers{ vgeValidationLayers.getVLayers() }
 {
     // Prepatory functions before instance creation
     setRequiredExts();
