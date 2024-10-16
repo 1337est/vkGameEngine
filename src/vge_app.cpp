@@ -14,10 +14,7 @@ VgeApp::VgeApp()
     , m_vgeValidationLayers{}
     , m_vgeInstance{}
     , m_vgeSurface{ m_vgeInstance, m_vgeWindow }
-    , m_vgeDevice{ m_vgeInstance.getInstance(),
-                   m_vgeSurface.getSurface(),
-                   m_vgeValidationLayers.areVLayersEnabled(),
-                   m_vgeValidationLayers.getVLayers() }
+    , m_vgeDevice{ m_vgeInstance, m_vgeSurface, m_vgeValidationLayers }
     , m_vgeSwapchain{ m_vgeDevice.getPDevice(),        m_vgeSurface.getSurface(),
                       m_vgeDevice.getGraphicsFamily(), m_vgeDevice.getPresentFamily(),
                       m_vgeDevice.getLDevice(),        m_vgeWindow.getWindow() }

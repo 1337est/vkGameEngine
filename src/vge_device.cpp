@@ -10,14 +10,16 @@
 namespace vge {
 
 VgeDevice::VgeDevice(
-    const VkInstance& instance,
-    VkSurfaceKHR surface,
-    bool enableVLayers,
-    const std::vector<const char*> vLayers)
-    : m_instance{ instance }
-    , m_surface{ surface }
-    , m_enableVLayers{ enableVLayers }
-    , m_vLayers{ vLayers }
+    VgeInstance& vgeInstance,
+    VgeSurface& vgeSurface,
+    VgeValidationLayers& vgeValidationLayers)
+    : m_vgeInstance{ vgeInstance }
+    , m_vgeSurface{ vgeSurface }
+    , m_vgeValidationLayers{ vgeValidationLayers }
+    , m_instance{ m_vgeInstance.getInstance() }
+    , m_surface{ m_vgeSurface.getSurface() }
+    , m_enableVLayers{ m_vgeValidationLayers.areVLayersEnabled() }
+    , m_vLayers{ m_vgeValidationLayers.getVLayers() }
 {
     pickPDevice();
     createLDevice();

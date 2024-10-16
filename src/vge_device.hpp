@@ -1,4 +1,7 @@
 #pragma once
+#include "vge_instance.hpp"
+#include "vge_surface.hpp"
+#include "vge_validation_layers.hpp"
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
@@ -7,10 +10,9 @@ namespace vge {
 class VgeDevice {
 public:
     VgeDevice(
-        const VkInstance& instance,
-        VkSurfaceKHR surface,
-        bool enableVLayers,
-        const std::vector<const char*> vLayers);
+        VgeInstance& vgeInstance,
+        VgeSurface& vgeSurface,
+        VgeValidationLayers& vgeValidationLayers);
     ~VgeDevice();
 
     // Not copyable or movable
@@ -33,6 +35,10 @@ private:
     void findQueueFamilies(const VkPhysicalDevice& pDevice);
     bool checkDeviceExts(VkPhysicalDevice pDevice);
     void createLDevice();
+
+    VgeInstance& m_vgeInstance;
+    VgeSurface& m_vgeSurface;
+    VgeValidationLayers& m_vgeValidationLayers;
 
     VkInstance m_instance;
     VkSurfaceKHR m_surface;
