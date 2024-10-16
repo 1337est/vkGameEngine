@@ -10,6 +10,7 @@
 #include "vge_surface.hpp"
 #include "vge_swapchain.hpp"
 #include "vge_sync_objects.hpp"
+#include "vge_validation_layers.hpp"
 #include "vge_window.hpp"
 
 namespace vge {
@@ -29,6 +30,7 @@ private:
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
     VgeWindow m_vgeWindow;
+    VgeValidationLayers m_vgeValidationLayers;
     VgeInstance m_vgeInstance;
     VgeSurface m_vgeSurface;
     VgeDevice m_vgeDevice;

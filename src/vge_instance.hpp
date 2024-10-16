@@ -6,20 +6,16 @@ namespace vge {
 
 class VgeInstance {
 public:
-    VgeInstance();
+    VgeInstance(bool enableVLayers, bool vLayerSupport, std::vector<const char*> VLayers);
     ~VgeInstance();
 
     VgeInstance(const VgeInstance&) = delete;
     VgeInstance& operator=(const VgeInstance&) = delete;
 
-    bool areVLayersEnabled() const;
-    const std::vector<const char*>& getVLayers() const;
-
     VkInstance getInstance() const;
 
 private:
     void setRequiredExts();
-    void checkVLayerSupport();
     void hasRequiredInstanceExts();
     void createInstance();
     void setupDebugMessenger();
@@ -43,8 +39,8 @@ private:
     VkInstance m_instance = VK_NULL_HANDLE;
 
     const bool m_enableVLayers;
-    const std::vector<const char*> m_VLayers = { "VK_LAYER_KHRONOS_validation" };
     bool m_VLayerSupport;
+    const std::vector<const char*> m_VLayers;
 
     std::vector<const char*> m_requiredExts;
 

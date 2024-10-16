@@ -5,16 +5,13 @@
 #include <unordered_set>
 
 namespace vge {
-VgeInstance::VgeInstance()
-#ifdef NDEBUG
-    : m_enableVLayers{ false }
-#else
-    : m_enableVLayers{ true }
-#endif
+VgeInstance::VgeInstance(bool enableVLayers, bool vLayerSupport, std::vector<const char*> VLayers)
+    : m_enableVLayers{ enableVLayers }
+    , m_VLayerSupport{ vLayerSupport }
+    , m_VLayers{ VLayers }
 {
     // Prepatory functions before instance creation
     setRequiredExts();
-    checkVLayerSupport();
     hasRequiredInstanceExts();
 
     createInstance();
@@ -45,33 +42,6 @@ void VgeInstance::setRequiredExts()
 
     if (m_enableVLayers) {
         m_requiredExts.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-    }
-}
-
-void VgeInstance::checkVLayerSupport()
-{
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    m_VLayerSupport = true;
-
-    for (const char* layerName : m_VLayers) {
-        bool layerFound = false;
-
-        for (const VkLayerProperties& layerProps : availableLayers) {
-            if (strcmp(layerName, layerProps.layerName) == 0) {
-                layerFound = true;
-                break;
-            }
-        }
-
-        if (!layerFound) {
-            m_VLayerSupport = false;
-            return;
-        }
     }
 }
 
@@ -239,16 +209,6 @@ void VgeInstance::destroyDebugMessenger(
 VkInstance VgeInstance::getInstance() const
 {
     return m_instance;
-}
-
-bool VgeInstance::areVLayersEnabled() const
-{
-    return m_enableVLayers;
-}
-
-const std::vector<const char*>& VgeInstance::getVLayers() const
-{
-    return m_VLayers;
 }
 
 } // namespace vge

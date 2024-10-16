@@ -7,12 +7,15 @@
 namespace vge {
 VgeApp::VgeApp()
     : m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" }
-    , m_vgeInstance{}
+    , m_vgeValidationLayers{}
+    , m_vgeInstance{ m_vgeValidationLayers.areVLayersEnabled(),
+                     m_vgeValidationLayers.areVLayersSupported(),
+                     m_vgeValidationLayers.getVLayers() }
     , m_vgeSurface{ m_vgeInstance.getInstance(), m_vgeWindow.getWindow() }
     , m_vgeDevice{ m_vgeInstance.getInstance(),
                    m_vgeSurface.getSurface(),
-                   m_vgeInstance.areVLayersEnabled(),
-                   m_vgeInstance.getVLayers() }
+                   m_vgeValidationLayers.areVLayersEnabled(),
+                   m_vgeValidationLayers.getVLayers() }
     , m_vgeSwapchain{ m_vgeDevice.getPDevice(),        m_vgeSurface.getSurface(),
                       m_vgeDevice.getGraphicsFamily(), m_vgeDevice.getPresentFamily(),
                       m_vgeDevice.getLDevice(),        m_vgeWindow.getWindow() }
