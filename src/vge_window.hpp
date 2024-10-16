@@ -7,7 +7,7 @@ namespace vge {
 
 class VgeWindow {
 public:
-    VgeWindow(int width, int height, const std::string& title);
+    VgeWindow();
     ~VgeWindow();
 
     VgeWindow(const VgeWindow&) = delete;

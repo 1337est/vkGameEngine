@@ -10,7 +10,7 @@
 
 namespace vge {
 VgeApp::VgeApp()
-    : m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" }
+    : m_vgeWindow{}
     , m_vgeValidationLayers{}
     , m_vgeInstance{}
     , m_vgeSurface{ m_vgeInstance, m_vgeWindow }
@@ -18,14 +18,8 @@ VgeApp::VgeApp()
     , m_vgeSwapchain{ m_vgeDevice, m_vgeSurface, m_vgeWindow }
     , m_vgeImageView{ m_vgeDevice, m_vgeSwapchain }
     , m_vgeRenderPass(m_vgeDevice, m_vgeSwapchain)
-    , m_vgePipeline{ m_vgeDevice.getLDevice(),
-                     "build/shaders/shader.vert.spv",
-                     "build/shaders/shader.frag.spv",
-                     m_vgeRenderPass.getRenderPass() }
-    , m_vgeFramebuffer{ m_vgeDevice.getLDevice(),
-                        m_vgeImageView.getImageViews(),
-                        m_vgeSwapchain.getSwapchainExtent(),
-                        m_vgeRenderPass.getRenderPass() }
+    , m_vgePipeline{ m_vgeDevice, m_vgeRenderPass }
+    , m_vgeFramebuffer{ m_vgeDevice, m_vgeImageView, m_vgeSwapchain, m_vgeRenderPass }
     , m_vgeCommandPool{ m_vgeDevice.getLDevice(), m_vgeDevice.getGraphicsFamily() }
     , m_vgeCommandBuffer{ m_vgeDevice.getLDevice(), m_vgeCommandPool.getCommandPool() }
     , m_vgeSyncObjects{ m_vgeDevice.getLDevice() }
@@ -248,10 +242,7 @@ void VgeApp::recreateSwapchain()
 
     VgeSwapchain vgeSwapchain{ m_vgeDevice, m_vgeSurface, m_vgeWindow };
     VgeImageView VgeImageView{ m_vgeDevice, m_vgeSwapchain };
-    VgeFramebuffer vgeFramebuffer{ m_vgeDevice.getLDevice(),
-                                   m_vgeImageView.getImageViews(),
-                                   m_vgeSwapchain.getSwapchainExtent(),
-                                   m_vgeRenderPass.getRenderPass() };
+    VgeFramebuffer vgeFramebuffer{ m_vgeDevice, m_vgeImageView, m_vgeSwapchain, m_vgeRenderPass };
 }
 
 void VgeApp::cleanupSwapchain()

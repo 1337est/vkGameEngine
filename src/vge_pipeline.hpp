@@ -1,4 +1,6 @@
 #pragma once
+#include "vge_device.hpp"
+#include "vge_render_pass.hpp"
 #include <string>
 #include <vector>
 #include <vulkan/vulkan_core.h>
@@ -7,11 +9,7 @@ namespace vge {
 
 class VgePipeline {
 public:
-    VgePipeline(
-        VkDevice lDevice,
-        const std::string& vertFilepath,
-        const std::string& fragFilePath,
-        VkRenderPass renderPass);
+    VgePipeline(VgeDevice& vgeDevice, VgeRenderPass& vgeRenderPass);
     ~VgePipeline();
     VgePipeline(const VgePipeline&) = delete;
     VgePipeline& operator=(const VgePipeline&) = delete;
@@ -24,6 +22,9 @@ private:
     void createGraphicsPipeline();
     static std::vector<char> readShaderFile(const std::string& filepath);
     void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
+
+    VgeDevice& m_vgeDevice;
+    VgeRenderPass& m_vgeRenderPass;
 
     VkDevice m_lDevice;
     const std::string& m_vertFilePath;

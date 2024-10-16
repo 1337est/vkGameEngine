@@ -17,10 +17,6 @@ namespace vge {
 
 class VgeApp {
 public:
-    // windows width/height
-    static constexpr int WINDOW_WIDTH = 800;
-    static constexpr int WINDOW_HEIGHT = 600;
-
     VgeApp();
 
     void mainLoop();

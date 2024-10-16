@@ -6,15 +6,16 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
-VgePipeline::VgePipeline(
-    VkDevice lDevice,
-    const std::string& vertFilepath,
-    const std::string& fragFilePath,
-    VkRenderPass renderPass)
-    : m_lDevice{ lDevice }
+const std::string& vertFilepath = "build/shaders/shader.vert.spv";
+const std::string& fragFilepath = "build/shaders/shader.frag.spv";
+
+VgePipeline::VgePipeline(VgeDevice& vgeDevice, VgeRenderPass& vgeRenderPass)
+    : m_vgeDevice{ vgeDevice }
+    , m_vgeRenderPass{ vgeRenderPass }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
     , m_vertFilePath{ vertFilepath }
-    , m_fragFilePath{ fragFilePath }
-    , m_renderPass{ renderPass }
+    , m_fragFilePath{ fragFilepath }
+    , m_renderPass{ m_vgeRenderPass.getRenderPass() }
 {
     createGraphicsPipeline();
 }

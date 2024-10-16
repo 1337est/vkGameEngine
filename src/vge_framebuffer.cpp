@@ -4,14 +4,18 @@
 
 namespace vge {
 VgeFramebuffer::VgeFramebuffer(
-    VkDevice lDevice,
-    std::vector<VkImageView> swapchainImageViews,
-    VkExtent2D swapchainExtent,
-    VkRenderPass renderPass)
-    : m_lDevice{ lDevice }
-    , m_swapchainImageViews{ swapchainImageViews }
-    , m_swapchainExtent{ swapchainExtent }
-    , m_renderPass{ renderPass }
+    VgeDevice& vgeDevice,
+    VgeImageView& vgeImageView,
+    VgeSwapchain& vgeSwapchain,
+    VgeRenderPass& vgeRenderPass)
+    : m_vgeDevice{ vgeDevice }
+    , m_vgeImageView{ vgeImageView }
+    , m_vgeSwapchain{ vgeSwapchain }
+    , m_vgeRenderPass{ vgeRenderPass }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
+    , m_imageViews{ m_vgeImageView.getImageViews() }
+    , m_swapchainExtent{ m_vgeSwapchain.getSwapchainExtent() }
+    , m_renderPass{ m_vgeRenderPass.getRenderPass() }
 {
     createFramebuffers();
 }
@@ -25,9 +29,9 @@ VgeFramebuffer::~VgeFramebuffer()
 
 void VgeFramebuffer::createFramebuffers()
 {
-    m_framebuffers.resize(m_swapchainImageViews.size());
-    for (size_t i = 0; i < m_swapchainImageViews.size(); i++) {
-        VkImageView attachments[] = { m_swapchainImageViews[i] };
+    m_framebuffers.resize(m_imageViews.size());
+    for (size_t i = 0; i < m_imageViews.size(); i++) {
+        VkImageView attachments[] = { m_imageViews[i] };
 
         VkFramebufferCreateInfo framebufferInfo = {
             .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,

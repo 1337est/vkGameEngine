@@ -1,11 +1,15 @@
 #include "vge_window.hpp"
 
 namespace vge {
+// windows width/height
+static constexpr int WIDTH = 800;
+static constexpr int HEIGHT = 600;
+const std::string& TITLE = "Hello Vulkan";
 
-VgeWindow::VgeWindow(int width, int height, const std::string& title)
-    : m_width{ width }
-    , m_height{ height }
-    , m_title{ title }
+VgeWindow::VgeWindow()
+    : m_width{ WIDTH }
+    , m_height{ HEIGHT }
+    , m_title{ TITLE }
 {
     initWindow();
 }
