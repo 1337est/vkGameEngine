@@ -16,12 +16,10 @@ int main()
 {
     vge::VgeApp app{};
 
-    try
-    {
+    try {
         app.run();
     }
-    catch (const std::exception& e)
-    {
+    catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
     }

@@ -1,8 +1,7 @@
 // headers
 #include "vge_game_object.hpp"
 
-namespace vge
-{
+namespace vge {
 /* Constructs a VgeGameObject with a unique identifier.
  *
  * This constructor initializes the VgeGameObject with the given id_t object
@@ -11,8 +10,7 @@ namespace vge
  */
 VgeGameObject::VgeGameObject(id_t objId)
     : m_id{ objId }
-{
-}
+{}
 
 /* Creates and returns a new instance of VgeGameObject.
  *
@@ -120,10 +118,7 @@ glm::mat3 TransformComponent::normalMatrix()
  * the object based on the provided radius, allowing for realistic lighting
  * effects within the scene.
  */
-VgeGameObject VgeGameObject::makePointLight(
-    float intensity,
-    float radius,
-    glm::vec3 color)
+VgeGameObject VgeGameObject::makePointLight(float intensity, float radius, glm::vec3 color)
 {
     VgeGameObject gameObj = VgeGameObject::createGameObject();
     gameObj.m_color = color;

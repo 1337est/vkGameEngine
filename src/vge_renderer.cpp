@@ -7,8 +7,7 @@
 #include <cassert>
 #include <stdexcept>
 
-namespace vge
-{
+namespace vge {
 /* Initializes a VgeRenderer instance.
  *
  * This constructor takes a reference to a VgeWindow and a VgeDevice,
@@ -45,27 +44,21 @@ VgeRenderer::~VgeRenderer()
 void VgeRenderer::recreateSwapChain()
 {
     VkExtent2D extent = m_vgeWindow.getExtent();
-    while (extent.width == 0 || extent.height == 0)
-    {
+    while (extent.width == 0 || extent.height == 0) {
         extent = m_vgeWindow.getExtent();
         glfwWaitEvents();
     }
     vkDeviceWaitIdle(m_vgeDevice.getDevice());
 
-    if (m_vgeSwapChain == nullptr)
-    {
+    if (m_vgeSwapChain == nullptr) {
         m_vgeSwapChain = std::make_unique<VgeSwapChain>(m_vgeDevice, extent);
     }
-    else
-    {
+    else {
         std::shared_ptr<VgeSwapChain> oldSwapChain = std::move(m_vgeSwapChain);
-        m_vgeSwapChain =
-            std::make_unique<VgeSwapChain>(m_vgeDevice, extent, oldSwapChain);
+        m_vgeSwapChain = std::make_unique<VgeSwapChain>(m_vgeDevice, extent, oldSwapChain);
 
-        if (!oldSwapChain->compareSwapFormats(*m_vgeSwapChain.get()))
-        {
-            throw std::runtime_error(
-                "Swap chain image(or depth) format has changed!");
+        if (!oldSwapChain->compareSwapFormats(*m_vgeSwapChain.get())) {
+            throw std::runtime_error("Swap chain image(or depth) format has changed!");
         }
     }
 }
@@ -84,13 +77,10 @@ void VgeRenderer::createCommandBuffers()
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandPool = m_vgeDevice.getCommandPool();
-    allocInfo.commandBufferCount =
-        static_cast<uint32_t>(m_commandBuffers.size());
+    allocInfo.commandBufferCount = static_cast<uint32_t>(m_commandBuffers.size());
 
-    if (vkAllocateCommandBuffers(
-            m_vgeDevice.getDevice(),
-            &allocInfo,
-            m_commandBuffers.data()) != VK_SUCCESS)
+    if (vkAllocateCommandBuffers(m_vgeDevice.getDevice(), &allocInfo, m_commandBuffers.data()) !=
+        VK_SUCCESS)
     {
         throw std::runtime_error("Failed to allocate command buffersf!");
     }
@@ -120,19 +110,15 @@ void VgeRenderer::freeCommandBuffers()
  */
 VkCommandBuffer VgeRenderer::beginFrame()
 {
-    assert(
-        !m_isFrameStarted &&
-        "Can't call beginFrame while already in progress!");
+    assert(!m_isFrameStarted && "Can't call beginFrame while already in progress!");
 
     VkResult result = m_vgeSwapChain->acquireNextImage(&m_currentImageIndex);
 
-    if (result == VK_ERROR_OUT_OF_DATE_KHR)
-    {
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         recreateSwapChain();
         return nullptr;
     }
-    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-    {
+    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("Failed to acquire swap chain image!");
     }
 
@@ -142,8 +128,7 @@ VkCommandBuffer VgeRenderer::beginFrame()
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
-    {
+    if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
         throw std::runtime_error("Failed to begin recording command buffer!");
     }
 
@@ -158,32 +143,26 @@ VkCommandBuffer VgeRenderer::beginFrame()
  */
 void VgeRenderer::endFrame()
 {
-    assert(
-        m_isFrameStarted && "Can't call endFrame while frame not in progress!");
+    assert(m_isFrameStarted && "Can't call endFrame while frame not in progress!");
 
     VkCommandBuffer commandBuffer = getCurrentCommandBuffer();
 
-    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
-    {
+    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to record command buffer!");
     }
-    VkResult result = m_vgeSwapChain->submitCommandBuffers(
-        &commandBuffer,
-        &m_currentImageIndex);
+    VkResult result = m_vgeSwapChain->submitCommandBuffers(&commandBuffer, &m_currentImageIndex);
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
         m_vgeWindow.wasWindowResized())
     {
         m_vgeWindow.resetWindowResizedFlag();
         recreateSwapChain();
     }
-    else if (result != VK_SUCCESS)
-    {
+    else if (result != VK_SUCCESS) {
         throw std::runtime_error("Failed to present swap chain image!");
     }
 
     m_isFrameStarted = false;
-    m_currentFrameIndex =
-        (m_currentFrameIndex + 1) % VgeSwapChain::MAX_FRAMES_IN_FLIGHT;
+    m_currentFrameIndex = (m_currentFrameIndex + 1) % VgeSwapChain::MAX_FRAMES_IN_FLIGHT;
 }
 
 /* Begins the render pass for the current frame's swap chain.
@@ -193,9 +172,7 @@ void VgeRenderer::endFrame()
  */
 void VgeRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
 {
-    assert(
-        m_isFrameStarted &&
-        "Can't call beginSwapChainRenderPass if frame is not in progress!");
+    assert(m_isFrameStarted && "Can't call beginSwapChainRenderPass if frame is not in progress!");
     assert(
         commandBuffer == getCurrentCommandBuffer() &&
         "Can't begin render pass on command buffer from a different frame");
@@ -203,8 +180,7 @@ void VgeRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = m_vgeSwapChain->getRenderPass();
-    renderPassInfo.framebuffer =
-        m_vgeSwapChain->getFrameBuffer(m_currentImageIndex);
+    renderPassInfo.framebuffer = m_vgeSwapChain->getFrameBuffer(m_currentImageIndex);
 
     renderPassInfo.renderArea.offset = { 0, 0 };
     renderPassInfo.renderArea.extent = m_vgeSwapChain->getSwapChainExtent();
@@ -216,18 +192,13 @@ void VgeRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
 
     renderPassInfo.pClearValues = clearValues.data();
 
-    vkCmdBeginRenderPass(
-        commandBuffer,
-        &renderPassInfo,
-        VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width =
-        static_cast<float>(m_vgeSwapChain->getSwapChainExtent().width);
-    viewport.height =
-        static_cast<float>(m_vgeSwapChain->getSwapChainExtent().height);
+    viewport.width = static_cast<float>(m_vgeSwapChain->getSwapChainExtent().width);
+    viewport.height = static_cast<float>(m_vgeSwapChain->getSwapChainExtent().height);
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     VkRect2D scissor{
@@ -245,9 +216,7 @@ void VgeRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
  */
 void VgeRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer)
 {
-    assert(
-        m_isFrameStarted &&
-        "Can't call endSwapChainRenderPass if frame is not in progress!");
+    assert(m_isFrameStarted && "Can't call endSwapChainRenderPass if frame is not in progress!");
     assert(
         commandBuffer == getCurrentCommandBuffer() &&
         "Can't end render pass on command buffer from a different frame");
@@ -291,9 +260,7 @@ bool VgeRenderer::isFrameInProgress() const
  */
 VkCommandBuffer VgeRenderer::getCurrentCommandBuffer() const
 {
-    assert(
-        m_isFrameStarted &&
-        "Cannot get command buffer when frame not in progress");
+    assert(m_isFrameStarted && "Cannot get command buffer when frame not in progress");
     return m_commandBuffers[m_currentFrameIndex];
 }
 
@@ -304,9 +271,7 @@ VkCommandBuffer VgeRenderer::getCurrentCommandBuffer() const
  */
 uint32_t VgeRenderer::getFrameIndex() const
 {
-    assert(
-        m_isFrameStarted &&
-        "Cannot get frame index when frame not in progress");
+    assert(m_isFrameStarted && "Cannot get frame index when frame not in progress");
     return m_currentFrameIndex;
 }
 

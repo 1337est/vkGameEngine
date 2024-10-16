@@ -14,11 +14,9 @@
 // std
 #include <memory>
 
-namespace vge
-{
+namespace vge {
 
-class VgeApp
-{
+class VgeApp {
 public:
     static constexpr int WIDTH = 800;
     static constexpr int HEIGHT = 600;
@@ -35,7 +33,7 @@ private:
     void loadGameObjects();
 
     VgeWindow m_vgeWindow{ WIDTH, HEIGHT, "Hello Vulkan!" }; //  window
-    VgeDevice m_vgeDevice{ m_vgeWindow }; // use device for window
+    VgeDevice m_vgeDevice{ m_vgeWindow };                    // use device for window
     VgeRenderer m_vgeRenderer{ m_vgeWindow, m_vgeDevice };
 
     // note: order of declarations matters

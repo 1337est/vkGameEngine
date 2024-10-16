@@ -6,8 +6,7 @@
 // std
 #include <vector>
 
-namespace vge
-{
+namespace vge {
 
 struct SwapChainSupportDetails
 {
@@ -26,8 +25,7 @@ struct QueueFamilyIndices
     bool isComplete();
 };
 
-class VgeDevice
-{
+class VgeDevice {
 public:
 #ifdef NDEBUG
     const bool m_enableValidationLayers = false;
@@ -51,9 +49,7 @@ public:
     VkQueue getPresentQueue();
     SwapChainSupportDetails getSwapChainSupport();
 
-    uint32_t findMemoryType(
-        uint32_t typeFilter,
-        VkMemoryPropertyFlags properties);
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
     QueueFamilyIndices findPhysicalQueueFamilies();
 
@@ -100,8 +96,7 @@ private:
     std::vector<const char*> getRequiredExtensions();
     bool checkValidationLayerSupport();
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-    void populateDebugMessengerCreateInfo(
-        VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     void hasGflwRequiredInstanceExtensions();
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
@@ -117,12 +112,8 @@ private:
     VkQueue m_graphicsQueue_;
     VkQueue m_presentQueue_;
 
-    const std::vector<const char*> m_validationLayers = {
-        "VK_LAYER_KHRONOS_validation"
-    };
-    const std::vector<const char*> m_deviceExtensions = {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME
-    };
+    const std::vector<const char*> m_validationLayers = { "VK_LAYER_KHRONOS_validation" };
+    const std::vector<const char*> m_deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 };
 
 } // namespace vge

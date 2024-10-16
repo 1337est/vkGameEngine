@@ -3,10 +3,8 @@
 // headers
 #include "vge_game_object.hpp"
 
-namespace vge
-{
-class VgeKeyboardMovementController
-{
+namespace vge {
+class VgeKeyboardMovementController {
 public:
     struct KeyMappings
     {

@@ -16,14 +16,12 @@
 #include <memory>
 #include <vector>
 
-namespace vge
-{
+namespace vge {
 
 template <typename T, typename... Rest>
 void hashCombine(std::size_t& seed, const T& v, const Rest&... rest);
 
-class VgeModel
-{
+class VgeModel {
 public:
     struct Vertex
     {
@@ -32,10 +30,8 @@ public:
         glm::vec3 normal{};
         glm::vec2 uv{}; // shorthand for 2d texture coordinate
 
-        static std::vector<VkVertexInputBindingDescription>
-        getBindingDescriptions();
-        static std::vector<VkVertexInputAttributeDescription>
-        getAttributeDescriptions();
+        static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
+        static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 
         bool operator==(const Vertex& other) const;
     };

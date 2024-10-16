@@ -14,11 +14,9 @@
 #include <memory>
 #include <vector>
 
-namespace vge
-{
+namespace vge {
 
-class VgeRenderer
-{
+class VgeRenderer {
 public:
     VgeRenderer(VgeWindow& window, VgeDevice& device);
     ~VgeRenderer();

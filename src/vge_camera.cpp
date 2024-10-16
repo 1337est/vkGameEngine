@@ -5,8 +5,7 @@
 #include <cassert>
 #include <limits>
 
-namespace vge
-{
+namespace vge {
 
 /* Sets the Vulkan Canonical View Volume using an Orthographic Projection Matrix
  *
@@ -45,11 +44,7 @@ void VgeCamera::setOrthographicProjectionMatrix(
  * The perspective projection defines a matrix based on the vertical field of
  * view, aspect ratio of the window, and clipping planes.
  */
-void VgeCamera::setPerspectiveProjectionMatrix(
-    float fovy,
-    float aspect,
-    float near,
-    float far)
+void VgeCamera::setPerspectiveProjectionMatrix(float fovy, float aspect, float near, float far)
 {
     assert(glm::abs(aspect - std::numeric_limits<float>::epsilon()) > 0.0f);
     const float tanHalfFovy = static_cast<float>(tan(fovy / 2.f));
@@ -67,14 +62,11 @@ void VgeCamera::setPerspectiveProjectionMatrix(
  * direction, and up vector to form an Orthonormal Basis with u, v, and w
  * vectors.
  */
-void VgeCamera::setViewDirectionMatrix(
-    glm::vec3 position,
-    glm::vec3 direction,
-    glm::vec3 up)
+void VgeCamera::setViewDirectionMatrix(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
 {
     const glm::vec3 w{ glm::normalize(direction) };         // along z-axis
     const glm::vec3 u{ glm::normalize(glm::cross(w, up)) }; // along x-axis
-    const glm::vec3 v{ glm::cross(w, u) }; // cross wu is normalized to y-axis
+    const glm::vec3 v{ glm::cross(w, u) };                  // cross wu is normalized to y-axis
 
     m_viewMatrix = glm::mat4{ 1.f }; // set diagnal to identity matrix
     m_viewMatrix[0][0] = u.x;
@@ -112,10 +104,7 @@ void VgeCamera::setViewDirectionMatrix(
  * a given position, using the provided up vector for orientation.
  */
 // TODO: Add assertion making sure the direction is non-zero
-void VgeCamera::setViewTargetDirectionMatrix(
-    glm::vec3 position,
-    glm::vec3 target,
-    glm::vec3 up)
+void VgeCamera::setViewTargetDirectionMatrix(glm::vec3 position, glm::vec3 target, glm::vec3 up)
 {
     setViewDirectionMatrix(position, target - position, up);
 }

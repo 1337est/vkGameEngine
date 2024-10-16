@@ -10,11 +10,9 @@
 #include <memory>
 #include <vector>
 
-namespace vge
-{
+namespace vge {
 
-class VgeSwapChain
-{
+class VgeSwapChain {
 public:
     static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -40,9 +38,7 @@ public:
     VkFormat findDepthFormat();
     VkResult acquireNextImage(uint32_t* imageIndex);
 
-    VkResult submitCommandBuffers(
-        const VkCommandBuffer* buffers,
-        uint32_t* imageIndex);
+    VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
     bool compareSwapFormats(const VgeSwapChain& swapChain) const;
 

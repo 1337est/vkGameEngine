@@ -7,8 +7,7 @@
 // std
 #include <stdexcept>
 
-namespace vge
-{
+namespace vge {
 
 /* Constructs a `VgeWindow` object and initializes the GLFW window
  *
@@ -48,8 +47,7 @@ void VgeWindow::initWindow()
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-    m_window =
-        glfwCreateWindow(m_width, m_height, m_name.c_str(), nullptr, nullptr);
+    m_window = glfwCreateWindow(m_width, m_height, m_name.c_str(), nullptr, nullptr);
 
     // glfw window setter must be called before it's associated getter
     glfwSetWindowUserPointer(m_window, this);
@@ -70,13 +68,9 @@ bool VgeWindow::wasWindowResized() const
  * Updates the `VgeWindow` instance's dimensions and marks the framebuffer as
  * resized when the window is resized.
  */
-void VgeWindow::frameBufferResizeCallback(
-    GLFWwindow* window,
-    int newWidth,
-    int newHeight)
+void VgeWindow::frameBufferResizeCallback(GLFWwindow* window, int newWidth, int newHeight)
 {
-    VgeWindow* vgeWindow =
-        reinterpret_cast<VgeWindow*>(glfwGetWindowUserPointer(window));
+    VgeWindow* vgeWindow = reinterpret_cast<VgeWindow*>(glfwGetWindowUserPointer(window));
     vgeWindow->m_frameBufferResized = true;
     vgeWindow->m_width = newWidth;
     vgeWindow->m_height = newHeight;
@@ -108,9 +102,7 @@ VkExtent2D VgeWindow::getExtent() const
 void VgeWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
 {
     // Create the surface in the window, enabling the display of rendered images
-    if (glfwCreateWindowSurface(instance, m_window, nullptr, surface) !=
-        VK_SUCCESS)
-    {
+    if (glfwCreateWindowSurface(instance, m_window, nullptr, surface) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create window surface");
     }
 }

@@ -7,8 +7,7 @@
 // libs
 #include <vulkan/vulkan.h>
 
-namespace vge
-{
+namespace vge {
 
 #define MAX_LIGHTS 10
 

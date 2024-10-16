@@ -5,8 +5,7 @@
 #include <cassert>
 #include <stdexcept>
 
-namespace vge
-{
+namespace vge {
 
 // *************** Descriptor Set Layout Builder *********************
 /* Constructs a Builder for creating a VgeDescriptorSetLayout.
@@ -15,8 +14,7 @@ namespace vge
  */
 VgeDescriptorSetLayout::Builder::Builder(VgeDevice& vgeDevice)
     : m_vgeDevice{ vgeDevice }
-{
-}
+{}
 
 /* Adds a binding to the Descriptor Set Layout Builder.
  *
@@ -45,8 +43,7 @@ VgeDescriptorSetLayout::Builder& VgeDescriptorSetLayout::Builder::addBinding(
  * This function creates a unique pointer to a VgeDescriptorSetLayout instance,
  * using the bindings previously added to the Builder.
  */
-std::unique_ptr<VgeDescriptorSetLayout> VgeDescriptorSetLayout::Builder::build()
-    const
+std::unique_ptr<VgeDescriptorSetLayout> VgeDescriptorSetLayout::Builder::build() const
 {
     return std::make_unique<VgeDescriptorSetLayout>(m_vgeDevice, m_bindings);
 }
@@ -64,17 +61,13 @@ VgeDescriptorSetLayout::VgeDescriptorSetLayout(
     , m_bindings{ bindings }
 {
     std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{};
-    for (std::pair<const unsigned int, VkDescriptorSetLayoutBinding> kv :
-         bindings)
-    {
+    for (std::pair<const unsigned int, VkDescriptorSetLayoutBinding> kv : bindings) {
         setLayoutBindings.push_back(kv.second);
     }
 
     VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
-    descriptorSetLayoutInfo.sType =
-        VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    descriptorSetLayoutInfo.bindingCount =
-        static_cast<uint32_t>(setLayoutBindings.size());
+    descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
     descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
 
     if (vkCreateDescriptorSetLayout(
@@ -93,10 +86,7 @@ VgeDescriptorSetLayout::VgeDescriptorSetLayout(
  */
 VgeDescriptorSetLayout::~VgeDescriptorSetLayout()
 {
-    vkDestroyDescriptorSetLayout(
-        m_vgeDevice.getDevice(),
-        m_descriptorSetLayout,
-        nullptr);
+    vkDestroyDescriptorSetLayout(m_vgeDevice.getDevice(), m_descriptorSetLayout, nullptr);
 }
 
 /* Retrieves the Vulkan descriptor set layout.
@@ -116,8 +106,7 @@ VkDescriptorSetLayout VgeDescriptorSetLayout::getDescriptorSetLayout() const
  */
 VgeDescriptorPool::Builder::Builder(VgeDevice& vgeDevice)
     : m_vgeDevice{ vgeDevice }
-{
-}
+{}
 
 /* Adds a pool size configuration to the Descriptor Pool Builder.
  *
@@ -149,8 +138,7 @@ VgeDescriptorPool::Builder& VgeDescriptorPool::Builder::setPoolFlags(
  * This function specifies the maximum number of descriptor sets that can be
  * allocated from the pool.
  */
-VgeDescriptorPool::Builder& VgeDescriptorPool::Builder::setMaxSets(
-    uint32_t count)
+VgeDescriptorPool::Builder& VgeDescriptorPool::Builder::setMaxSets(uint32_t count)
 {
     m_maxSets = count;
     return *this;
@@ -163,11 +151,7 @@ VgeDescriptorPool::Builder& VgeDescriptorPool::Builder::setMaxSets(
  */
 std::unique_ptr<VgeDescriptorPool> VgeDescriptorPool::Builder::build() const
 {
-    return std::make_unique<VgeDescriptorPool>(
-        m_vgeDevice,
-        m_maxSets,
-        m_poolFlags,
-        m_poolSizes);
+    return std::make_unique<VgeDescriptorPool>(m_vgeDevice, m_maxSets, m_poolFlags, m_poolSizes);
 }
 
 // *************** Descriptor Pool *********************
@@ -228,11 +212,7 @@ bool VgeDescriptorPool::allocateDescriptorSet(
     // Might want to create a "DescriptorPoolManager" class that handles this
     // case, and builds a new pool whenever an old pool fills up. But this is
     // beyond our current scope
-    if (vkAllocateDescriptorSets(
-            m_vgeDevice.getDevice(),
-            &allocInfo,
-            &descriptor) != VK_SUCCESS)
-    {
+    if (vkAllocateDescriptorSets(m_vgeDevice.getDevice(), &allocInfo, &descriptor) != VK_SUCCESS) {
         return false;
     }
     return true;
@@ -243,8 +223,7 @@ bool VgeDescriptorPool::allocateDescriptorSet(
  * This function releases the specified descriptor sets, making them available
  * for reuse in future allocations.
  */
-void VgeDescriptorPool::freeDescriptors(
-    std::vector<VkDescriptorSet>& descriptors) const
+void VgeDescriptorPool::freeDescriptors(std::vector<VkDescriptorSet>& descriptors) const
 {
     vkFreeDescriptorSets(
         m_vgeDevice.getDevice(),
@@ -269,13 +248,10 @@ void VgeDescriptorPool::resetPool()
  * This constructor initializes the writer with the specified descriptor set
  * layout and pool, preparing it to write descriptor information.
  */
-VgeDescriptorWriter::VgeDescriptorWriter(
-    VgeDescriptorSetLayout& setLayout,
-    VgeDescriptorPool& pool)
+VgeDescriptorWriter::VgeDescriptorWriter(VgeDescriptorSetLayout& setLayout, VgeDescriptorPool& pool)
     : m_setLayout{ setLayout }
     , m_pool{ pool }
-{
-}
+{}
 
 /* Writes buffer information to the specified binding in the descriptor set.
  *
@@ -287,11 +263,9 @@ VgeDescriptorWriter& VgeDescriptorWriter::writeBuffer(
     VkDescriptorBufferInfo* bufferInfo)
 {
     assert(
-        m_setLayout.m_bindings.count(binding) == 1 &&
-        "Layout does not contain specified binding");
+        m_setLayout.m_bindings.count(binding) == 1 && "Layout does not contain specified binding");
 
-    VkDescriptorSetLayoutBinding& bindingDescription =
-        m_setLayout.m_bindings[binding];
+    VkDescriptorSetLayoutBinding& bindingDescription = m_setLayout.m_bindings[binding];
 
     assert(
         bindingDescription.descriptorCount == 1 &&
@@ -318,11 +292,9 @@ VgeDescriptorWriter& VgeDescriptorWriter::writeImage(
     VkDescriptorImageInfo* imageInfo)
 {
     assert(
-        m_setLayout.m_bindings.count(binding) == 1 &&
-        "Layout does not contain specified binding");
+        m_setLayout.m_bindings.count(binding) == 1 && "Layout does not contain specified binding");
 
-    VkDescriptorSetLayoutBinding& bindingDescription =
-        m_setLayout.m_bindings[binding];
+    VkDescriptorSetLayoutBinding& bindingDescription = m_setLayout.m_bindings[binding];
 
     assert(
         bindingDescription.descriptorCount == 1 &&
@@ -347,10 +319,8 @@ VgeDescriptorWriter& VgeDescriptorWriter::writeImage(
  */
 bool VgeDescriptorWriter::build(VkDescriptorSet& set)
 {
-    bool success =
-        m_pool.allocateDescriptorSet(m_setLayout.getDescriptorSetLayout(), set);
-    if (!success)
-    {
+    bool success = m_pool.allocateDescriptorSet(m_setLayout.getDescriptorSetLayout(), set);
+    if (!success) {
         return false;
     }
     overwrite(set);
@@ -364,8 +334,7 @@ bool VgeDescriptorWriter::build(VkDescriptorSet& set)
  */
 void VgeDescriptorWriter::overwrite(VkDescriptorSet& set)
 {
-    for (VkWriteDescriptorSet& write : m_writes)
-    {
+    for (VkWriteDescriptorSet& write : m_writes) {
         write.dstSet = set;
     }
     vkUpdateDescriptorSets(

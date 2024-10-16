@@ -11,8 +11,7 @@
 #include <cassert>
 #include <cstring>
 
-namespace vge
-{
+namespace vge {
 
 /* Returns the minimum instance size required to be compatible with devices
  * minOffsetAlignment
@@ -20,14 +19,10 @@ namespace vge
  * This function calculates and returns the minimum size of an instance based on
  * the required alignment and the size of the instance.
  */
-VkDeviceSize VgeBuffer::getAlignment(
-    VkDeviceSize instanceSize,
-    VkDeviceSize minOffsetAlignment)
+VkDeviceSize VgeBuffer::getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment)
 {
-    if (minOffsetAlignment > 0)
-    {
-        return (instanceSize + minOffsetAlignment - 1) &
-               ~(minOffsetAlignment - 1);
+    if (minOffsetAlignment > 0) {
+        return (instanceSize + minOffsetAlignment - 1) & ~(minOffsetAlignment - 1);
     }
     return instanceSize;
 }
@@ -55,12 +50,7 @@ VgeBuffer::VgeBuffer(
 {
     m_alignmentSize = getAlignment(instanceSize, minOffsetAlignment);
     m_bufferSize = m_alignmentSize * instanceCount;
-    device.createBuffer(
-        m_bufferSize,
-        usageFlags,
-        memoryPropertyFlags,
-        m_buffer,
-        m_memory);
+    device.createBuffer(m_bufferSize, usageFlags, memoryPropertyFlags, m_buffer, m_memory);
 }
 
 /* Cleans up resources associated with the Vulkan buffer.
@@ -84,13 +74,7 @@ VgeBuffer::~VgeBuffer()
 VkResult VgeBuffer::map(VkDeviceSize size, VkDeviceSize offset)
 {
     assert(m_buffer && m_memory && "Called map on buffer before create");
-    return vkMapMemory(
-        m_vgeDevice.getDevice(),
-        m_memory,
-        offset,
-        size,
-        0,
-        &m_mapped);
+    return vkMapMemory(m_vgeDevice.getDevice(), m_memory, offset, size, 0, &m_mapped);
 }
 
 /* Unmaps a mapped memory range.
@@ -100,8 +84,7 @@ VkResult VgeBuffer::map(VkDeviceSize size, VkDeviceSize offset)
  */
 void VgeBuffer::unmap()
 {
-    if (m_mapped)
-    {
+    if (m_mapped) {
         vkUnmapMemory(m_vgeDevice.getDevice(), m_memory);
         m_mapped = nullptr;
     }
@@ -113,19 +96,14 @@ void VgeBuffer::unmap()
  * This function copies data from the specified pointer to the mapped buffer,
  * allowing for updating the buffer contents.
  */
-void VgeBuffer::writeToBuffer(
-    void* data,
-    VkDeviceSize size,
-    VkDeviceSize offset)
+void VgeBuffer::writeToBuffer(void* data, VkDeviceSize size, VkDeviceSize offset)
 {
     assert(m_mapped && "Cannot copy to unmapped buffer");
 
-    if (size == VK_WHOLE_SIZE)
-    {
+    if (size == VK_WHOLE_SIZE) {
         memcpy(m_mapped, data, m_bufferSize);
     }
-    else
-    {
+    else {
         char* memOffset = (char*)m_mapped;
         memOffset += offset;
         memcpy(memOffset, data, size);
@@ -160,10 +138,7 @@ VkResult VgeBuffer::invalidate(VkDeviceSize size, VkDeviceSize offset)
     mappedRange.memory = m_memory;
     mappedRange.offset = offset;
     mappedRange.size = size;
-    return vkInvalidateMappedMemoryRanges(
-        m_vgeDevice.getDevice(),
-        1,
-        &mappedRange);
+    return vkInvalidateMappedMemoryRanges(m_vgeDevice.getDevice(), 1, &mappedRange);
 }
 
 /* Creates a buffer info descriptor.
@@ -171,9 +146,7 @@ VkResult VgeBuffer::invalidate(VkDeviceSize size, VkDeviceSize offset)
  * This function returns a VkDescriptorBufferInfo structure for the buffer,
  * specifying the size and offset for descriptor sets.
  */
-VkDescriptorBufferInfo VgeBuffer::descriptorInfo(
-    VkDeviceSize size,
-    VkDeviceSize offset)
+VkDescriptorBufferInfo VgeBuffer::descriptorInfo(VkDeviceSize size, VkDeviceSize offset)
 {
     return VkDescriptorBufferInfo{
         m_buffer,

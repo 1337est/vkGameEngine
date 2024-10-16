@@ -3,11 +3,9 @@
 // headers
 #include "vge_device.hpp"
 
-namespace vge
-{
+namespace vge {
 
-class VgeBuffer
-{
+class VgeBuffer {
 public:
     VgeBuffer(
         VgeDevice& device,
@@ -24,10 +22,7 @@ public:
     VkResult map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
     void unmap();
 
-    void writeToBuffer(
-        void* data,
-        VkDeviceSize size = VK_WHOLE_SIZE,
-        VkDeviceSize offset = 0);
+    void writeToBuffer(void* data, VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
     VkResult flush(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
@@ -35,9 +30,7 @@ public:
         VkDeviceSize size = VK_WHOLE_SIZE,
         VkDeviceSize offset = 0);
 
-    VkResult invalidate(
-        VkDeviceSize size = VK_WHOLE_SIZE,
-        VkDeviceSize offset = 0);
+    VkResult invalidate(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
     void writeToIndex(void* data, int index);
     VkResult flushIndex(int index);
@@ -54,9 +47,7 @@ public:
     VkDeviceSize getBufferSize() const;
 
 private:
-    static VkDeviceSize getAlignment(
-        VkDeviceSize instanceSize,
-        VkDeviceSize minOffsetAlignment);
+    static VkDeviceSize getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment);
 
     VgeDevice& m_vgeDevice;
     void* m_mapped = nullptr;

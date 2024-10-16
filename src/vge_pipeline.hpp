@@ -10,8 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace vge
-{
+namespace vge {
 
 struct PipelineConfigInfo
 {
@@ -35,8 +34,7 @@ struct PipelineConfigInfo
     uint32_t subpass = 0;
 };
 
-class VgePipeline
-{
+class VgePipeline {
 public:
     VgePipeline(
         VgeDevice& device,
@@ -60,9 +58,7 @@ private:
         const std::string& fragFilePath,
         const PipelineConfigInfo& configInfo);
 
-    void createShaderModule(
-        const std::vector<char>& code,
-        VkShaderModule* shaderModule);
+    void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
     VgeDevice& m_vgeDevice;
     VkPipeline m_graphicsPipeline;

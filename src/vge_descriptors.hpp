@@ -8,14 +8,11 @@
 #include <unordered_map>
 #include <vector>
 
-namespace vge
-{
+namespace vge {
 
-class VgeDescriptorSetLayout
-{
+class VgeDescriptorSetLayout {
 public:
-    class Builder
-    {
+    class Builder {
     public:
         Builder(VgeDevice& vgeDevice);
 
@@ -48,11 +45,9 @@ private:
     friend class VgeDescriptorWriter;
 };
 
-class VgeDescriptorPool
-{
+class VgeDescriptorPool {
 public:
-    class Builder
-    {
+    class Builder {
     public:
         Builder(VgeDevice& vgeDevice);
 
@@ -92,19 +87,12 @@ private:
     friend class VgeDescriptorWriter;
 };
 
-class VgeDescriptorWriter
-{
+class VgeDescriptorWriter {
 public:
-    VgeDescriptorWriter(
-        VgeDescriptorSetLayout& setLayout,
-        VgeDescriptorPool& pool);
+    VgeDescriptorWriter(VgeDescriptorSetLayout& setLayout, VgeDescriptorPool& pool);
 
-    VgeDescriptorWriter& writeBuffer(
-        uint32_t binding,
-        VkDescriptorBufferInfo* bufferInfo);
-    VgeDescriptorWriter& writeImage(
-        uint32_t binding,
-        VkDescriptorImageInfo* imageInfo);
+    VgeDescriptorWriter& writeBuffer(uint32_t binding, VkDescriptorBufferInfo* bufferInfo);
+    VgeDescriptorWriter& writeImage(uint32_t binding, VkDescriptorImageInfo* imageInfo);
 
     bool build(VkDescriptorSet& set);
     void overwrite(VkDescriptorSet& set);

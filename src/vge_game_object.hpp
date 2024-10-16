@@ -10,8 +10,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace vge
-{
+namespace vge {
 struct TransformComponent
 {
     glm::vec3 translation{};          // position offset
@@ -30,8 +29,7 @@ struct PointLightComponent
     float lightIntensity = 1.0f;
 };
 
-class VgeGameObject
-{
+class VgeGameObject {
 public:
     using id_t = unsigned int;
     using Map = std::unordered_map<id_t, VgeGameObject>;

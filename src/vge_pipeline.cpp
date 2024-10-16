@@ -15,8 +15,7 @@
 #define ENGINE_DIR "../"
 #endif
 
-namespace vge
-{
+namespace vge {
 /* Constructs a VgePipeline object.
  *
  * This constructor initializes the VgePipeline by creating the graphics
@@ -63,8 +62,7 @@ std::vector<char> VgePipeline::readFile(const std::string& filepath)
     std::string enginePath = ENGINE_DIR + filepath;
     std::ifstream file{ enginePath, std::ios::ate | std::ios::binary };
 
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         throw std::runtime_error("failed to open file: " + enginePath);
     }
 
@@ -132,12 +130,11 @@ void VgePipeline::createGraphicsPipeline(
     // Vertex data
     const std::vector<VkVertexInputBindingDescription>& bindingDescriptions =
         configInfo.bindingDescriptions;
-    const std::vector<VkVertexInputAttributeDescription>&
-        attributeDescriptions = configInfo.attributeDescriptions;
+    const std::vector<VkVertexInputAttributeDescription>& attributeDescriptions =
+        configInfo.attributeDescriptions;
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-    vertexInputInfo.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     vertexInputInfo.vertexAttributeDescriptionCount =
         static_cast<uint32_t>(attributeDescriptions.size());
     vertexInputInfo.vertexBindingDescriptionCount =
@@ -185,21 +182,15 @@ void VgePipeline::createGraphicsPipeline(
  * vkCreateShaderModule to create a shader module from the provided bytecode. If
  * creation fails, a runtime error is thrown.
  */
-void VgePipeline::createShaderModule(
-    const std::vector<char>& code,
-    VkShaderModule* shaderModule)
+void VgePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
 {
     VkShaderModuleCreateInfo createInfo{};
-    createInfo.sType =
-        VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO; // structType
-    createInfo.codeSize = code.size();               // size of our vector array
+    createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO; // structType
+    createInfo.codeSize = code.size();                              // size of our vector array
     createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-    if (vkCreateShaderModule(
-            m_vgeDevice.getDevice(),
-            &createInfo,
-            nullptr,
-            shaderModule) != VK_SUCCESS)
+    if (vkCreateShaderModule(m_vgeDevice.getDevice(), &createInfo, nullptr, shaderModule) !=
+        VK_SUCCESS)
     {
         throw std::runtime_error("failed to create shader module");
     }
@@ -212,10 +203,7 @@ void VgePipeline::createShaderModule(
  */
 void VgePipeline::bind(VkCommandBuffer commandBuffer)
 {
-    vkCmdBindPipeline(
-        commandBuffer,
-        VK_PIPELINE_BIND_POINT_GRAPHICS,
-        m_graphicsPipeline);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
 }
 
 /* Configures the default pipeline settings for the specified PipelineConfigInfo
@@ -234,16 +222,14 @@ void VgePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
     configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
     // combine viewport and scissor
-    configInfo.viewportInfo.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     configInfo.viewportInfo.viewportCount = 1;
     configInfo.viewportInfo.pViewports = nullptr;
     configInfo.viewportInfo.scissorCount = 1;
     configInfo.viewportInfo.pScissors = nullptr;
 
     // Creates pixels for our topology
-    configInfo.rasterizationInfo.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
     configInfo.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
     configInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
@@ -258,8 +244,7 @@ void VgePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
     // How rasterizer handles the edges of geometry. Basically creates
     // sub-pixels for straighter/smoother lines. These visual artefacts are
     // known as aliasing
-    configInfo.multisampleInfo.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    configInfo.multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     configInfo.multisampleInfo.sampleShadingEnable = VK_FALSE;
     configInfo.multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
     configInfo.multisampleInfo.minSampleShading = 1.0f;          // Optional
@@ -269,23 +254,18 @@ void VgePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
 
     // How we combine colors in our framebuffer
     configInfo.colorBlendAttachment.colorWriteMask =
-        VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
-        VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+        VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT |
+        VK_COLOR_COMPONENT_A_BIT;
     configInfo.colorBlendAttachment.blendEnable = VK_FALSE;
-    configInfo.colorBlendAttachment.srcColorBlendFactor =
-        VK_BLEND_FACTOR_ONE; // Optional
-    configInfo.colorBlendAttachment.dstColorBlendFactor =
-        VK_BLEND_FACTOR_ZERO;                                       // Optional
-    configInfo.colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD; // Optional
-    configInfo.colorBlendAttachment.srcAlphaBlendFactor =
-        VK_BLEND_FACTOR_ONE; // Optional
-    configInfo.colorBlendAttachment.dstAlphaBlendFactor =
-        VK_BLEND_FACTOR_ZERO;                                       // Optional
-    configInfo.colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD; // Optional
+    configInfo.colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;  // Optional
+    configInfo.colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
+    configInfo.colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;             // Optional
+    configInfo.colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;  // Optional
+    configInfo.colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
+    configInfo.colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;             // Optional
 
     // Overall color blending state for the graphics pipeline
-    configInfo.colorBlendInfo.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    configInfo.colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     configInfo.colorBlendInfo.logicOpEnable = VK_FALSE;
     configInfo.colorBlendInfo.logicOp = VK_LOGIC_OP_COPY; // Optional
     configInfo.colorBlendInfo.attachmentCount = 1;
@@ -296,8 +276,7 @@ void VgePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
     configInfo.colorBlendInfo.blendConstants[3] = 0.0f; // Optional
 
     // Depth per fragments being rendered (closer overwrites farther)
-    configInfo.depthStencilInfo.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    configInfo.depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
     configInfo.depthStencilInfo.depthTestEnable = VK_TRUE;
     configInfo.depthStencilInfo.depthWriteEnable = VK_TRUE;
     configInfo.depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS;
@@ -308,19 +287,15 @@ void VgePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
     configInfo.depthStencilInfo.front = {}; // Optional
     configInfo.depthStencilInfo.back = {};  // Optional
 
-    configInfo.dynamicStateEnables = { VK_DYNAMIC_STATE_VIEWPORT,
-                                       VK_DYNAMIC_STATE_SCISSOR };
-    configInfo.dynamicStateInfo.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    configInfo.dynamicStateInfo.pDynamicStates =
-        configInfo.dynamicStateEnables.data();
+    configInfo.dynamicStateEnables = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+    configInfo.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
     configInfo.dynamicStateInfo.dynamicStateCount =
         static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
     configInfo.dynamicStateInfo.flags = 0;
 
     configInfo.bindingDescriptions = VgeModel::Vertex::getBindingDescriptions();
-    configInfo.attributeDescriptions =
-        VgeModel::Vertex::getAttributeDescriptions();
+    configInfo.attributeDescriptions = VgeModel::Vertex::getAttributeDescriptions();
 }
 
 } // namespace vge

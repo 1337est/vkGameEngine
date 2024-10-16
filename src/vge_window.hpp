@@ -8,11 +8,9 @@
 // std
 #include <string>
 
-namespace vge
-{
+namespace vge {
 
-class VgeWindow
-{
+class VgeWindow {
 public:
     VgeWindow(int width, int height, std::string name);
     ~VgeWindow();
@@ -35,10 +33,7 @@ public:
     void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 private:
-    static void frameBufferResizeCallback(
-        GLFWwindow* window,
-        int newWidth,
-        int newHeight);
+    static void frameBufferResizeCallback(GLFWwindow* window, int newWidth, int newHeight);
     void initWindow();
 
     GLFWwindow* m_window;
