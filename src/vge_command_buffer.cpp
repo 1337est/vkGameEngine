@@ -21,7 +21,9 @@ void VgeCommandBuffer::createCommandBuffer()
         .commandBufferCount = (uint32_t)m_commandBuffers.size(),
     };
 
-    if (vkAllocateCommandBuffers(m_lDevice, &commandBufferAllocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(m_lDevice, &commandBufferAllocInfo, m_commandBuffers.data()) !=
+        VK_SUCCESS)
+    {
         throw std::runtime_error("failed to allocate command buffers!");
     }
 }

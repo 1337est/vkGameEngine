@@ -3,7 +3,10 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
-VgeImageView::VgeImageView(VkDevice lDevice, std::vector<VkImage> swapchainImages, VkFormat swapchainImageFormat)
+VgeImageView::VgeImageView(
+    VkDevice lDevice,
+    std::vector<VkImage> swapchainImages,
+    VkFormat swapchainImageFormat)
     : m_lDevice{ lDevice }
     , m_swapchainImages{ swapchainImages }
     , m_swapchainImageFormat{ swapchainImageFormat }
@@ -44,7 +47,9 @@ void VgeImageView::createImageViews()
             },
         };
 
-        if (vkCreateImageView(m_lDevice, &imageViewCI, nullptr, &m_swapchainImageViews[i]) != VK_SUCCESS) {
+        if (vkCreateImageView(m_lDevice, &imageViewCI, nullptr, &m_swapchainImageViews[i]) !=
+            VK_SUCCESS)
+        {
             throw std::runtime_error("failed to create image view!");
         }
     }

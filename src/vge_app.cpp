@@ -13,8 +13,9 @@ VgeApp::VgeApp()
                    m_vgeSurface.getSurface(),
                    m_vgeInstance.areVLayersEnabled(),
                    m_vgeInstance.getVLayers() }
-    , m_vgeSwapchain{ m_vgeDevice.getPDevice(),       m_vgeSurface.getSurface(), m_vgeDevice.getGraphicsFamily(),
-                      m_vgeDevice.getPresentFamily(), m_vgeDevice.getLDevice(),  m_vgeWindow.getWindow() }
+    , m_vgeSwapchain{ m_vgeDevice.getPDevice(),        m_vgeSurface.getSurface(),
+                      m_vgeDevice.getGraphicsFamily(), m_vgeDevice.getPresentFamily(),
+                      m_vgeDevice.getLDevice(),        m_vgeWindow.getWindow() }
     , m_vgeImageView{ m_vgeDevice.getLDevice(),
                       m_vgeSwapchain.getSwapchainImages(),
                       m_vgeSwapchain.getSwapchainImageFormat() }
@@ -52,18 +53,20 @@ void VgeApp::mainLoop()
 
 void VgeApp::drawFrame()
 {
-    // Wait for the fence to ensure that the previous frame has finished rendering.
-    // This ensures that the GPU has completed processing of the last submitted frame
-    // before proceeding with the next one.
+    // Wait for the fence to ensure that the previous frame has finished
+    // rendering. This ensures that the GPU has completed processing of the last
+    // submitted frame before proceeding with the next one.
     VkDevice lDevice = m_vgeDevice.getLDevice();
     std::vector<VkFence> inFlightFences = m_vgeSyncObjects.getInFlightFence();
     vkWaitForFences(lDevice, 1, &inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
     vkResetFences(lDevice, 1, &inFlightFences[m_currentFrame]);
 
-    // Acquire the next image from the swapchain, waiting until it's available using the imageAvailableSemaphore.
-    // The acquired image index will be used for rendering.
+    // Acquire the next image from the swapchain, waiting until it's available
+    // using the imageAvailableSemaphore. The acquired image index will be used
+    // for rendering.
     VkSwapchainKHR swapchain = m_vgeSwapchain.getSwapchain();
-    std::vector<VkSemaphore> imageAvailableSemaphores = m_vgeSyncObjects.getImageAvailableSemaphore();
+    std::vector<VkSemaphore> imageAvailableSemaphores =
+        m_vgeSyncObjects.getImageAvailableSemaphore();
     uint32_t imageIndex;
     vkAcquireNextImageKHR(
         lDevice,
@@ -73,18 +76,23 @@ void VgeApp::drawFrame()
         VK_NULL_HANDLE,
         &imageIndex);
 
-    // Reset the command buffer so it can be reused for recording commands for the current frame.
-    // This avoids creating new command buffers each frame, improving performance.
+    // Reset the command buffer so it can be reused for recording commands for
+    // the current frame. This avoids creating new command buffers each frame,
+    // improving performance.
     std::vector<VkCommandBuffer> commandBuffers = m_vgeCommandBuffer.getCommandBuffers();
-    vkResetCommandBuffer(commandBuffers[m_currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+    vkResetCommandBuffer(
+        commandBuffers[m_currentFrame],
+        /*VkCommandBufferResetFlagBits*/ 0);
     recordCommandBuffer(commandBuffers[m_currentFrame], imageIndex);
 
     // Submit the recorded command buffer to the graphics queue.
-    // The queue will wait for the image to become available (via imageAvailableSemaphore),
-    // execute the commands in the command buffer, and signal renderFinishedSemaphore upon completion.
+    // The queue will wait for the image to become available (via
+    // imageAvailableSemaphore), execute the commands in the command buffer, and
+    // signal renderFinishedSemaphore upon completion.
     VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[m_currentFrame] };
     VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-    std::vector<VkSemaphore> renderFinishedSemaphores = m_vgeSyncObjects.getRenderFinishedSemaphore();
+    std::vector<VkSemaphore> renderFinishedSemaphores =
+        m_vgeSyncObjects.getRenderFinishedSemaphore();
     VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[m_currentFrame] };
     VkSubmitInfo submitInfo{
         .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -98,15 +106,18 @@ void VgeApp::drawFrame()
         .pSignalSemaphores = signalSemaphores,
     };
 
-    // Submit the command buffer to the graphics queue, using the inFlightFence to track when the work is done.
-    // This fence will be used to synchronize with the CPU and ensure the command buffer is not reused prematurely.
+    // Submit the command buffer to the graphics queue, using the inFlightFence
+    // to track when the work is done. This fence will be used to synchronize
+    // with the CPU and ensure the command buffer is not reused prematurely.
     VkQueue graphicsQueue = m_vgeDevice.getGraphicsQueue();
-    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[m_currentFrame]) != VK_SUCCESS) {
+    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[m_currentFrame]) != VK_SUCCESS)
+    {
         throw std::runtime_error("failed to submit draw command buffer!");
     }
 
-    // Present the rendered image to the swapchain. The present operation will wait for the renderFinishedSemaphore
-    // to ensure rendering is complete before displaying the image.
+    // Present the rendered image to the swapchain. The present operation will
+    // wait for the renderFinishedSemaphore to ensure rendering is complete
+    // before displaying the image.
     VkSwapchainKHR swapChains[] = { swapchain };
     VkPresentInfoKHR presentInfo{
         .sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
@@ -119,7 +130,8 @@ void VgeApp::drawFrame()
         .pResults = nullptr,
     };
 
-    // Submit the present request to the presentation queue, displaying the rendered image to the screen.
+    // Submit the present request to the presentation queue, displaying the
+    // rendered image to the screen.
     VkQueue presentQueue = m_vgeDevice.getPresentQueue();
     vkQueuePresentKHR(presentQueue, &presentInfo);
 
@@ -129,8 +141,9 @@ void VgeApp::drawFrame()
 
 void VgeApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
 {
-    // Begin recording the command buffer, preparing it to receive draw commands.
-    // This structure defines the parameters for command buffer recording.
+    // Begin recording the command buffer, preparing it to receive draw
+    // commands. This structure defines the parameters for command buffer
+    // recording.
     VkCommandBufferBeginInfo commandBufferBeginInfo{
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
         .pNext = nullptr,
@@ -141,9 +154,10 @@ void VgeApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
         throw std::runtime_error("failed to begin recording command buffer!");
     }
 
-    // Begin a new render pass. This sets up the framebuffer, render area, and clear color.
-    // The render pass defines the structure of the rendering process and how different operations like color blending
-    // or depth testing happen.
+    // Begin a new render pass. This sets up the framebuffer, render area, and
+    // clear color. The render pass defines the structure of the rendering
+    // process and how different operations like color blending or depth testing
+    // happen.
     VkRenderPass renderPass = m_vgeRenderPass.getRenderPass();
     std::vector<VkFramebuffer> framebuffers = m_vgeFramebuffer.getFramebuffers();
     VkExtent2D swapchainExtent = m_vgeSwapchain.getSwapchainExtent();
@@ -162,13 +176,14 @@ void VgeApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
     };
     vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    // Bind the graphics pipeline, which contains the shader programs and fixed-function state for rendering.
-    // This pipeline will be used for the subsequent draw commands.
+    // Bind the graphics pipeline, which contains the shader programs and
+    // fixed-function state for rendering. This pipeline will be used for the
+    // subsequent draw commands.
     VkPipeline graphicsPipeline = m_vgePipeline.getGraphicsPipeline();
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-    // Define the viewport for rendering, specifying the size of the area on the screen to which the output will be
-    // mapped.
+    // Define the viewport for rendering, specifying the size of the area on the
+    // screen to which the output will be mapped.
     VkViewport viewport{
         .x = 0.0f,
         .y = 0.0f,
@@ -179,23 +194,27 @@ void VgeApp::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
     };
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-    // Define the scissor rectangle, which restricts rendering to a specific part of the framebuffer.
-    // Here, it matches the full size of the swapchain extent.
+    // Define the scissor rectangle, which restricts rendering to a specific
+    // part of the framebuffer. Here, it matches the full size of the swapchain
+    // extent.
     VkRect2D scissor{
         .offset = { 0, 0 },
         .extent = swapchainExtent,
     };
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    // Issue a draw command, instructing Vulkan to render 3 vertices. This typically draws a single triangle.
-    // This is the core of the rendering process.
+    // Issue a draw command, instructing Vulkan to render 3 vertices. This
+    // typically draws a single triangle. This is the core of the rendering
+    // process.
     vkCmdDraw(commandBuffer, 3, 1, 0, 0);
 
-    // End the render pass, signaling that rendering commands for this pass are complete.
+    // End the render pass, signaling that rendering commands for this pass are
+    // complete.
     vkCmdEndRenderPass(commandBuffer);
 
     // Complete recording of the command buffer.
-    // Once ended, the command buffer can be submitted to the graphics queue for execution.
+    // Once ended, the command buffer can be submitted to the graphics queue for
+    // execution.
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to record command buffer!");
     }

@@ -122,10 +122,11 @@ void VgeInstance::createInstance()
         .pNext = nullptr,                                // pNext (set conditionally later)
         .flags = 0,                                      // flags
         .pApplicationInfo = &appInfo,                    // pApplicationInfo
-        .enabledLayerCount = 0,                          // enabledLayerCount (set conditionally later)
-        .ppEnabledLayerNames = nullptr,                  // ppEnabledLayerNames (set conditionally later)
-        .enabledExtensionCount = static_cast<uint32_t>(m_requiredExts.size()), // enabledExtensionCount
-        .ppEnabledExtensionNames = m_requiredExts.data(),                      // ppEnabledExtensionNames
+        .enabledLayerCount = 0,         // enabledLayerCount (set conditionally later)
+        .ppEnabledLayerNames = nullptr, // ppEnabledLayerNames (set conditionally later)
+        .enabledExtensionCount =
+            static_cast<uint32_t>(m_requiredExts.size()), // enabledExtensionCount
+        .ppEnabledExtensionNames = m_requiredExts.data(), // ppEnabledExtensionNames
     };
 
     // Sets instance info depending if validation layers are available
@@ -159,9 +160,10 @@ void VgeInstance::populateDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& deb
         .sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
         .pNext = nullptr,
         .flags = 0,
-        .messageSeverity =
-            VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
-        .messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+        .messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                           VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
+        .messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                       VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                        VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
         .pfnUserCallback = debugCallback,
         .pUserData = nullptr, // Optional
@@ -212,8 +214,8 @@ VkResult VgeInstance::createDebugMessenger(
     const VkAllocationCallbacks* pAllocator,
     VkDebugUtilsMessengerEXT* pDebugMessenger)
 {
-    PFN_vkCreateDebugUtilsMessengerEXT func =
-        (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    PFN_vkCreateDebugUtilsMessengerEXT func = (PFN_vkCreateDebugUtilsMessengerEXT)
+        vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
         return func(instance, pDebugCInfo, pAllocator, pDebugMessenger);
     }
@@ -227,8 +229,8 @@ void VgeInstance::destroyDebugMessenger(
     VkDebugUtilsMessengerEXT debugMessenger,
     const VkAllocationCallbacks* pAllocator)
 {
-    PFN_vkDestroyDebugUtilsMessengerEXT func =
-        (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+    PFN_vkDestroyDebugUtilsMessengerEXT func = (PFN_vkDestroyDebugUtilsMessengerEXT)
+        vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
     if (func != nullptr) {
         func(instance, debugMessenger, pAllocator);
     }

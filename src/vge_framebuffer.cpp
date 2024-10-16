@@ -41,7 +41,9 @@ void VgeFramebuffer::createFramebuffers()
             .layers = 1,
         };
 
-        if (vkCreateFramebuffer(m_lDevice, &framebufferInfo, nullptr, &m_framebuffers[i]) != VK_SUCCESS) {
+        if (vkCreateFramebuffer(m_lDevice, &framebufferInfo, nullptr, &m_framebuffers[i]) !=
+            VK_SUCCESS)
+        {
             throw std::runtime_error("failed to create framebuffer!");
         }
     }

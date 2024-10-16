@@ -147,8 +147,8 @@ void VgePipeline::createGraphicsPipeline()
         .srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE,  // Optional
         .dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO, // Optional
         .alphaBlendOp = VK_BLEND_OP_ADD,             // Optional
-        .colorWriteMask =
-            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT,
+        .colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                          VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT,
     };
 
     // Overall color blending state for the graphics pipeline
@@ -183,7 +183,9 @@ void VgePipeline::createGraphicsPipeline()
         .pPushConstantRanges = nullptr, // Optional
     };
 
-    if (vkCreatePipelineLayout(m_lDevice, &m_pipelineLayoutCI, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
+    if (vkCreatePipelineLayout(m_lDevice, &m_pipelineLayoutCI, nullptr, &m_pipelineLayout) !=
+        VK_SUCCESS)
+    {
         throw std::runtime_error("Failed to create pipeline layout!");
     }
 
@@ -211,8 +213,13 @@ void VgePipeline::createGraphicsPipeline()
     };
 
     // Create graphics pipeline
-    if (vkCreateGraphicsPipelines(m_lDevice, VK_NULL_HANDLE, 1, &graphicsPipelineCI, nullptr, &m_graphicsPipeline) !=
-        VK_SUCCESS)
+    if (vkCreateGraphicsPipelines(
+            m_lDevice,
+            VK_NULL_HANDLE,
+            1,
+            &graphicsPipelineCI,
+            nullptr,
+            &m_graphicsPipeline) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create the graphics pipeline");
     }

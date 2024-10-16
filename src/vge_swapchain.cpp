@@ -42,7 +42,11 @@ void VgeSwapchain::querySwapchainSupport()
     // assign m_surfaceFormats with a list of available formats
     if (surfaceFormatCount != 0) {
         m_surfaceFormats.resize(surfaceFormatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(m_pDevice, m_surface, &surfaceFormatCount, m_surfaceFormats.data());
+        vkGetPhysicalDeviceSurfaceFormatsKHR(
+            m_pDevice,
+            m_surface,
+            &surfaceFormatCount,
+            m_surfaceFormats.data());
     }
 
     // 1st retrieves supported present modes
@@ -52,7 +56,11 @@ void VgeSwapchain::querySwapchainSupport()
     // assign m_presentModes with a list of available present modes
     if (presentModeCount != 0) {
         m_presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(m_pDevice, m_surface, &presentModeCount, m_presentModes.data());
+        vkGetPhysicalDeviceSurfacePresentModesKHR(
+            m_pDevice,
+            m_surface,
+            &presentModeCount,
+            m_presentModes.data());
     }
 }
 
@@ -86,10 +94,10 @@ void VgeSwapchain::createSwapchain()
         .imageExtent = extent,
         .imageArrayLayers = 1,
         .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-        .imageSharingMode =
-            (m_graphicsFamily != m_presentFamily) ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE,
-        .queueFamilyIndexCount =
-            (m_graphicsFamily != m_presentFamily) ? static_cast<uint32_t>(2) : static_cast<uint32_t>(0),
+        .imageSharingMode = (m_graphicsFamily != m_presentFamily) ? VK_SHARING_MODE_CONCURRENT
+                                                                  : VK_SHARING_MODE_EXCLUSIVE,
+        .queueFamilyIndexCount = (m_graphicsFamily != m_presentFamily) ? static_cast<uint32_t>(2)
+                                                                       : static_cast<uint32_t>(0),
         .pQueueFamilyIndices = (m_graphicsFamily != m_presentFamily) ? queueFamilyIndices : nullptr,
         .preTransform = m_surfaceCaps.currentTransform,
         .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
@@ -114,7 +122,8 @@ void VgeSwapchain::createSwapchain()
     m_swapchainExtent = extent;
 }
 
-VkSurfaceFormatKHR VgeSwapchain::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& surfaceFormats)
+VkSurfaceFormatKHR VgeSwapchain::chooseSurfaceFormat(
+    const std::vector<VkSurfaceFormatKHR>& surfaceFormats)
 {
     for (const VkSurfaceFormatKHR& availableFormat : surfaceFormats) {
         if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
@@ -148,8 +157,9 @@ VkExtent2D VgeSwapchain::chooseExtent(const VkSurfaceCapabilitiesKHR& surfaceCap
     }
     else {
         VkExtent2D actualExtent = m_windowExtent;
-        actualExtent.width =
-            std::max(surfaceCaps.minImageExtent.width, std::min(surfaceCaps.maxImageExtent.width, actualExtent.width));
+        actualExtent.width = std::max(
+            surfaceCaps.minImageExtent.width,
+            std::min(surfaceCaps.maxImageExtent.width, actualExtent.width));
         actualExtent.height = std::max(
             surfaceCaps.minImageExtent.height,
             std::min(surfaceCaps.maxImageExtent.height, actualExtent.height));
