@@ -4,19 +4,16 @@
 #include <stdexcept>
 
 namespace vge {
-VgeSwapchain::VgeSwapchain(
-    VkPhysicalDevice pDevice,
-    VkSurfaceKHR surface,
-    uint32_t graphicsFamily,
-    uint32_t presentFamily,
-    VkDevice lDevice,
-    GLFWwindow* window)
-    : m_pDevice{ pDevice }
-    , m_surface{ surface }
-    , m_graphicsFamily{ graphicsFamily }
-    , m_presentFamily{ presentFamily }
-    , m_lDevice{ lDevice }
-    , m_window{ window }
+VgeSwapchain::VgeSwapchain(VgeDevice& vgeDevice, VgeSurface& vgeSurface, VgeWindow& vgeWindow)
+    : m_vgeDevice{ vgeDevice }
+    , m_vgeSurface{ vgeSurface }
+    , m_vgeWindow{ vgeWindow }
+    , m_pDevice{ m_vgeDevice.getPDevice() }
+    , m_surface{ m_vgeSurface.getSurface() }
+    , m_graphicsFamily{ m_vgeDevice.getGraphicsFamily() }
+    , m_presentFamily{ m_vgeDevice.getPresentFamily() }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
+    , m_window{ m_vgeWindow.getWindow() }
 {
     querySwapchainSupport();
 

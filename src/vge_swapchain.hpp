@@ -1,4 +1,7 @@
 #pragma once
+#include "vge_device.hpp"
+#include "vge_surface.hpp"
+#include "vge_window.hpp"
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <vulkan/vulkan.h>
@@ -7,13 +10,7 @@
 namespace vge {
 class VgeSwapchain {
 public:
-    VgeSwapchain(
-        VkPhysicalDevice pDevice,
-        VkSurfaceKHR surface,
-        uint32_t graphicsFamily,
-        uint32_t presentFamily,
-        VkDevice lDevice,
-        GLFWwindow* window);
+    VgeSwapchain(VgeDevice& vgeDevice, VgeSurface& vgeSurface, VgeWindow& vgeWindow);
     ~VgeSwapchain();
 
     VgeSwapchain(const VgeSwapchain&) = delete;
@@ -31,6 +28,10 @@ private:
     VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& surfaceFormats);
     VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR>& presentModes);
     VkExtent2D chooseExtent(const VkSurfaceCapabilitiesKHR& surfaceCaps);
+
+    VgeDevice& m_vgeDevice;
+    VgeSurface& m_vgeSurface;
+    VgeWindow& m_vgeWindow;
 
     VkPhysicalDevice m_pDevice;
     VkSurfaceKHR m_surface;
