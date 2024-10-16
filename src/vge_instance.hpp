@@ -7,7 +7,7 @@ namespace vge {
 
 class VgeInstance {
 public:
-    VgeInstance(VgeValidationLayers vgeValidationLayers);
+    VgeInstance();
     ~VgeInstance();
 
     VgeInstance(const VgeInstance&) = delete;
