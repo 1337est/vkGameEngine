@@ -29,12 +29,12 @@ public:
 private:
     void loadGameObjects();
 
-    VgeWindow m_vgeWindow{ WIDTH, HEIGHT, "Hello Vulkan!" }; //  window
-    VgeDevice m_vgeDevice{ m_vgeWindow };                    // use device for window
-    VgeRenderer m_vgeRenderer{ m_vgeWindow, m_vgeDevice };
+    VgeWindow m_vgeWindow;
+    VgeDevice m_vgeDevice;
+    VgeRenderer m_vgeRenderer;
 
     // note: order of declarations matters
-    std::unique_ptr<VgeDescriptorPool> m_globalPool{};
+    std::unique_ptr<VgeDescriptorPool> m_globalPool;
     VgeGameObject::Map m_gameObjects;
 };
 

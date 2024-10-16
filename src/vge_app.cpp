@@ -24,7 +24,11 @@ namespace vge {
  * and loading game objects into the scene.
  */
 VgeApp::VgeApp()
-    : m_gameObjects{}
+    : m_vgeWindow{ WIDTH, HEIGHT, "Hello Vulkan!" }
+    , m_vgeDevice{ m_vgeWindow }
+    , m_vgeRenderer{ m_vgeWindow, m_vgeDevice }
+    , m_globalPool{}
+    , m_gameObjects{}
 {
     m_globalPool =
         VgeDescriptorPool::Builder(m_vgeDevice)
