@@ -1,4 +1,5 @@
 #pragma once
+#include "vge_validation_layers.hpp"
 #include <vector>
 #include <vulkan/vulkan.h>
 
@@ -6,7 +7,7 @@ namespace vge {
 
 class VgeInstance {
 public:
-    VgeInstance(bool enableVLayers, bool vLayerSupport, std::vector<const char*> VLayers);
+    VgeInstance(VgeValidationLayers VgeValidationLayers);
     ~VgeInstance();
 
     VgeInstance(const VgeInstance&) = delete;
@@ -38,6 +39,7 @@ private:
 
     VkInstance m_instance = VK_NULL_HANDLE;
 
+    VgeValidationLayers m_VgeValidationLayers;
     const bool m_enableVLayers;
     bool m_VLayerSupport;
     const std::vector<const char*> m_VLayers;

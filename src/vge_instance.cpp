@@ -5,10 +5,11 @@
 #include <unordered_set>
 
 namespace vge {
-VgeInstance::VgeInstance(bool enableVLayers, bool vLayerSupport, std::vector<const char*> VLayers)
-    : m_enableVLayers{ enableVLayers }
-    , m_VLayerSupport{ vLayerSupport }
-    , m_VLayers{ VLayers }
+VgeInstance::VgeInstance(VgeValidationLayers VgeValidationLayers)
+    : m_VgeValidationLayers{ VgeValidationLayers }
+    , m_enableVLayers{ VgeValidationLayers.areVLayersEnabled() }
+    , m_VLayerSupport{ VgeValidationLayers.areVLayersSupported() }
+    , m_VLayers{ VgeValidationLayers.getVLayers() }
 {
     // Prepatory functions before instance creation
     setRequiredExts();

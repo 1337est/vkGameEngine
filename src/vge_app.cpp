@@ -8,9 +8,7 @@ namespace vge {
 VgeApp::VgeApp()
     : m_vgeWindow{ WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Vulkan!" }
     , m_vgeValidationLayers{}
-    , m_vgeInstance{ m_vgeValidationLayers.areVLayersEnabled(),
-                     m_vgeValidationLayers.areVLayersSupported(),
-                     m_vgeValidationLayers.getVLayers() }
+    , m_vgeInstance{ m_vgeValidationLayers }
     , m_vgeSurface{ m_vgeInstance.getInstance(), m_vgeWindow.getWindow() }
     , m_vgeDevice{ m_vgeInstance.getInstance(),
                    m_vgeSurface.getSurface(),
