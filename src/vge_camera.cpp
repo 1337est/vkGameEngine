@@ -1,7 +1,5 @@
-// headers
 #include "vge_camera.hpp"
 
-// std
 #include <cassert>
 #include <limits>
 

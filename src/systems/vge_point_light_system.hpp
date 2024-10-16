@@ -1,18 +1,14 @@
 #pragma once
 
-// headers
-#include "vge_device.hpp"
-#include "vge_frame_info.hpp"
-#include "vge_pipeline.hpp"
+#include "../vge_device.hpp"
+#include "../vge_frame_info.hpp"
+#include "../vge_pipeline.hpp"
 
-// libs
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <memory>
 
-namespace vge
-{
+namespace vge {
 
 struct PointLightPushConstants
 {
@@ -21,8 +17,7 @@ struct PointLightPushConstants
     float radius;
 };
 
-class VgePointLightSystem
-{
+class VgePointLightSystem {
 public:
     VgePointLightSystem(
         VgeDevice& device,

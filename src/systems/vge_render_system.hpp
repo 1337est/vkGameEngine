@@ -1,18 +1,14 @@
 #pragma once
 
-// headers
-#include "vge_device.hpp"
-#include "vge_frame_info.hpp"
-#include "vge_pipeline.hpp"
+#include "../vge_device.hpp"
+#include "../vge_frame_info.hpp"
+#include "../vge_pipeline.hpp"
 
-// libs
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <memory>
 
-namespace vge
-{
+namespace vge {
 
 struct SimplePushConstantData
 {
@@ -20,8 +16,7 @@ struct SimplePushConstantData
     glm::mat4 normalMatrix{ 1.f }; // identity matrix
 };
 
-class VgeRenderSystem
-{
+class VgeRenderSystem {
 public:
     VgeRenderSystem(
         VgeDevice& device,

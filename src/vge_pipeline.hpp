@@ -1,12 +1,9 @@
 #pragma once
 
-// headers
 #include "vge_device.hpp"
 
-// libs
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <string>
 #include <vector>
 

@@ -1,6 +1,5 @@
 #pragma once
 
-// headers
 #include "vge_game_object.hpp"
 
 namespace vge {

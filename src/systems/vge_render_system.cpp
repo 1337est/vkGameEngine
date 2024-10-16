@@ -1,19 +1,15 @@
-// headers
 #include "vge_render_system.hpp"
-#include "vge_game_object.hpp"
+#include "../vge_game_object.hpp"
 
-// libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-// std
 #include <cassert>
 #include <stdexcept>
 
-namespace vge
-{
+namespace vge {
 
 /* Constructs a VgeRenderSystem object.
  *
@@ -48,12 +44,10 @@ VgeRenderSystem::~VgeRenderSystem()
  * Sets up the push constant range and descriptor set layouts for the
  * pipeline, allowing the shader to access model transformation data.
  */
-void VgeRenderSystem::createPipelineLayout(
-    VkDescriptorSetLayout globalSetLayout)
+void VgeRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout)
 {
     VkPushConstantRange pushConstantRange{};
-    pushConstantRange.stageFlags =
-        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
     pushConstantRange.offset = 0;
     pushConstantRange.size = sizeof(SimplePushConstantData);
 
@@ -62,8 +56,7 @@ void VgeRenderSystem::createPipelineLayout(
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount =
-        static_cast<uint32_t>(descriptorSetLayouts.size());
+    pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
     pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
     pipelineLayoutInfo.pushConstantRangeCount = 1;
     pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
@@ -84,9 +77,7 @@ void VgeRenderSystem::createPipelineLayout(
  */
 void VgeRenderSystem::createPipeline(VkRenderPass renderPass)
 {
-    assert(
-        m_pipelineLayout != nullptr &&
-        "Cannot create pipeline before pipeline layout!");
+    assert(m_pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout!");
 
     PipelineConfigInfo pipelineConfig{};
     VgePipeline::defaultPipelineConfigInfo(pipelineConfig);
@@ -119,9 +110,7 @@ void VgeRenderSystem::renderGameObjects(FrameInfo& frameInfo)
         0,
         nullptr);
 
-    for (std::pair<const unsigned int, VgeGameObject>& kv :
-         frameInfo.gameObjects)
-    {
+    for (std::pair<const unsigned int, VgeGameObject>& kv : frameInfo.gameObjects) {
         // kv.second = gameObj kv.first = objId
         VgeGameObject& obj = kv.second;
         if (obj.m_model == nullptr)

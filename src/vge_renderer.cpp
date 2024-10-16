@@ -1,8 +1,6 @@
-// headers
 #include "vge_renderer.hpp"
 #include "vge_device.hpp"
 
-// std
 #include <array>
 #include <cassert>
 #include <stdexcept>

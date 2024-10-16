@@ -1,11 +1,10 @@
 #pragma once
 
-// libs
-#include <vulkan/vulkan_core.h>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-// std
+#include <vulkan/vulkan_core.h>
+
 #include <string>
 
 namespace vge {
@@ -21,15 +20,10 @@ public:
     VgeWindow& operator=(const VgeWindow&) = delete;
 
     bool shouldClose() const;
-
     VkExtent2D getExtent() const;
-
     bool wasWindowResized() const;
-
     void resetWindowResizedFlag();
-
     GLFWwindow* getGLFWwindow() const;
-
     void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 private:

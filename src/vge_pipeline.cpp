@@ -1,11 +1,8 @@
-// headers
 #include "vge_pipeline.hpp"
 #include "vge_model.hpp"
 
-// libs
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <cassert>
 #include <fstream>
 #include <iostream>

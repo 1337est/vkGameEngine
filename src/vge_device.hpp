@@ -1,9 +1,7 @@
 #pragma once
 
-// headers
 #include "vge_window.hpp"
 
-// std
 #include <vector>
 
 namespace vge {

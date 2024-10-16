@@ -1,7 +1,5 @@
-// headers
 #include "vge_descriptors.hpp"
 
-// std
 #include <cassert>
 #include <stdexcept>
 

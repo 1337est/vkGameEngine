@@ -1,7 +1,5 @@
-// headers
 #include "vge_point_light_system.hpp"
 
-// libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/ext/vector_float4.hpp>
@@ -10,12 +8,10 @@
 
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <cassert>
 #include <stdexcept>
 
-namespace vge
-{
+namespace vge {
 
 /* Constructs a VgePointLightSystem object.
  *
@@ -50,12 +46,10 @@ VgePointLightSystem::~VgePointLightSystem()
  * Sets up the push constant range and descriptor set layouts for the
  * pipeline, allowing the shader to access point light information.
  */
-void VgePointLightSystem::createPipelineLayout(
-    VkDescriptorSetLayout globalSetLayout)
+void VgePointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout)
 {
     VkPushConstantRange pushConstantRange{};
-    pushConstantRange.stageFlags =
-        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
     pushConstantRange.offset = 0;
     pushConstantRange.size = sizeof(PointLightPushConstants);
 
@@ -64,8 +58,7 @@ void VgePointLightSystem::createPipelineLayout(
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount =
-        static_cast<uint32_t>(descriptorSetLayouts.size());
+    pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
     pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
     pipelineLayoutInfo.pushConstantRangeCount = 1;
     pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
@@ -86,9 +79,7 @@ void VgePointLightSystem::createPipelineLayout(
  */
 void VgePointLightSystem::createPipeline(VkRenderPass renderPass)
 {
-    assert(
-        m_pipelineLayout != nullptr &&
-        "Cannot create pipeline before pipeline layout!");
+    assert(m_pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout!");
 
     PipelineConfigInfo pipelineConfig{};
     VgePipeline::defaultPipelineConfigInfo(pipelineConfig);
@@ -115,24 +106,19 @@ void VgePointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo)
         glm::rotate(glm::mat4(1.f), frameInfo.frameTime, { 0.f, -1.f, 0.f });
 
     int lightIndex = 0;
-    for (std::pair<const unsigned int, VgeGameObject>& kv :
-         frameInfo.gameObjects)
-    {
+    for (std::pair<const unsigned int, VgeGameObject>& kv : frameInfo.gameObjects) {
         VgeGameObject& obj = kv.second;
         if (obj.m_pointLight == nullptr)
             continue;
 
-        assert(
-            lightIndex < MAX_LIGHTS &&
-            "Point lights exceed maximum specified!");
+        assert(lightIndex < MAX_LIGHTS && "Point lights exceed maximum specified!");
 
         // update light postion
-        obj.m_transform.translation = glm::vec3(
-            rotateLight * glm::vec4(obj.m_transform.translation, 1.f));
+        obj.m_transform.translation =
+            glm::vec3(rotateLight * glm::vec4(obj.m_transform.translation, 1.f));
 
         // copy light to ubo
-        ubo.pointLights[lightIndex].position =
-            glm::vec4(obj.m_transform.translation, 1.f);
+        ubo.pointLights[lightIndex].position = glm::vec4(obj.m_transform.translation, 1.f);
         ubo.pointLights[lightIndex].color =
             glm::vec4(obj.m_color, obj.m_pointLight->lightIntensity);
 
@@ -160,9 +146,7 @@ void VgePointLightSystem::render(FrameInfo& frameInfo)
         0,
         nullptr);
 
-    for (std::pair<const unsigned int, VgeGameObject>& kv :
-         frameInfo.gameObjects)
-    {
+    for (std::pair<const unsigned int, VgeGameObject>& kv : frameInfo.gameObjects) {
         VgeGameObject& obj = kv.second;
         if (obj.m_pointLight == nullptr)
             continue;

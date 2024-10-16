@@ -1,17 +1,14 @@
 #pragma once
 
-// headers
 #include "vge_descriptors.hpp"
 #include "vge_device.hpp"
 #include "vge_game_object.hpp"
 #include "vge_renderer.hpp"
 #include "vge_window.hpp"
 
-// libs
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <memory>
 
 namespace vge {

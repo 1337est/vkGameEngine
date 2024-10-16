@@ -1,7 +1,5 @@
-// headers
 #include "vge_model.hpp"
 
-// libs
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tinyobjloader/tiny_obj_loader.h>
 
@@ -10,7 +8,6 @@
 
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <cassert>
 #include <cstring>
 #include <stdexcept>

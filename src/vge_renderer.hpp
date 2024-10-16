@@ -1,15 +1,12 @@
 #pragma once
 
-// headers
 #include "vge_device.hpp"
 #include "vge_swapchain.hpp"
 #include "vge_window.hpp"
 
-// libs
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <cassert>
 #include <memory>
 #include <vector>

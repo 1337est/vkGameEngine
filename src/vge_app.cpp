@@ -1,4 +1,3 @@
-// headers
 #include "vge_app.hpp"
 #include "systems/vge_point_light_system.hpp"
 #include "systems/vge_render_system.hpp"
@@ -7,7 +6,6 @@
 #include "vge_descriptors.hpp"
 #include "vge_keyboard_movement_controller.hpp"
 
-// libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/ext/matrix_transform.hpp>
@@ -16,7 +14,6 @@
 
 #include <vulkan/vulkan_core.h>
 
-// std
 #include <cassert>
 #include <chrono>
 

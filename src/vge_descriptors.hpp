@@ -1,9 +1,7 @@
 #pragma once
 
-// headers
 #include "vge_device.hpp"
 
-// std
 #include <memory>
 #include <unordered_map>
 #include <vector>

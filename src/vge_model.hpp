@@ -1,18 +1,14 @@
 #pragma once
 
-// headers
 #include "vge_buffer.hpp"
 #include "vge_device.hpp"
 
-// libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
 #include <vulkan/vulkan_core.h>
 
-// std
-#include <functional>
 #include <memory>
 #include <vector>
 

@@ -1,7 +1,5 @@
-// headers
 #include "vge_swapchain.hpp"
 
-// std
 #include <array>
 #include <cstdlib>
 #include <cstring>
