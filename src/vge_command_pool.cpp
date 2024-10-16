@@ -2,9 +2,10 @@
 #include <stdexcept>
 
 namespace vge {
-VgeCommandPool::VgeCommandPool(VkDevice lDevice, uint32_t graphicsFamily)
-    : m_lDevice{ lDevice }
-    , m_graphicsFamily{ graphicsFamily }
+VgeCommandPool::VgeCommandPool(VgeDevice& vgeDevice)
+    : m_vgeDevice{ vgeDevice }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
+    , m_graphicsFamily{ m_vgeDevice.getGraphicsFamily() }
 {
     createCommandPool();
 }

@@ -3,8 +3,9 @@
 #include <stdexcept>
 
 namespace vge {
-VgeSyncObjects::VgeSyncObjects(VkDevice lDevice)
-    : m_lDevice{ lDevice }
+VgeSyncObjects::VgeSyncObjects(VgeDevice& vgeDevice)
+    : m_vgeDevice{ vgeDevice }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
 {
     createSyncObjects();
 }

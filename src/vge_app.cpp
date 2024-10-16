@@ -20,9 +20,9 @@ VgeApp::VgeApp()
     , m_vgeRenderPass(m_vgeDevice, m_vgeSwapchain)
     , m_vgePipeline{ m_vgeDevice, m_vgeRenderPass }
     , m_vgeFramebuffer{ m_vgeDevice, m_vgeImageView, m_vgeSwapchain, m_vgeRenderPass }
-    , m_vgeCommandPool{ m_vgeDevice.getLDevice(), m_vgeDevice.getGraphicsFamily() }
-    , m_vgeCommandBuffer{ m_vgeDevice.getLDevice(), m_vgeCommandPool.getCommandPool() }
-    , m_vgeSyncObjects{ m_vgeDevice.getLDevice() }
+    , m_vgeCommandPool{ m_vgeDevice }
+    , m_vgeCommandBuffer{ m_vgeDevice, m_vgeCommandPool }
+    , m_vgeSyncObjects{ m_vgeDevice }
 
 {
     try {

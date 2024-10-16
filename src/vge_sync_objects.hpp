@@ -1,12 +1,13 @@
 #pragma once
 
+#include "vge_device.hpp"
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
 class VgeSyncObjects {
 public:
-    VgeSyncObjects(VkDevice lDevice);
+    VgeSyncObjects(VgeDevice& vgeDevice);
     ~VgeSyncObjects();
     VgeSyncObjects(const VgeSyncObjects&) = delete;
     VgeSyncObjects& operator=(const VgeSyncObjects&) = delete;
@@ -17,6 +18,8 @@ public:
 
 private:
     void createSyncObjects();
+
+    VgeDevice& m_vgeDevice;
 
     VkDevice m_lDevice;
 

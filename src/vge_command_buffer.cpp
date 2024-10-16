@@ -3,9 +3,11 @@
 #include <stdexcept>
 
 namespace vge {
-VgeCommandBuffer::VgeCommandBuffer(VkDevice lDevice, VkCommandPool commandPool)
-    : m_lDevice{ lDevice }
-    , m_commandPool{ commandPool }
+VgeCommandBuffer::VgeCommandBuffer(VgeDevice& vgeDevice, VgeCommandPool& vgeCommandPool)
+    : m_vgeDevice{ vgeDevice }
+    , m_vgeCommandPool{ vgeCommandPool }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
+    , m_commandPool{ m_vgeCommandPool.getCommandPool() }
 {
     createCommandBuffer();
 }

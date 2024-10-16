@@ -1,11 +1,12 @@
 #pragma once
 
+#include "vge_device.hpp"
 #include <vulkan/vulkan_core.h>
 
 namespace vge {
 class VgeCommandPool {
 public:
-    VgeCommandPool(VkDevice lDevice, uint32_t graphicsFamily);
+    VgeCommandPool(VgeDevice& vgeDevice);
     ~VgeCommandPool();
     VgeCommandPool(const VgeCommandPool&) = delete;
     VgeCommandPool& operator=(const VgeCommandPool&) = delete;
@@ -14,6 +15,8 @@ public:
 
 private:
     void createCommandPool();
+
+    VgeDevice& m_vgeDevice;
 
     VkDevice m_lDevice;
     uint32_t m_graphicsFamily;
