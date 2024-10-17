@@ -1,4 +1,5 @@
 #pragma once
+
 #include "vge_command_buffer.hpp"
 #include "vge_command_pool.hpp"
 #include "vge_device.hpp"

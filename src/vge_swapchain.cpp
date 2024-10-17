@@ -20,6 +20,29 @@ VgeSwapchain::VgeSwapchain(VgeDevice& vgeDevice, VgeSurface& vgeSurface, VgeWind
     createSwapchain();
 }
 
+VgeSwapchain::VgeSwapchain(
+    VgeDevice& vgeDevice,
+    VgeSurface& vgeSurface,
+    VgeWindow& vgeWindow,
+    std::shared_ptr<VgeSwapchain> oldSwapchain)
+    : m_vgeDevice{ vgeDevice }
+    , m_vgeSurface{ vgeSurface }
+    , m_vgeWindow{ vgeWindow }
+    , m_pDevice{ m_vgeDevice.getPDevice() }
+    , m_surface{ m_vgeSurface.getSurface() }
+    , m_graphicsFamily{ m_vgeDevice.getGraphicsFamily() }
+    , m_presentFamily{ m_vgeDevice.getPresentFamily() }
+    , m_lDevice{ m_vgeDevice.getLDevice() }
+    , m_window{ m_vgeWindow.getWindow() }
+    , m_oldSwapchain{ oldSwapchain }
+{
+    querySwapchainSupport();
+    createSwapchain();
+
+    // cleanup old swapchain since it's no longer needed
+    m_oldSwapchain = nullptr;
+}
+
 VgeSwapchain::~VgeSwapchain()
 {
     if (m_swapchain != VK_NULL_HANDLE) {
@@ -100,7 +123,7 @@ void VgeSwapchain::createSwapchain()
         .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
         .presentMode = presentMode,
         .clipped = VK_TRUE,
-        .oldSwapchain = VK_NULL_HANDLE
+        .oldSwapchain = m_oldSwapchain == nullptr ? VK_NULL_HANDLE : m_oldSwapchain->m_swapchain,
     };
 
     // stores swapchain inside m_swapchain

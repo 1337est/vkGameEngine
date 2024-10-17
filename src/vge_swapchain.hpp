@@ -3,6 +3,7 @@
 #include "vge_surface.hpp"
 #include "vge_window.hpp"
 #include <GLFW/glfw3.h>
+#include <memory>
 #include <vector>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
@@ -11,6 +12,11 @@ namespace vge {
 class VgeSwapchain {
 public:
     VgeSwapchain(VgeDevice& vgeDevice, VgeSurface& vgeSurface, VgeWindow& vgeWindow);
+    VgeSwapchain(
+        VgeDevice& vgeDevice,
+        VgeSurface& vgeSurface,
+        VgeWindow& vgeWindow,
+        std::shared_ptr<VgeSwapchain> oldSwapchain);
     ~VgeSwapchain();
 
     VgeSwapchain(const VgeSwapchain&) = delete;
@@ -45,6 +51,8 @@ private:
     VkSurfaceCapabilitiesKHR m_surfaceCaps{};
 
     VkSwapchainKHR m_swapchain = VK_NULL_HANDLE;
+    std::shared_ptr<VgeSwapchain> m_oldSwapchain;
+
     std::vector<VkImage> m_swapchainImages;
     VkFormat m_swapchainImageFormat;
     VkExtent2D m_swapchainExtent;
