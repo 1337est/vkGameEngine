@@ -15,8 +15,11 @@ public:
 
     bool shouldClose() const;
     GLFWwindow* getWindow() const;
+    bool wasWindowResized() const;
+    void resetWindowResizedFlag();
 
 private:
+    static void frameBufferResizeCallback(GLFWwindow* window, int newWidth, int newHeight);
     void initWindow();
 
     int m_width;
@@ -24,6 +27,7 @@ private:
     std::string m_title;
 
     GLFWwindow* m_window;
+    bool m_frameBufferResized = false;
 };
 
 } // namespace vge
