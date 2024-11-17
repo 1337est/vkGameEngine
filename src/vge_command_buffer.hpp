@@ -22,7 +22,5 @@ private:
 
     VkDevice m_lDevice;
     VkCommandPool m_commandPool;
-
-    std::vector<VkCommandBuffer> m_commandBuffers;
 };
 } // namespace vge
